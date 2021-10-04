@@ -1,0 +1,93 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const { createServer } = require('http');
+const { Server } = require('socket.io');
+const Filter = require('bad-words');
+const dotenv = require('dotenv');
+const { createMessage, renderMessage } = require('./app/src/utils/create-message');
+const { getUserList, addUserList, removeUserList } = require('./app/src/utils/users');
+const { router } = require('./app/src/routers/user.api')
+const cors = require('cors')
+dotenv.config({ path: './config.env' })
+
+const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
+const localDB = 'mongodb://localhost:27017/chatApp'
+
+mongoose.connect(localDB)
+    .then(() => { console.log("DB connecttion success") })
+    .catch((err) => console.log(err))
+
+const app = express();
+
+/**socket io + express (app)*/
+app.use(express());
+const httpServer = createServer(app)
+const io = new Server(httpServer, {/**option */ })
+
+io.on('connection', (socket) => {
+    /**reciver join room */
+    socket.on('join room', ({ room, userName }) => {
+        socket.join(room)
+        /** add client join room */
+        io.to(room).emit('add client join room', addUserList({ userName, room }))
+        /** notify */
+        socket.emit('send message notify', `Well Come ${userName} Join Room ${room}`)
+        /** send message to new client after join */
+        socket.broadcast.to(room).emit('send message notify', `${userName} Joining`)
+        /** render client inside room */
+        io.to(room).emit('send list client inside room', getUserList(room));
+
+        /** chat */
+        socket.on('send message', (message, callBackAcknow) => {
+            const filter = new Filter()
+            const textBad = ['con cặc', 'địt mẹ', 'đụ má', 'chó đẻ', 'cặc']
+            filter.addWords(...textBad)
+            // const sendSuccess = 200;
+            if (filter.isProfane(message)) {
+                let returnText = filter.clean(message);
+                io.to(room).emit('send message', renderMessage(returnText))
+                return callBackAcknow('Message Not Available')
+            }
+            // save database
+
+            io.to(room).emit('send message', createMessage({ message, userId: socket.id, userName }))
+            io.to(room).emit('send array message', renderMessage({ message, userId: socket.id, userName }))
+            callBackAcknow()
+        })
+
+        /** location */
+        socket.on('send location', (location) => {
+            if (location) {
+                const linkLocation = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
+                io.to(room).emit('server send location', linkLocation)
+                io.to(room).emit('send array message', renderMessage({ message: linkLocation, userId: socket.id, userName }))
+            }
+        })
+
+        /**disconnect socket io */
+        socket.on('disconnect', () => {
+            console.log(`client ${socket.id} Disonected`);
+            removeUserList(socket.id)
+            /** render client inside room */
+            io.to(room).emit('send list client inside room', getUserList(room));
+        })
+    })
+})
+// setup req => json
+app.use(express.json());
+// setup cors
+app.options("*", cors());
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Credentials", true);
+    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,*");
+    next();
+});
+
+app.use('/api/v1/listUser', router)
+
+const port = process.env.PORT || 5000;
+httpServer.listen(port, () => {
+    console.log(`Well Come App Chat_Socket_IO on port : ${port}`)
+})
