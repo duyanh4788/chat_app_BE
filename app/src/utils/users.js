@@ -2,15 +2,24 @@ const { User } = require("../models/userModel")
 
 let userLists = []
 
-const addUserList = async (user) => {
-    const newUser = new User({
-        userName: user.userName,
-        room: user.room,
-        createAt: new Date(),
-    })
-    /** add client join room */
-    await newUser.save()
-    return userLists = [...userLists, newUser]
+const addUserList = ({ userName, room, email }) => {
+    try {
+        const checkEmail = User.findOne({ email })
+        if (checkEmail) {
+            return
+        } else {
+            const newUser = new User({
+                userName,
+                room,
+                email,
+                createAt: new Date(),
+            })
+            newUser.save()
+            return userLists = [...userLists, newUser]
+        }
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 const getUserList = (room) => (userLists.filter(item => item.room === room))

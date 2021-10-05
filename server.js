@@ -26,10 +26,10 @@ const io = new Server(httpServer, {/**option */ })
 
 io.on('connection', (socket) => {
     /**reciver join room */
-    socket.on('join room', ({ room, userName }) => {
+    socket.on('join room', ({ userName, room, email }) => {
         socket.join(room)
         /** add client join room */
-        io.to(room).emit('add client join room', addUserList({ userName, room }))
+        io.to(room).emit('add client join room', addUserList({ userName, room, email }))
         /** notify */
         socket.emit('send message notify', `Well Come ${userName} Join Room ${room}`)
         /** send message to new client after join */
@@ -49,18 +49,20 @@ io.on('connection', (socket) => {
                 return callBackAcknow('Message Not Available')
             }
             // save database
-
-            io.to(room).emit('send message', createMessage({ message, userId: socket.id, userName }))
-            io.to(room).emit('send array message', renderMessage({ message, userId: socket.id, userName }))
+            setTimeout(() => {
+                io.to(room).emit('send message', createMessage({ message, email, userName }))
+            }, 1000);
+            setTimeout(() => {
+                io.to(room).emit('send array message', renderMessage({ message, email, userName }))
+            }, 1000);
             callBackAcknow()
         })
-
         /** location */
         socket.on('send location', (location) => {
             if (location) {
                 const linkLocation = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
                 io.to(room).emit('server send location', linkLocation)
-                io.to(room).emit('send array message', renderMessage({ message: linkLocation, userId: socket.id, userName }))
+                io.to(room).emit('send array message', renderMessage({ message: linkLocation, email, userName }))
             }
         })
 

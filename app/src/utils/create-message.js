@@ -2,20 +2,21 @@ const timeFormat = require('date-format');
 
 let messageList = []
 
-const createMessage = ({ message, userId, userRoom }) => {
+const createMessage = ({ message, email, userName }) => {
     if (message && message !== null) {
         return {
             message,
-            userId,
-            userRoom,
+            email,
+            userName,
             createAt: timeFormat("dd-MM-yyyy hh:mm:ss", new Date()),
         }
     }
 }
 
-const renderMessage = ({ message, userId, userRoom }) => {
-    if (message || message !== null) {
-        return messageList = [...messageList, createMessage({ message, userId, userRoom })]
+const renderMessage = ({ message, email, userName }) => {
+    if (message && message !== null) {
+        messageList = [...messageList, createMessage({ message, email, userName })]
+        return messageList
     }
 }
 
