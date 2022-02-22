@@ -1,29 +1,28 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { createServer } = require('http');
-const { Server } = require('socket.io');
 const Filter = require('bad-words');
-const dotenv = require('dotenv');
+const { Server } = require('socket.io');
+const { createServer } = require('http');
 const { createMessage, renderMessage } = require('./app/src/utils/create-message');
 const { getUserList, addUserList, removeUserList } = require('./app/src/utils/users');
 const { router } = require('./app/src/routers/user.api')
-const cors = require('cors')
+const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' })
 
+/* Config Data Base */
 const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
 const localDB = 'mongodb://localhost:27017/chatApp'
-
 mongoose.connect(localDB)
     .then(() => { console.log("DB connecttion success") })
     .catch((err) => console.log(err))
 
+/* express (app)*/
 const app = express();
-
-/**socket io + express (app)*/
 app.use(express());
 const httpServer = createServer(app)
 const io = new Server(httpServer, {/**option */ })
 
+/* Socket IO */
 io.on('connection', (socket) => {
     /**reciver join room */
     socket.on('join room', ({ userName, room, email }) => {
@@ -75,20 +74,12 @@ io.on('connection', (socket) => {
         })
     })
 })
-// setup req => json
+
+/* Config Request to JSON */
 app.use(express.json());
-// setup cors
-app.options("*", cors());
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Credentials", true);
-    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,*");
-    next();
-});
 
+/*Config API */
 app.use('/api/v1/listUser', router)
-
 const port = process.env.PORT || 5000;
 httpServer.listen(port, () => {
     console.log(`Well Come App Chat_Socket_IO on port : ${port}`)
