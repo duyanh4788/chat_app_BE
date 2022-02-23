@@ -5,7 +5,7 @@ const { Server } = require('socket.io');
 const { createServer } = require('http');
 const { createMessage, renderMessage } = require('./app/src/utils/create-message');
 const { getUserList, addUserList, removeUserList } = require('./app/src/utils/users');
-const { router } = require('./app/src/routers/user.api')
+const { userRouter } = require('./app/src/routers/user.api')
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' })
 
@@ -20,7 +20,7 @@ mongoose.connect(localDB)
 const app = express();
 app.use(express());
 const httpServer = createServer(app)
-const io = new Server(httpServer, {/**option */ })
+const io = new Server(httpServer)
 
 /* Socket IO */
 io.on('connection', (socket) => {
@@ -79,7 +79,7 @@ io.on('connection', (socket) => {
 app.use(express.json());
 
 /*Config API */
-app.use('/api/v1/listUser', router)
+app.use('/api/v1', userRouter)
 const port = process.env.PORT || 5000;
 httpServer.listen(port, () => {
     console.log(`Well Come App Chat_Socket_IO on port : ${port}`)
