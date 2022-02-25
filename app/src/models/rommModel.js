@@ -1,12 +1,12 @@
-const mongoose = require('mongoose');
-const { User } = require('./userModel');
+const mongoose = require("mongoose");
+const { User } = require("./userModel");
 
 const RoomSchema = mongoose.Schema({
-    listUser: [User],
-})
+  listUser: [User],
+});
 
-const Room = mongoose.model('Room', RoomSchema);
+const Room = mongoose.model("Room", RoomSchema);
 
 module.exports = {
-    Room
-}
+  Room,
+};
