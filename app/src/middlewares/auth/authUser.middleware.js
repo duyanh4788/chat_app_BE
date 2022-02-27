@@ -3,7 +3,11 @@ const checkEmpty = (req, res, next) => {
   if (account !== "" && passWord !== "" && fullName !== "" && email !== "") {
     next();
   } else {
-    res.status(400).send({ message: "Vui lòng nhập đầy đủ thông tin" });
+    res.status(400).send({
+      code: 400,
+      message: "Vui lòng nhập đầy đủ thông tin",
+      success: false,
+    });
   }
 };
 
@@ -14,7 +18,9 @@ const checkAccount = (Model) => async (req, res, next) => {
     next();
   } else {
     res.status(400).send({
+      code: 400,
       message: "Tài khoản đã tồn tại",
+      success: false,
     });
   }
 };
@@ -26,7 +32,9 @@ const checkEmailPattern = (req, res, next) => {
     next();
   } else {
     res.status(400).send({
+      code: 400,
       message: "Vui lòng nhập đúng định dạng email",
+      success: false,
     });
   }
 };
@@ -38,7 +46,9 @@ const checkEmailExits = (Model) => async (req, res, next) => {
     next();
   } else {
     res.status(400).send({
+      code: 400,
       message: "Email đã tồn tại",
+      success: false,
     });
   }
 };
@@ -50,7 +60,9 @@ const checkAccountSingin = (Model) => async (req, res, next) => {
     next();
   } else {
     res.status(400).send({
+      code: 400,
       message: "Tài khoàn không tồn tại",
+      success: false,
     });
   }
 };
@@ -62,7 +74,9 @@ const checkNumber = (req, res, next) => {
     next();
   } else {
     res.status(400).send({
-      message: "PHONE ONLY NUMBER",
+      code: 400,
+      message: "Vui lòng nhập số",
+      success: false,
     });
   }
 };
@@ -82,7 +96,9 @@ const checkReqLength = (req, res, next) => {
     next();
   } else {
     res.status(400).send({
+      code: 400,
       message: "Độ dài ký tự từ 6 => 20",
+      success: false,
     });
   }
 };
@@ -93,7 +109,9 @@ const checkFullName = (req, res, next) => {
     next();
   } else {
     res.status(400).send({
+      code: 400,
       message: "Họ tên sai định dạng",
+      success: false,
     });
   }
 };

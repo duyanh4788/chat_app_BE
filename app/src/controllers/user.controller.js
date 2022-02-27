@@ -16,9 +16,10 @@ const userSignUp = async (req, res) => {
     };
     await User.create(data);
     res.status(200).send({
-      status: 200,
+      data: null,
       message: "Đăng ký thành công",
-      data: [],
+      code: 200,
+      success: true,
     });
   } catch (error) {
     res.status(500).error;
@@ -40,20 +41,23 @@ const userSignIn = async (req, res) => {
         const secrectKey = "123456";
         const toKen = jwt.sign(payload, secrectKey, { expiresIn: 360 });
         res.status(200).send({
+          data: toKen,
           message: "Đăng nhập thành công",
-          status: 200,
-          toKen,
+          code: 200,
+          success: true,
         });
       } else {
         res.status(400).send({
+          code: 400,
           message: "Mật khẩu không đúng",
-          status: 400,
+          success: false,
         });
       }
     } else {
       res.status(400).send({
+        code: 400,
         message: "Tài khoản chưa đăng ký",
-        status: 400,
+        success: false,
       });
     }
   } catch (error) {
@@ -65,8 +69,14 @@ const getListUser = async (req, res) => {
   try {
     const userList = await User.find();
     res.status(200).send({
-      status: 200,
-      data: { userList },
+      result: {
+        data: { userList },
+        message: null,
+        errorCode: 200,
+        errors: null,
+      },
+      returnCode: 200,
+      success: true,
     });
   } catch (error) {
     res.status(500).send(error);
