@@ -14,8 +14,12 @@ const userSignUp = async (req, res) => {
       email,
       userTypeCode: "USER",
     };
-    const newUser = await User.create(data);
-    res.status(200).send(newUser);
+    await User.create(data);
+    res.status(200).send({
+      status: 200,
+      message: "Đăng ký thành công",
+      data: [],
+    });
   } catch (error) {
     res.status(500).error;
   }
@@ -24,11 +28,7 @@ const userSignUp = async (req, res) => {
 const userSignIn = async (req, res) => {
   const { account, passWord } = req.body;
   try {
-    const checkAccount = await User.findOne({
-      where: {
-        account,
-      },
-    });
+    const checkAccount = await User.findOne({ account });
     if (checkAccount) {
       const checkPassWord = bcrypt.compareSync(passWord, checkAccount.passWord);
       if (checkPassWord) {
@@ -40,17 +40,20 @@ const userSignIn = async (req, res) => {
         const secrectKey = "123456";
         const toKen = jwt.sign(payload, secrectKey, { expiresIn: 360 });
         res.status(200).send({
-          message: "LOGIN SUCCESSFULLY",
+          message: "Đăng nhập thành công",
+          status: 200,
           toKen,
         });
       } else {
         res.status(400).send({
-          message: "PASSWORD IS WRONG",
+          message: "Mật khẩu không đúng",
+          status: 400,
         });
       }
     } else {
       res.status(400).send({
-        message: "EMAIL DOES NOT EXIST",
+        message: "Tài khoản chưa đăng ký",
+        status: 400,
       });
     }
   } catch (error) {
@@ -58,17 +61,20 @@ const userSignIn = async (req, res) => {
   }
 };
 
-const getUserListController = async (req, res) => {
+const getListUser = async (req, res) => {
   try {
     const userList = await User.find();
-    res.status(200).send(userList);
+    res.status(200).send({
+      status: 200,
+      data: { userList },
+    });
   } catch (error) {
     res.status(500).send(error);
   }
 };
 
 module.exports = {
-  getUserListController,
+  getListUser,
   userSignUp,
   userSignIn,
 };
