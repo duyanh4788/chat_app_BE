@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Filter = require("bad-words");
+const cors = require('cors')
 const { Server } = require("socket.io");
 const { createServer } = require("http");
 const {
@@ -107,6 +108,14 @@ io.on("connection", (socket) => {
 
 /* Config Request to JSON */
 app.use(express.json());
+app.options("*", cors());
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Credentials", true);
+    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,*");
+    next();
+});
 
 /*Config API */
 app.use("/api/v1", userRouter);

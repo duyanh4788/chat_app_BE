@@ -4,16 +4,17 @@ const jwt = require("jsonwebtoken");
 
 const userSignUp = async (req, res) => {
   try {
-    const { account, passWord, fullName, email, userTypeCode } = req.body;
+    const { account, passWord, fullName, email } = req.body;
     const salt = bcrypt.genSaltSync(10);
     const hashPassWord = bcrypt.hashSync(passWord, salt);
-    const newUser = await createUserService({
+    const data = {
       account,
       passWord: hashPassWord,
       fullName,
       email,
-      userTypeCode,
-    });
+      userTypeCode: "USER",
+    };
+    const newUser = await User.create(data);
     res.status(200).send(newUser);
   } catch (error) {
     res.status(500).error;
