@@ -84,9 +84,9 @@ const checkNumber = (req, res, next) => {
 const checkReqLength = (req, res, next) => {
   const { account, passWord, fullName, email } = req.body;
   if (
-    account.length > 5 &&
+    account.length > 4 &&
     account.length < 30 &&
-    passWord.length > 5 &&
+    passWord.length > 4 &&
     passWord.length < 30 &&
     fullName.length > 5 &&
     fullName.length < 30 &&

@@ -33,15 +33,16 @@ const userSignIn = async (req, res) => {
     if (checkAccount) {
       const checkPassWord = bcrypt.compareSync(passWord, checkAccount.passWord);
       if (checkPassWord) {
-        const payload = {
+        const infoUser = {
           account: checkAccount.account,
           fullName: checkAccount.fullName,
+          id: checkAccount.id,
           userTypeCode: checkAccount.userTypeCode,
         };
         const secrectKey = "123456";
-        const toKen = jwt.sign(payload, secrectKey, { expiresIn: 360 });
+        const toKen = jwt.sign(infoUser, secrectKey, { expiresIn: 3600 });
         res.status(200).send({
-          data: toKen,
+          info: { ...infoUser, toKen },
           message: "Đăng nhập thành công",
           code: 200,
           success: true,
