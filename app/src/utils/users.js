@@ -1,28 +1,37 @@
 const { User } = require("../models/userModel");
 
 let userLists = [];
-
-const addUserList = ({ userName, room, email }) => {
+const addUserList = async (uid) => {
   try {
-    const checkEmail = User.findOne({ email });
-    if (checkEmail) {
+    const checkUid = User.findOne({ uid });
+    if (checkUid) {
       return;
     } else {
       const newUser = new User({
-        userName,
+        fullName,
         room,
-        email,
+        account,
+        uid,
         createAt: new Date(),
       });
       newUser.save();
-      return (userLists = [...userLists, newUser]);
+      userLists = [...userLists, newUser];
+      return userLists;
     }
   } catch (error) {
     console.log(error);
   }
 };
-
-const getUserList = (room) => userLists.filter((item) => item.room === room);
+const getUserList = async ({ room, fullName, account }) => {
+  try {
+    const checkAccount = await User.findOne({ account });
+    if (!checkAccount) return;
+    userLists.push(checkAccount);
+    return userLists;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const removeUserList = (id) =>
   (userLists = userLists.filter((item) => item.id !== id));

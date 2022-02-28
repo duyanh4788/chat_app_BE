@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Filter = require("bad-words");
-const cors = require('cors')
+const cors = require("cors");
 const { Server } = require("socket.io");
 const { createServer } = require("http");
 const {
@@ -39,24 +39,24 @@ const io = new Server(httpServer);
 /* Socket IO */
 io.on("connection", (socket) => {
   /**reciver join room */
-  socket.on("join room", ({ userName, room, email }) => {
+  socket.on("join room", ({ fullName, room, account, uid }) => {
     socket.join(room);
     /** add client join room */
-    io.to(room).emit(
-      "add client join room",
-      addUserList({ userName, room, email })
-    );
+    io.to(room).emit("add client join room", addUserList(uid));
     /** notify */
     socket.emit(
       "send message notify",
-      `Well Come ${userName} Join Room ${room}`
+      `Well Come ${fullName} Join Room ${room}`
     );
     /** send message to new client after join */
     socket.broadcast
       .to(room)
-      .emit("send message notify", `${userName} Joining`);
+      .emit("send message notify", `${fullName} Joining`);
     /** render client inside room */
-    io.to(room).emit("send list client inside room", getUserList(room));
+    io.to(room).emit(
+      "send list client inside room",
+      getUserList({ room, fullName, account })
+    );
 
     /** chat */
     socket.on("send message", (message, callBackAcknow) => {
@@ -73,13 +73,13 @@ io.on("connection", (socket) => {
       setTimeout(() => {
         io.to(room).emit(
           "send message",
-          createMessage({ message, email, userName })
+          createMessage({ message, account, fullName, uid })
         );
       }, 1000);
       setTimeout(() => {
         io.to(room).emit(
           "send array message",
-          renderMessage({ message, email, userName })
+          renderMessage({ message, account, fullName, uid })
         );
       }, 1000);
       callBackAcknow();
@@ -91,7 +91,7 @@ io.on("connection", (socket) => {
         io.to(room).emit("server send location", linkLocation);
         io.to(room).emit(
           "send array message",
-          renderMessage({ message: linkLocation, email, userName })
+          renderMessage({ message: linkLocation, account, fullName })
         );
       }
     });
@@ -101,7 +101,7 @@ io.on("connection", (socket) => {
       console.log(`client ${socket.id} Disonected`);
       removeUserList(socket.id);
       /** render client inside room */
-      io.to(room).emit("send list client inside room", getUserList(room));
+      io.to(room).emit("send list client inside room", getUserList({ room, fullName, account }));
     });
   });
 });
@@ -110,12 +110,14 @@ io.on("connection", (socket) => {
 app.use(express.json());
 app.options("*", cors());
 app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Credentials", true);
-    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,*");
-    next();
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
 });
+app.use(cors());
 
 /*Config API */
 app.use("/api/v1", userRouter);
