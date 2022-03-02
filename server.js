@@ -101,7 +101,10 @@ io.on("connection", (socket) => {
       console.log(`client ${socket.id} Disonected`);
       removeUserList(socket.id);
       /** render client inside room */
-      io.to(room).emit("send list client inside room", getUserList({ room, fullName, account }));
+      io.to(room).emit(
+        "send list client inside room",
+        getUserList({ room, fullName, account })
+      );
     });
   });
 });
