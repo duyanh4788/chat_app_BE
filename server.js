@@ -1,9 +1,13 @@
 const express = require("express");
+const app = express();
+const httpServer = require("http").Server(app);
 const mongoose = require("mongoose");
-const Filter = require("bad-words");
 const cors = require("cors");
-const { Server } = require("socket.io");
-const { createServer } = require("http");
+const { userRouter } = require("./app/src/routers/user.api");
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config.env" });
+const io = require("socket.io")(httpServer);
+const Filter = require("bad-words");
 const {
   createMessage,
   renderMessage,
@@ -13,9 +17,6 @@ const {
   addUserList,
   removeUserList,
 } = require("./app/src/utils/users");
-const { userRouter } = require("./app/src/routers/user.api");
-const dotenv = require("dotenv");
-dotenv.config({ path: "./config.env" });
 
 /* Config Data Base */
 const DB = process.env.DATABASE.replace(
@@ -29,12 +30,21 @@ mongoose
     console.log("DB connecttion success");
   })
   .catch((err) => console.log(err));
+/* Config Data Base */
 
-/* express (app)*/
-const app = express();
-app.use(express());
-const httpServer = createServer(app);
-const io = new Server(httpServer);
+/* Config Request to JSON */
+app.use(express.json());
+app.options("*", cors());
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+app.use(cors());
+/* Config Request to JSON */
 
 /* Socket IO */
 io.on("connection", (socket) => {
@@ -70,18 +80,14 @@ io.on("connection", (socket) => {
         return callBackAcknow("Message Not Available");
       }
       // save database
-      setTimeout(() => {
-        io.to(room).emit(
-          "send message",
-          createMessage({ message, account, fullName, uid })
-        );
-      }, 1000);
-      setTimeout(() => {
-        io.to(room).emit(
-          "send array message",
-          renderMessage({ message, account, fullName, uid })
-        );
-      }, 1000);
+      io.to(room).emit(
+        "send message",
+        createMessage({ message, account, fullName, uid })
+      );
+      io.to(room).emit(
+        "send array message",
+        renderMessage({ message, account, fullName, uid })
+      );
       callBackAcknow();
     });
     /** location */
@@ -98,7 +104,6 @@ io.on("connection", (socket) => {
 
     /**disconnect socket io */
     socket.on("disconnect", () => {
-      console.log(`client ${socket.id} Disonected`);
       removeUserList(socket.id);
       /** render client inside room */
       io.to(room).emit(
@@ -108,21 +113,10 @@ io.on("connection", (socket) => {
     });
   });
 });
-
-/* Config Request to JSON */
-app.use(express.json());
-app.options("*", cors());
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
-app.use(cors());
+/* Socket IO */
 
 /*Config API */
+app.use(express());
 app.use("/api/v1", userRouter);
 const port = process.env.PORT || 5000;
 httpServer.listen(port, () => {
