@@ -69,16 +69,19 @@ const userSignIn = async (req, res) => {
 const getListUser = async (req, res) => {
   try {
     const userList = await User.find();
-    res.status(200).send({
-      result: {
-        data: { userList },
-        message: null,
-        errorCode: 200,
-        errors: null,
-      },
-      returnCode: 200,
-      success: true,
-    });
+    if (userList) {
+      res.status(200).send({
+        data: userList,
+        code: 200,
+        success: true,
+      });
+    } else {
+      res.status(400).send({
+        code: 400,
+        message: "DATA ERROR",
+        success: false,
+      });
+    }
   } catch (error) {
     res.status(500).send(error);
   }

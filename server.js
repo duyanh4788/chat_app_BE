@@ -3,21 +3,23 @@ const app = express();
 const httpServer = require("http").Server(app);
 const mongoose = require("mongoose");
 const cors = require("cors");
-const { userRouter } = require("./app/src/routers/user.api");
+const { userRouter } = require("./src/routers/user.api");
+const { messageRouter } = require("./src/routers/message.api");
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 const io = require("socket.io")(httpServer);
 const Filter = require("bad-words");
 const {
-  createMessage,
-  renderMessage,
-} = require("./app/src/utils/create-message");
+  createMessageSocket,
+  renderMessageSocket,
+} = require("./src/utils/createMessageSocket");
 const {
   getUserList,
   addUserList,
   removeUserList,
-} = require("./app/src/utils/users");
-const {createDBMessage} = require("./app/src/getData/createMessage");
+} = require("./src/utils/createUsers");
+const { createMessageMG } = require("./src/controllers/message.controller");
+const { SOCKET_COMMIT, TEXT_BAD } = require("./src/common/common.constants");
 
 /* Config Data Base */
 const DB = process.env.DATABASE.replace(
@@ -48,67 +50,63 @@ app.use(cors());
 /* Config Request to JSON */
 
 /* Socket IO */
-io.on("connection", (socket) => {
+io.on(SOCKET_COMMIT.CONNECT, (socket) => {
   /**reciver join room */
-  socket.on("join room", ({ fullName, room, account, uid }) => {
+  socket.on(SOCKET_COMMIT.JOIN_ROOM, ({ fullName, room, account, uid }) => {
     socket.join(room);
     /** add client join room */
-    io.to(room).emit("add client join room", addUserList(uid));
+    io.to(room).emit(SOCKET_COMMIT.ADD_CLIENT_JOIN_ROOM, addUserList(uid));
     /** notify */
-    socket.emit(
-      "send message notify",
-      `Well Come ${fullName} Join Room ${room}`
-    );
+    socket.emit(SOCKET_COMMIT.SEND_MESSAGE_NOTIFY, `Hello ${fullName}`);
     /** send message to new client after join */
     socket.broadcast
       .to(room)
-      .emit("send message notify", `${fullName} Joining`);
+      .emit(SOCKET_COMMIT.SEND_MESSAGE_NOTIFY, `${fullName} Joining`);
     /** render client inside room */
     io.to(room).emit(
-      "send list client inside room",
+      SOCKET_COMMIT.SEND_LIST_CLIENT,
       getUserList({ room, fullName, account })
     );
     /** chat */
-    socket.on("send message", (message, callBackAcknow) => {
-      createDBMessage({ message, account, fullName, uid });
+    socket.on(SOCKET_COMMIT.SEND_MESSAGE, (message, callBackAcknow) => {
+      createMessageMG({ message, account, fullName, uid });
       const filter = new Filter();
-      const textBad = ["con cặc", "địt mẹ", "đụ má", "chó đẻ", "cặc"];
-      filter.addWords(...textBad);
+      filter.addWords(...TEXT_BAD);
       // const sendSuccess = 200;
       if (filter.isProfane(message)) {
         let returnText = filter.clean(message);
-        io.to(room).emit("send message", renderMessage(returnText));
-        return callBackAcknow("Message Not Available");
+        io.to(room).emit(SOCKET_COMMIT.SEND_MESSAGE, renderMessageSocket(returnText));
+        return callBackAcknow(SOCKET_COMMIT.MESSAGE_NOT_AVALID);
       }
       // save database
       io.to(room).emit(
-        "send message",
-        createMessage({ message, account, fullName, uid })
+        SOCKET_COMMIT.SEND_MESSAGE,
+        createMessageSocket({ message, account, fullName, uid })
       );
       io.to(room).emit(
-        "send array message",
-        renderMessage({ message, account, fullName, uid })
+        SOCKET_COMMIT.SEND_ARRAY_MESSAGE,
+        renderMessageSocket({ message, account, fullName, uid })
       );
       callBackAcknow();
     });
     /** location */
-    socket.on("send location", (location) => {
+    socket.on(SOCKET_COMMIT.SEND_LOCATION, (location) => {
       if (location) {
         const linkLocation = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
-        io.to(room).emit("server send location", linkLocation);
+        io.to(room).emit(SOCKET_COMMIT.SERVER_SEND_LOCATION, linkLocation);
         io.to(room).emit(
-          "send array message",
-          renderMessage({ message: linkLocation, account, fullName })
+          SOCKET_COMMIT.SEND_ARRAY_MESSAGE,
+          renderMessageSocket({ message: linkLocation, account, fullName })
         );
       }
     });
 
     /**disconnect socket io */
-    socket.on("disconnect", () => {
+    socket.on(SOCKET_COMMIT.DISCONNECT, () => {
       removeUserList(socket.id);
       /** render client inside room */
       io.to(room).emit(
-        "send list client inside room",
+        SOCKET_COMMIT.SEND_LIST_CLIENT,
         getUserList({ room, fullName, account })
       );
     });
@@ -119,6 +117,7 @@ io.on("connection", (socket) => {
 /*Config API */
 app.use(express());
 app.use("/api/v1", userRouter);
+app.use("/api/v1", messageRouter);
 const port = process.env.PORT || 5000;
 httpServer.listen(port, () => {
   console.log(`Well Come App Chat_Socket_IO on port : ${port}`);

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { TitleModel } = require("../common/common.constants");
 
 const UserSchema = mongoose.Schema({
   account: { type: String, require: true },
@@ -10,7 +11,7 @@ const UserSchema = mongoose.Schema({
   avatar: String,
 });
 
-const User = mongoose.model("User", UserSchema);
+const User = mongoose.model(TitleModel.USER, UserSchema);
 
 module.exports = {
   User,

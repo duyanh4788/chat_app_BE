@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { TitleModel } = require("../common/common.constants");
 
 const MessageSchema = mongoose.Schema({
   /* Model */
@@ -6,15 +7,18 @@ const MessageSchema = mongoose.Schema({
   message: { type: String, require: true },
   account: { type: String, require: true },
   fullName: { type: String, require: true },
-  createAt: Date,
+  createAt: { type: Date, require: true },
 });
 
 const ListMessagesSchema = mongoose.Schema({
   listMessage: [MessageSchema],
 });
 
-const ListMessages = mongoose.model("ListMessages", ListMessagesSchema);
-const Messages = mongoose.model("Messages", MessageSchema);
+const ListMessages = mongoose.model(
+  TitleModel.LIST_MESSAGES,
+  ListMessagesSchema
+);
+const Messages = mongoose.model(TitleModel.MESSAGE, MessageSchema);
 
 module.exports = {
   ListMessages,
