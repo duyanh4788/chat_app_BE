@@ -17,6 +17,7 @@ const {
   addUserList,
   removeUserList,
 } = require("./app/src/utils/users");
+const {createDBMessage} = require("./app/src/getData/createMessage");
 
 /* Config Data Base */
 const DB = process.env.DATABASE.replace(
@@ -67,9 +68,9 @@ io.on("connection", (socket) => {
       "send list client inside room",
       getUserList({ room, fullName, account })
     );
-
     /** chat */
     socket.on("send message", (message, callBackAcknow) => {
+      createDBMessage({ message, account, fullName, uid });
       const filter = new Filter();
       const textBad = ["con cặc", "địt mẹ", "đụ má", "chó đẻ", "cặc"];
       filter.addWords(...textBad);
