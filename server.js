@@ -11,13 +11,13 @@ const io = require("socket.io")(httpServer);
 require("./src/socket_io/socket_io")(io);
 
 /* Config Data Base */
-const DB = process.env.DATABASE.replace(
+const DB_CLOUD = process.env.DATABASE.replace(
   "<PASSWORD>",
   process.env.DATABASE_PASSWORD
 );
-const localDB = "mongodb://localhost:27017/chatApp";
+const DB_LOCAL = process.env.DATABASE;
 mongoose
-  .connect(DB)
+  .connect(DB_CLOUD)
   .then(() => {
     console.log("DB connecttion success");
   })
