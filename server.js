@@ -11,13 +11,9 @@ const io = require("socket.io")(httpServer);
 require("./src/socket_io/socket_io")(io);
 
 /* Config Data Base */
-const DB_CLOUD = process.env.DATABASE.replace(
-  "<PASSWORD>",
-  process.env.DATABASE_PASSWORD
-);
-const DB_LOCAL = process.env.DATABASE;
+const DATA_MONGO = process.env.DATABASE;
 mongoose
-  .connect(DB_CLOUD)
+  .connect(DATA_MONGO)
   .then(() => {
     console.log("DB connecttion success");
   })
