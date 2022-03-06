@@ -6,20 +6,18 @@ const TitleModel = {
 };
 
 const SOCKET_COMMIT = {
-  CONNECT: "connection",
-  JOIN_ROOM: "join room",
-  ADD_CLIENT_JOIN_ROOM: "add client join room",
-  SEND_LIST_CLIENT: "send list client inside room",
-  SEND_MESSAGE: "send message",
-  SEND_ARRAY_MESSAGE: "send array message",
-  SEND_LOCATION: "send location",
-  SERVER_SEND_LOCATION: "server send location",
-  DISCONNECT: "disconnect",
-  SEND_MESSAGE_NOTIFY: "send message notify",
-  MESSAGE_NOT_AVALID: "Message Not Available",
+  CONNECT: "connect",
+  JOIN_ROOM: 'join_room',
+  SEND_MESSAGE: 'send_message',
+  SEND_LIST_MESSAGE: 'send_list_message',
+  SEND_LOCATION: 'send_location',
+  SEND_MESSAGE_NOTIFY: 'send_message_notify',
+  SEND_LIST_USERS: 'send_list_users',
+  MESSAGE_NOT_AVALID: "Xin đừng chửi láo",
+  DISCONNECTED: "disconnected",
 };
 
-const TEXT_BAD = ["con cặc", "địt mẹ", "đụ má", "chó đẻ", "cặc"];
+const TEXT_BAD = ["con cặc", "địt mẹ", "đụ má", "chó đẻ", "cặc", "địt"];
 
 module.exports = {
   TitleModel,

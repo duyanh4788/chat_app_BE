@@ -6,9 +6,10 @@ const UserSchema = mongoose.Schema({
   passWord: { type: String, require: true },
   fullName: { type: String, require: true },
   email: { type: String, require: true },
-  userTypeCode: String,
-  createAt: Date,
-  avatar: String,
+  isOnline: { type: Boolean, default: false },
+  userTypeCode: { type: String, default: "USER" },
+  createAt: { type: Date, default: new Date() },
+  avatar: { type: String, default: "" },
 });
 
 const User = mongoose.model(TitleModel.USER, UserSchema);

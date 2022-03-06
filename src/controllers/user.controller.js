@@ -7,14 +7,13 @@ const userSignUp = async (req, res) => {
     const { account, passWord, fullName, email } = req.body;
     const salt = bcrypt.genSaltSync(10);
     const hashPassWord = bcrypt.hashSync(passWord, salt);
-    const data = {
+    const newUser = new User({
       account,
       passWord: hashPassWord,
       fullName,
       email,
-      userTypeCode: "USER",
-    };
-    await User.create(data);
+    });
+    await  newUser.save();
     res.status(200).send({
       data: null,
       message: "Đăng ký thành công",

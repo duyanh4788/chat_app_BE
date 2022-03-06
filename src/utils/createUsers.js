@@ -1,36 +1,29 @@
 const { User } = require("../models/userModel");
 
 let userLists = [];
-const addUserList = async (uid) => {
+
+const addUserList = ({ fullName, room, account, uid }) => {
   try {
-    const checkUid = User.findOne({ uid });
-    if (checkUid) {
+    const checkEmail = User.findOne({ uid });
+    if (checkEmail) {
       return;
     } else {
       const newUser = new User({
-        fullName,
+        userName,
         room,
-        account,
-        uid,
+        email,
         createAt: new Date(),
       });
       newUser.save();
-      userLists = [...userLists, newUser];
-      return userLists;
+      return (userLists = [...userLists, newUser]);
     }
   } catch (error) {
     console.log(error);
   }
 };
-const getUserList = async ({ room, fullName, account }) => {
-  try {
-    const checkAccount = await User.findOne({ account });
-    if (!checkAccount) return;
-    userLists.push(checkAccount);
-    return userLists;
-  } catch (error) {
-    console.log(error);
-  }
+
+const getUserList = (uid) => {
+  const getUser = User.findOne({ uid });
 };
 
 const removeUserList = (id) =>
@@ -38,6 +31,5 @@ const removeUserList = (id) =>
 
 module.exports = {
   getUserList,
-  addUserList,
   removeUserList,
 };
