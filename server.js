@@ -6,7 +6,11 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const { userRouter } = require("./src/routers/user.api");
 const { messageRouter } = require("./src/routers/message.api");
-const io = require("socket.io")(httpServer);
+const io = require("socket.io")(httpServer, {
+  cors: {
+    origin: process.env.END_POINT,
+  },
+});
 require("./src/socket_io/socket_io")(io);
 
 /* Config Data Base */
