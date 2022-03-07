@@ -13,7 +13,7 @@ const userSignUp = async (req, res) => {
       fullName,
       email,
     });
-    await  newUser.save();
+    await newUser.save();
     res.status(200).send({
       data: null,
       message: "Đăng ký thành công",
@@ -21,7 +21,11 @@ const userSignUp = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    res.status(500).error;
+    res.status(500).send({
+      code: 500,
+      message: error,
+      success: false,
+    });
   }
 };
 
@@ -29,65 +33,123 @@ const userSignIn = async (req, res) => {
   const { account, passWord } = req.body;
   try {
     const checkAccount = await User.findOne({ account });
-    if (checkAccount) {
-      const checkPassWord = bcrypt.compareSync(passWord, checkAccount.passWord);
-      if (checkPassWord) {
-        const infoUser = {
-          account: checkAccount.account,
-          fullName: checkAccount.fullName,
-          id: checkAccount.id,
-          userTypeCode: checkAccount.userTypeCode,
-        };
-        const secrectKey = "123456";
-        const toKen = jwt.sign(infoUser, secrectKey, { expiresIn: 3600 });
-        res.status(200).send({
-          info: { ...infoUser, toKen },
-          message: "Đăng nhập thành công",
-          code: 200,
-          success: true,
-        });
-      } else {
-        res.status(400).send({
-          code: 400,
-          message: "Mật khẩu không đúng",
-          success: false,
-        });
-      }
-    } else {
+    !checkAccount &&
       res.status(400).send({
         code: 400,
-        message: "Tài khoản chưa đăng ký",
+        message: "Mật khẩu không đúng",
         success: false,
       });
-    }
+    const checkPassWord = bcrypt.compareSync(passWord, checkAccount.passWord);
+    !checkPassWord &&
+      res.status(400).send({
+        code: 400,
+        message: "Mật khẩu không đúng",
+        success: false,
+      });
+    const infoUser = {
+      account: checkAccount.account,
+      fullName: checkAccount.fullName,
+      id: checkAccount.id,
+      userTypeCode: checkAccount.userTypeCode,
+    };
+    const secrectKey = "123456";
+    const toKen = jwt.sign(infoUser, secrectKey, { expiresIn: 3600 });
+    checkPassWord &&
+      res.status(200).send({
+        info: { ...infoUser, toKen },
+        message: "Đăng nhập thành công",
+        code: 200,
+        success: true,
+      });
   } catch (error) {
-    res.status(500).error;
+    res.status(500).send({
+      code: 500,
+      message: error,
+      success: false,
+    });
   }
 };
 
 const getListUser = async (req, res) => {
   try {
     const userList = await User.find();
-    if (userList) {
+    !userList &&
+      res.status(400).send({
+        code: 400,
+        message: "DATA NOT FOUND!",
+        success: false,
+      });
+    userList &&
       res.status(200).send({
         data: userList,
         code: 200,
         success: true,
       });
-    } else {
-      res.status(400).send({
-        code: 400,
-        message: "DATA ERROR",
-        success: false,
-      });
-    }
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send({
+      code: 500,
+      message: error,
+      success: false,
+    });
+  }
+};
+
+const getUserById = async (req, res) => {
+  try {
+    const userById = await User.findOne({ id: req.query.id });
+    !userById &&
+      res.status(400).send({
+        data: null,
+        message: "User By Id not found!",
+        code: 400,
+        success: true,
+      });
+    userById &&
+      res.status(200).send({
+        data: userById,
+        message: null,
+        code: 200,
+        success: true,
+      });
+  } catch (error) {
+    res.status(500).send({
+      code: 500,
+      message: error,
+      success: false,
+    });
+  }
+};
+
+const getFriendById = async (req, res) => {
+  try {
+    const myFriend = await User.findOne(req.query.id);
+    !myFriend &&
+      res.status(400).send({
+        data: null,
+        message: "My Friend not found!",
+        code: 400,
+        success: true,
+      });
+    myFriend &&
+      res.status(200).send({
+        data: myFriend,
+        message: null,
+        code: 200,
+        success: true,
+      });
+  } catch (error) {
+    res.status(500).send({
+      code: 500,
+      message: error,
+      success: false,
+    });
   }
 };
 
 module.exports = {
-  getListUser,
   userSignUp,
   userSignIn,
+  getListUser,
+  getUserById,
+  getFriendById,
 };

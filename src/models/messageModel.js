@@ -10,17 +10,28 @@ const MessageSchema = mongoose.Schema({
   createAt: { type: Date, require: true },
 });
 
-const ListMessagesSchema = mongoose.Schema({
-  listMessage: [MessageSchema],
-});
-
-const ListMessages = mongoose.model(
-  TitleModel.LIST_MESSAGES,
-  ListMessagesSchema
+const MessagePrivateSchema = mongoose.Schema(
+  {
+    conversationId: {
+      type: String,
+    },
+    sender: {
+      type: String,
+    },
+    text: {
+      type: String,
+    },
+  },
+  { timestamps: true }
 );
+
 const Messages = mongoose.model(TitleModel.MESSAGE, MessageSchema);
+const MessagePrivate = mongoose.model(
+  TitleModel.MESSAGE_PRIVATE,
+  MessagePrivateSchema
+);
 
 module.exports = {
-  ListMessages,
   Messages,
+  MessagePrivate,
 };
