@@ -8,7 +8,7 @@ const {
 
 converStationRouter.post("/saveConverStation", postSaveConverStation);
 
-converStationRouter.get("/:userId", getConverStationByUserId);
+converStationRouter.get("/converStationByUserId/:userId", getConverStationByUserId);
 
 converStationRouter.get("/find/:firstUserId/:secondUserId", getTwoUserId);
 

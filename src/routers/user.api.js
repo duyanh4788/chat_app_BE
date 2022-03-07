@@ -35,7 +35,7 @@ userRouter.get("/listUser", getListUser);
 
 userRouter.get("/userById/:id", getUserById);
 
-userRouter.get("/friend/:id", getFriendById);
+userRouter.get("/friendById/:id", getFriendById);
 
 module.exports = {
   userRouter,

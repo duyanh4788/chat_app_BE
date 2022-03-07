@@ -1,4 +1,4 @@
-const { Messages } = require("../models/messageModel");
+const { Messages, MessagePrivate } = require("../models/messageModel");
 
 const createMessageMG = async ({ message, account, fullName, uid }) => {
   try {
@@ -21,7 +21,7 @@ const createMessageMG = async ({ message, account, fullName, uid }) => {
 
 const getListMessage = async (req, res) => {
   try {
-    const messageList = await Messages.find();
+    const messageList = await MessagePrivate.find();
     !messageList &&
       res.status(400).send({
         code: 400,
@@ -45,7 +45,7 @@ const getListMessage = async (req, res) => {
 
 const getConverstationId = async (req, res) => {
   try {
-    const converstationById = await Messages.findOne({ id: req.params.id });
+    const converstationById = await MessagePrivate.findOne({ id: req.params.id });
     !converstationById &&
       res.status(400).send({
         data: null,
@@ -70,7 +70,7 @@ const getConverstationId = async (req, res) => {
 };
 
 const postNewMessages = async (req, res) => {
-  const newMessage = await Messages(req.body);
+  const newMessage = await MessagePrivate(req.body);
   try {
     const saveMessage = await newMessage.save();
     res.status(200).send({

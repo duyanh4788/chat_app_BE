@@ -1,4 +1,4 @@
-const { User } = require("../models/userModel");
+const { UserPrivate } = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -7,7 +7,7 @@ const userSignUp = async (req, res) => {
     const { account, passWord, fullName, email } = req.body;
     const salt = bcrypt.genSaltSync(10);
     const hashPassWord = bcrypt.hashSync(passWord, salt);
-    const newUser = new User({
+    const newUser = new UserPrivate({
       account,
       passWord: hashPassWord,
       fullName,
@@ -32,7 +32,7 @@ const userSignUp = async (req, res) => {
 const userSignIn = async (req, res) => {
   const { account, passWord } = req.body;
   try {
-    const checkAccount = await User.findOne({ account });
+    const checkAccount = await UserPrivate.findOne({ account });
     !checkAccount &&
       res.status(400).send({
         code: 400,
@@ -47,9 +47,12 @@ const userSignIn = async (req, res) => {
         success: false,
       });
     const infoUser = {
+      id: checkAccount.id,
       account: checkAccount.account,
       fullName: checkAccount.fullName,
-      id: checkAccount.id,
+      email: checkAccount.email,
+      avatar: checkAccount.avatar,
+      isOnline: checkAccount.isOnline,
       userTypeCode: checkAccount.userTypeCode,
     };
     const secrectKey = "123456";
@@ -72,7 +75,7 @@ const userSignIn = async (req, res) => {
 
 const getListUser = async (req, res) => {
   try {
-    const userList = await User.find();
+    const userList = await UserPrivate.find();
     !userList &&
       res.status(400).send({
         code: 400,
@@ -96,7 +99,7 @@ const getListUser = async (req, res) => {
 
 const getUserById = async (req, res) => {
   try {
-    const userById = await User.findOne({ id: req.query.id });
+    const userById = await UserPrivate.findOne({ id: req.query.id });
     !userById &&
       res.status(400).send({
         data: null,
@@ -122,7 +125,7 @@ const getUserById = async (req, res) => {
 
 const getFriendById = async (req, res) => {
   try {
-    const myFriend = await User.findOne(req.query.id);
+    const myFriend = await UserPrivate.findOne(req.query.id);
     !myFriend &&
       res.status(400).send({
         data: null,

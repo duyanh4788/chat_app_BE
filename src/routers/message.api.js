@@ -8,7 +8,7 @@ const {
 
 messageRouter.get("/listMessage", getListMessage);
 messageRouter.post("/newMessage", postNewMessages);
-messageRouter.get("/:converstationId", getConverstationId);
+messageRouter.get("/converstationId/:converstationId", getConverstationId);
 
 module.exports = {
   messageRouter,
