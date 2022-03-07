@@ -1,11 +1,9 @@
 const { Router } = require("express");
 const { User } = require("../models/userModel");
 const {
+  getListUser,
   userSignUp,
   userSignIn,
-  getListUser,
-  getUserById,
-  getFriendById,
 } = require("../controllers/user.controller");
 const {
   checkAccount,
@@ -18,8 +16,8 @@ const {
 } = require("../middlewares/auth/authUser.middleware");
 const userRouter = Router();
 
+userRouter.get("/listUser", getListUser);
 userRouter.post("/signIn", userSignIn);
-
 userRouter.post(
   "/signUp",
   checkAccount(User),
@@ -30,12 +28,6 @@ userRouter.post(
   checkFullName,
   userSignUp
 );
-
-userRouter.get("/listUser", getListUser);
-
-userRouter.get("/userById/:id", getUserById);
-
-userRouter.get("/friend/:id", getFriendById);
 
 module.exports = {
   userRouter,
