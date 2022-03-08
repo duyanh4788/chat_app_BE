@@ -1,7 +1,7 @@
-const { ConverStation } = require("../models/converStationModel");
+const { ConvertStation } = require("../models/convertStationModel");
 
 const postSaveConverStation = async (req, res) => {
-  const newConverStation = await ConverStation({
+  const newConverStation = await ConvertStation({
     members: [req.body.senderId, req.body.reciverId],
   });
   try {
@@ -22,7 +22,7 @@ const postSaveConverStation = async (req, res) => {
 
 const getConverStationByUserId = async (req, res) => {
   try {
-    const converStationByUserId = await ConverStation.find({
+    const converStationByUserId = await ConvertStation.find({
       members: { $in: [req.params.userId] },
     });
     res.status(200).send({
@@ -41,7 +41,7 @@ const getConverStationByUserId = async (req, res) => {
 
 const getTwoUserId = async (req, res) => {
   try {
-    const converStation = await ConverStation.findOne({
+    const converStation = await ConvertStation.findOne({
       members: { $all: [req.params.fisUserId, req.params.serconUserId] },
     });
     res.status(200).send({

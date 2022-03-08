@@ -33,19 +33,21 @@ const userSignIn = async (req, res) => {
   const { account, passWord } = req.body;
   try {
     const checkAccount = await UserPrivate.findOne({ account });
-    !checkAccount &&
-      res.status(400).send({
+    if (!checkAccount) {
+      return res.status(400).send({
         code: 400,
-        message: "Mật khẩu không đúng",
+        message: "Tài khoản không tồn tại vui lòng đăng ký",
         success: false,
       });
+    }
     const checkPassWord = bcrypt.compareSync(passWord, checkAccount.passWord);
-    !checkPassWord &&
-      res.status(400).send({
+    if (!checkPassWord) {
+      return res.status(400).send({
         code: 400,
         message: "Mật khẩu không đúng",
         success: false,
       });
+    }
     const infoUser = {
       id: checkAccount.id,
       account: checkAccount.account,
@@ -57,13 +59,14 @@ const userSignIn = async (req, res) => {
     };
     const secrectKey = "123456";
     const toKen = jwt.sign(infoUser, secrectKey, { expiresIn: 3600 });
-    checkPassWord &&
-      res.status(200).send({
+    if (checkPassWord) {
+      return res.status(200).send({
         info: { ...infoUser, toKen },
         message: "Đăng nhập thành công",
         code: 200,
         success: true,
       });
+    }
   } catch (error) {
     res.status(500).send({
       code: 500,
@@ -75,68 +78,23 @@ const userSignIn = async (req, res) => {
 
 const getListUser = async (req, res) => {
   try {
-    const userList = await UserPrivate.find();
+    const userList = await UserPrivate.find({}).select([
+      "account",
+      "fullName",
+      "email",
+      "avatar",
+      "isOnline",
+    ]);
     !userList &&
       res.status(400).send({
         code: 400,
         message: "DATA NOT FOUND!",
         success: false,
       });
+
     userList &&
       res.status(200).send({
         data: userList,
-        code: 200,
-        success: true,
-      });
-  } catch (error) {
-    res.status(500).send({
-      code: 500,
-      message: error,
-      success: false,
-    });
-  }
-};
-
-const getUserById = async (req, res) => {
-  try {
-    const userById = await UserPrivate.findOne({ id: req.query.id });
-    !userById &&
-      res.status(400).send({
-        data: null,
-        message: "User By Id not found!",
-        code: 400,
-        success: true,
-      });
-    userById &&
-      res.status(200).send({
-        data: userById,
-        message: null,
-        code: 200,
-        success: true,
-      });
-  } catch (error) {
-    res.status(500).send({
-      code: 500,
-      message: error,
-      success: false,
-    });
-  }
-};
-
-const getFriendById = async (req, res) => {
-  try {
-    const myFriend = await UserPrivate.findOne(req.query.id);
-    !myFriend &&
-      res.status(400).send({
-        data: null,
-        message: "My Friend not found!",
-        code: 400,
-        success: true,
-      });
-    myFriend &&
-      res.status(200).send({
-        data: myFriend,
-        message: null,
         code: 200,
         success: true,
       });
@@ -153,6 +111,4 @@ module.exports = {
   userSignUp,
   userSignIn,
   getListUser,
-  getUserById,
-  getFriendById,
 };

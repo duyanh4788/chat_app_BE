@@ -1,11 +1,9 @@
 const { Router } = require("express");
-const { User } = require("../models/userModel");
+const { UserPrivate } = require("../models/userModel");
 const {
   userSignUp,
   userSignIn,
   getListUser,
-  getUserById,
-  getFriendById,
 } = require("../controllers/user.controller");
 const {
   checkAccount,
@@ -22,8 +20,8 @@ userRouter.post("/signIn", userSignIn);
 
 userRouter.post(
   "/signUp",
-  checkAccount(User),
-  checkEmailExits(User),
+  checkAccount(UserPrivate),
+  checkEmailExits(UserPrivate),
   checkEmpty,
   checkEmailPattern,
   checkReqLength,
@@ -32,10 +30,6 @@ userRouter.post(
 );
 
 userRouter.get("/listUser", getListUser);
-
-userRouter.get("/userById/:id", getUserById);
-
-userRouter.get("/friendById/:id", getFriendById);
 
 module.exports = {
   userRouter,

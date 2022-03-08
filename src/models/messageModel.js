@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const { TitleModel } = require("../common/common.constants");
 
 const MessageSchema = mongoose.Schema({
-  /* Model */
   uid: { type: String, require: true },
   message: { type: String, require: true },
   account: { type: String, require: true },
@@ -12,14 +11,25 @@ const MessageSchema = mongoose.Schema({
 
 const MessagePrivateSchema = mongoose.Schema(
   {
-    conversationId: {
+    senderId: {
       type: String,
+      require: true,
     },
-    sender: {
+    senderName: {
       type: String,
+      require: true,
+    },
+    reciverId: {
+      type: String,
+      require: true,
+    },
+    reciverName: {
+      type: String,
+      require: true,
     },
     text: {
       type: String,
+      require: true,
     },
   },
   { timestamps: true }

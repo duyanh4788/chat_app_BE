@@ -5,7 +5,7 @@ const TitleModel = {
   USER: "User",
   USER_PRIVATE: "UserPrivate",
   ROOM: "Room",
-  CONVERSTATION: "converstation",
+  CONVERTSTATION: "convertstation",
 };
 
 const SOCKET_COMMIT = {

@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const { userRouter } = require("./src/routers/user.api");
 const { messageRouter } = require("./src/routers/message.api");
-const { converStationRouter } = require("./src/routers/converStation.api");
+const { convertStationRouter } = require("./src/routers/convertStation.api");
 const io = require("socket.io")(httpServer);
 require("./src/socket_io/socket_io")(io);
 
@@ -38,7 +38,7 @@ app.use(cors());
 app.use(express());
 app.use("/api/v1", userRouter);
 app.use("/api/v1", messageRouter);
-app.use("/api/v1", converStationRouter);
+app.use("/api/v1", convertStationRouter);
 
 const port = process.env.PORT || 5000;
 httpServer.listen(port, () => {

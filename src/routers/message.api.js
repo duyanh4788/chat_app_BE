@@ -1,14 +1,18 @@
 const { Router } = require("express");
+const { UserPrivate } = require("../models/userModel");
 const messageRouter = Router();
 const {
-  getListMessage,
   postNewMessages,
-  getConverstationId,
+  postConvertStationMyFriend,
 } = require("../controllers/message.controller");
+const { checkUserId } = require("../middlewares/messages/message.middleware");
 
-messageRouter.get("/listMessage", getListMessage);
-messageRouter.post("/newMessage", postNewMessages);
-messageRouter.get("/converstationId/:converstationId", getConverstationId);
+messageRouter.post("/newMessage", checkUserId(UserPrivate), postNewMessages);
+messageRouter.post(
+  "/convertStationMyFriend/",
+  checkUserId(UserPrivate),
+  postConvertStationMyFriend
+);
 
 module.exports = {
   messageRouter,
