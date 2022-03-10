@@ -1,32 +1,13 @@
 const { ConvertStation } = require("../models/convertStationModel");
 
 const postSaveConverStation = async (req, res) => {
-  const newConverStation = await ConvertStation({
-    members: [req.body.senderId, req.body.reciverId],
-  });
   try {
+    const newConverStation = await ConvertStation({
+      members: [req.body.senderId, req.body.reciverId],
+    });
     const saveConverStation = await newConverStation.save();
     res.status(200).send({
       data: saveConverStation,
-      code: 200,
-      success: true,
-    });
-  } catch (error) {
-    res.status(500).send({
-      code: 500,
-      message: error,
-      success: false,
-    });
-  }
-};
-
-const getConverStationByUserId = async (req, res) => {
-  try {
-    const converStationByUserId = await ConvertStation.find({
-      members: { $in: [req.params.userId] },
-    });
-    res.status(200).send({
-      data: converStationByUserId,
       code: 200,
       success: true,
     });
@@ -59,7 +40,6 @@ const getTwoUserId = async (req, res) => {
 };
 
 module.exports = {
-  getConverStationByUserId,
   postSaveConverStation,
   getTwoUserId,
 };

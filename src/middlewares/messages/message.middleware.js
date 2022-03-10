@@ -1,14 +1,4 @@
 const checkUserId = (Model) => async (req, res, next) => {
-  const reciverInfo = await Model.findOne({
-    _id: req.body.reciverId,
-  });
-  if (!reciverInfo) {
-    return res.status(400).send({
-      code: 400,
-      message: "reciver id not found!",
-      success: false,
-    });
-  }
   const senderInfor = await Model.findOne({
     _id: req.body.senderId,
   });
@@ -19,11 +9,28 @@ const checkUserId = (Model) => async (req, res, next) => {
       success: false,
     });
   }
-  if (reciverInfo && senderInfor) {
+  if (senderInfor) {
+    next();
+  }
+};
+
+const checkConvertStationId = (Model) => async (req, res, next) => {
+  const convertStationId = await Model.findOne({
+    _id: req.body.conversationId,
+  });
+  if (!convertStationId) {
+    return res.status(400).send({
+      code: 400,
+      message: "convert station id not found!",
+      success: false,
+    });
+  }
+  if (convertStationId) {
     next();
   }
 };
 
 module.exports = {
   checkUserId,
+  checkConvertStationId
 };

@@ -2,6 +2,7 @@ const { MessagePrivate } = require("../models/messageModel");
 
 const postNewMessages = async (req, res) => {
   const newMessage = await MessagePrivate(req.body);
+  console.log(newMessage);
   try {
     const saveMessage = await newMessage.save();
     res.status(200).send({
@@ -19,23 +20,22 @@ const postNewMessages = async (req, res) => {
   }
 };
 
-const postConvertStationMyFriend = async (req, res) => {
+const getListMessages = async (req, res) => {
   try {
-    const converStationMyFriend = await MessagePrivate.find({
-      reciverId: req.body.reciverId,
-      senderId: req.body.senderId,
-    });
-    if (!converStationMyFriend) {
+    const listMessages = await MessagePrivate.find({
+      conversationId: req.body.conversationId,
+    }).select(["conversationId", "senderId", "text", "createdAt"]);
+    if (!listMessages) {
       return res.status(400).send({
         data: null,
-        message: "Converstation not found!",
+        message: "List Messages Not Found!",
         code: 400,
         success: true,
       });
     }
-    if (converStationMyFriend) {
+    if (listMessages) {
       res.status(200).send({
-        data: converStationMyFriend,
+        data: listMessages,
         message: null,
         code: 200,
         success: true,
@@ -52,5 +52,5 @@ const postConvertStationMyFriend = async (req, res) => {
 
 module.exports = {
   postNewMessages,
-  postConvertStationMyFriend,
+  getListMessages,
 };

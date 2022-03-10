@@ -1,17 +1,18 @@
 const { Router } = require("express");
+const { ConvertStation } = require("../models/convertStationModel");
 const convertStationRouter = Router();
 const {
-  getConverStationByUserId,
   postSaveConverStation,
-  getTwoUserId,
 } = require("../controllers/convertStation.controller");
+const {
+  getConverStationByUserId,
+} = require("../middlewares/messages/converStation.middleware");
 
-convertStationRouter.post("/saveConvertStation", postSaveConverStation);
-
-convertStationRouter.get("/converStationByUserId/:userId", getConverStationByUserId);
-
-convertStationRouter.get("/find/:firstUserId/:secondaryUserId", getTwoUserId);
-
+convertStationRouter.post(
+  "/saveConvertStation",
+  getConverStationByUserId(ConvertStation),
+  postSaveConverStation
+);
 
 module.exports = {
   convertStationRouter,

@@ -11,19 +11,10 @@ const MessageSchema = mongoose.Schema({
 
 const MessagePrivateSchema = mongoose.Schema(
   {
+    conversationId: {
+      type: String,
+    },
     senderId: {
-      type: String,
-      require: true,
-    },
-    senderName: {
-      type: String,
-      require: true,
-    },
-    reciverId: {
-      type: String,
-      require: true,
-    },
-    reciverName: {
       type: String,
       require: true,
     },
