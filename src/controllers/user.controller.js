@@ -1,6 +1,6 @@
-const { UserPrivate } = require("../models/userModel");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const { UserPrivate } = require('../models/userModel');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const userSignUp = async (req, res) => {
   try {
@@ -15,8 +15,7 @@ const userSignUp = async (req, res) => {
     });
     await newUser.save();
     res.status(200).send({
-      data: null,
-      message: "Đăng ký thành công",
+      data: 'Đăng ký thành công',
       code: 200,
       success: true,
     });
@@ -36,7 +35,7 @@ const userSignIn = async (req, res) => {
     if (!checkAccount) {
       return res.status(400).send({
         code: 400,
-        message: "Tài khoản không tồn tại vui lòng đăng ký",
+        message: 'Tài khoản không tồn tại vui lòng đăng ký',
         success: false,
       });
     }
@@ -44,7 +43,7 @@ const userSignIn = async (req, res) => {
     if (!checkPassWord) {
       return res.status(400).send({
         code: 400,
-        message: "Mật khẩu không đúng",
+        message: 'Mật khẩu không đúng',
         success: false,
       });
     }
@@ -57,12 +56,11 @@ const userSignIn = async (req, res) => {
       isOnline: checkAccount.isOnline,
       userTypeCode: checkAccount.userTypeCode,
     };
-    const secrectKey = "123456";
+    const secrectKey = '123456';
     const toKen = jwt.sign(infoUser, secrectKey, { expiresIn: 3600 });
     if (checkPassWord) {
       return res.status(200).send({
-        info: { ...infoUser, toKen },
-        message: "Đăng nhập thành công",
+        data: { ...infoUser, toKen },
         code: 200,
         success: true,
       });
@@ -79,16 +77,16 @@ const userSignIn = async (req, res) => {
 const getListUser = async (req, res) => {
   try {
     const userList = await UserPrivate.find({}).select([
-      "account",
-      "fullName",
-      "email",
-      "avatar",
-      "isOnline",
+      'account',
+      'fullName',
+      'email',
+      'avatar',
+      'isOnline',
     ]);
     !userList &&
       res.status(400).send({
         code: 400,
-        message: "DATA NOT FOUND!",
+        message: 'DATA NOT FOUND!',
         success: false,
       });
 
@@ -107,8 +105,48 @@ const getListUser = async (req, res) => {
   }
 };
 
+const changeStatusOnline = async (req, res) => {
+  try {
+    await UserPrivate.findByIdAndUpdate(req.body.id, {
+      isOnline: true,
+    });
+    res.status(200).send({
+      data: null,
+      code: 200,
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).send({
+      code: 500,
+      message: error,
+      success: false,
+    });
+  }
+};
+
+const changeStatusOffline = async (req, res) => {
+  try {
+    await UserPrivate.findByIdAndUpdate(req.body.id, {
+      isOnline: false,
+    });
+    res.status(200).send({
+      data: null,
+      code: 200,
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).send({
+      code: 500,
+      message: error,
+      success: false,
+    });
+  }
+};
+
 module.exports = {
   userSignUp,
   userSignIn,
   getListUser,
+  changeStatusOnline,
+  changeStatusOffline,
 };

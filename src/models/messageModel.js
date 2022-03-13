@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const { TitleModel } = require("../common/common.constants");
+const mongoose = require('mongoose');
+const { TitleModel } = require('../common/common.constants');
 
 const MessageSchema = mongoose.Schema({
   uid: { type: String, require: true },
@@ -23,13 +23,14 @@ const MessagePrivateSchema = mongoose.Schema(
       require: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
+  { versionKey: false },
 );
 
 const Messages = mongoose.model(TitleModel.MESSAGE, MessageSchema);
 const MessagePrivate = mongoose.model(
   TitleModel.MESSAGE_PRIVATE,
-  MessagePrivateSchema
+  MessagePrivateSchema,
 );
 
 module.exports = {

@@ -1,13 +1,11 @@
-const { MessagePrivate } = require("../models/messageModel");
+const { MessagePrivate } = require('../models/messageModel');
 
 const postNewMessages = async (req, res) => {
   const newMessage = await MessagePrivate(req.body);
-  console.log(newMessage);
   try {
     const saveMessage = await newMessage.save();
     res.status(200).send({
       data: saveMessage,
-      message: null,
       code: 200,
       success: true,
     });
@@ -22,13 +20,16 @@ const postNewMessages = async (req, res) => {
 
 const getListMessages = async (req, res) => {
   try {
-    const listMessages = await MessagePrivate.find({
-      conversationId: req.body.conversationId,
-    }).select(["conversationId", "senderId", "text", "createdAt"]);
+    const listMessages = await MessagePrivate.find(
+      {
+        conversationId: req.body.conversationId,
+      },
+      '-_id',
+    ).select(['conversationId', 'senderId', 'text', 'createdAt']);
     if (!listMessages) {
       return res.status(400).send({
         data: null,
-        message: "List Messages Not Found!",
+        message: 'List Messages Not Found!',
         code: 400,
         success: true,
       });

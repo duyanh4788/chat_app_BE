@@ -1,14 +1,17 @@
-const mongoose = require("mongoose");
-const { TitleModel } = require("../common/common.constants");
+const mongoose = require('mongoose');
+const { TitleModel } = require('../common/common.constants');
 
-const ConvertStationSchema = mongoose.Schema({
-  members: {
-    type: Array,
+const ConvertStationSchema = mongoose.Schema(
+  {
+    members: {
+      type: Array,
+    },
   },
-});
+  { versionKey: false },
+);
 const ConvertStation = mongoose.model(
   TitleModel.CONVERTSTATION,
-  ConvertStationSchema
+  ConvertStationSchema,
 );
 
 module.exports = {

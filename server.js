@@ -7,8 +7,6 @@ const cors = require("cors");
 const { userRouter } = require("./src/routers/user.api");
 const { messageRouter } = require("./src/routers/message.api");
 const { convertStationRouter } = require("./src/routers/convertStation.api");
-const io = require("socket.io")(httpServer);
-require("./src/socket_io/socket_io")(io);
 
 /* Config Data Base */
 const DATA_MONGO = process.env.DATABASE;
@@ -42,5 +40,5 @@ app.use("/api/v1", convertStationRouter);
 
 const port = process.env.PORT || 5000;
 httpServer.listen(port, () => {
-  console.log(`Well Come App Chat_Socket_IO on port : ${port}`);
+  console.log(`Api on port : ${port}`);
 });

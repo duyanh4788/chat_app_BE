@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const { TitleModel } = require("../common/common.constants");
+const mongoose = require('mongoose');
+const { TitleModel } = require('../common/common.constants');
 
 const UserSchema = mongoose.Schema(
   {
@@ -7,11 +7,11 @@ const UserSchema = mongoose.Schema(
     passWord: { type: String, require: true },
     fullName: { type: String, require: true },
     email: { type: String, require: true },
-    avatar: { type: String, default: "" },
+    avatar: { type: String, default: '' },
     isOnline: { type: Boolean, default: false },
-    userTypeCode: { type: String, default: "USER" },
+    userTypeCode: { type: String, default: 'USER' },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const UserPrivateSchema = mongoose.Schema(
@@ -36,7 +36,7 @@ const UserPrivateSchema = mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "",
+      default: '',
     },
     isOnline: {
       type: Boolean,
@@ -44,10 +44,11 @@ const UserPrivateSchema = mongoose.Schema(
     },
     userTypeCode: {
       type: String,
-      default: "USER",
+      default: 'USER',
     },
   },
-  { timestamps: true }
+  { timestamps: true },
+  { versionKey: false },
 );
 
 const User = mongoose.model(TitleModel.USER, UserSchema);
