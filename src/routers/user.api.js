@@ -4,6 +4,7 @@ const {
   userSignUp,
   userSignIn,
   getListUser,
+  getUserById,
   changeStatusOnline,
   changeStatusOffline,
 } = require('../controllers/user.controller');
@@ -32,6 +33,7 @@ userRouter.post(
 );
 
 userRouter.get('/listUser', getListUser);
+userRouter.get('/getUserById/:id', getUserById);
 
 userRouter.post('/changeStatusOnline', changeStatusOnline);
 userRouter.post('/changeStatusOffline', changeStatusOffline);

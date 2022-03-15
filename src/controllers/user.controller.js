@@ -105,6 +105,31 @@ const getListUser = async (req, res) => {
   }
 };
 
+const getUserById = async (req, res) => {
+  try {
+    const userById = await UserPrivate.findById(req.params.id);
+    !userById &&
+      res.status(400).send({
+        code: 400,
+        message: 'User not found!',
+        success: false,
+      });
+
+    userById &&
+      res.status(200).send({
+        data: userById,
+        code: 200,
+        success: true,
+      });
+  } catch (error) {
+    res.status(500).send({
+      code: 500,
+      message: error,
+      success: false,
+    });
+  }
+};
+
 const changeStatusOnline = async (req, res) => {
   try {
     await UserPrivate.findByIdAndUpdate(req.body.id, {
@@ -147,6 +172,7 @@ module.exports = {
   userSignUp,
   userSignIn,
   getListUser,
+  getUserById,
   changeStatusOnline,
   changeStatusOffline,
 };
