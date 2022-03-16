@@ -107,7 +107,13 @@ const getListUser = async (req, res) => {
 
 const getUserById = async (req, res) => {
   try {
-    const userById = await UserPrivate.findById(req.params.id);
+    const userById = await UserPrivate.findById(req.params.id).select([
+      'account',
+      'fullName',
+      'email',
+      'avatar',
+      'isOnline',
+    ]);
     !userById &&
       res.status(400).send({
         code: 400,
