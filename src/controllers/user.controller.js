@@ -138,13 +138,14 @@ const getUserById = async (req, res) => {
 
 const changeStatusOnline = async (req, res) => {
   try {
-    await UserPrivate.findByIdAndUpdate(req.body.id, {
+    const data = await UserPrivate.findByIdAndUpdate(req.body.id, {
       isOnline: true,
     });
     res.status(200).send({
       data: null,
       code: 200,
       success: true,
+      data,
     });
   } catch (error) {
     res.status(500).send({
