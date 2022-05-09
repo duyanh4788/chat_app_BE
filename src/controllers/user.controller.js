@@ -158,6 +158,13 @@ const changeStatusOnline = async (req, res) => {
 
 const changeStatusOffline = async (req, res) => {
   try {
+    if (!req.body.id) {
+      return res.status(400).send({
+        code: 400,
+        message: 'Id not found',
+        success: false,
+      });
+    }
     await UserPrivate.findByIdAndUpdate(req.body.id, {
       isOnline: false,
     });
