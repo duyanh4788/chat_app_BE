@@ -34,6 +34,9 @@ app.use(cors());
 
 /*Config API */
 app.use(express());
+app.get('/', (req, res) => {
+  res.send('Wellcome PJ_TEST');
+});
 app.use("/api/v1", userRouter);
 app.use("/api/v1", messageRouter);
 app.use("/api/v1", convertStationRouter);

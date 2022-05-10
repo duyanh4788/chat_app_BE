@@ -2,6 +2,7 @@ const TitleModel = {
   LIST_MESSAGES: 'ListMessages',
   MESSAGE: 'Messages',
   USER: 'User',
+  USER_PRIVATE:'UserPrivate',
   ROOM: 'Room',
   MESSAGE_PRIVATE: 'MessagesPrivate',
   CONVERTSTATION: 'convertstation',

@@ -13,7 +13,7 @@ const userSignUp = async (req, res) => {
       fullName,
       email,
     });
-    await  newUser.save();
+    await newUser.save();
     res.status(200).send({
       data: 'Đăng ký thành công',
       code: 200,
