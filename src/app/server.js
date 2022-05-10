@@ -4,9 +4,9 @@ const app = express();
 const httpServer = require("http").Server(app);
 const mongoose = require("mongoose");
 const cors = require("cors");
-const { userRouter } = require("./src/routers/user.api");
-const { messageRouter } = require("./src/routers/message.api");
-const { convertStationRouter } = require("./src/routers/convertStation.api");
+const { userRouter } = require("../routers/user.api");
+const { messageRouter } = require("../routers/message.api");
+const { convertStationRouter } = require("../routers/convertStation.api");
 
 /* Config Data Base */
 const DATA_MONGO = process.env.DATABASE;
