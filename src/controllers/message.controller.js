@@ -1,42 +1,57 @@
-const { Messages } = require("../models/messageModel");
+const { MessagePrivate } = require('../models/messageModel');
 
-const createMessageMG = async ({ message, account, fullName, uid }) => {
+const postNewMessages = async (req, res) => {
+  const newMessage = await MessagePrivate(req.body);
   try {
-    const data = {
-      uid,
-      message,
-      account,
-      fullName,
-      createAt: new Date(),
-    };
-    await Messages.create(data);
+    const saveMessage = await newMessage.save();
+    res.status(200).send({
+      data: saveMessage,
+      code: 200,
+      success: true,
+    });
   } catch (error) {
-    console.log(error);
+    res.status(500).send({
+      code: 500,
+      message: error,
+      success: false,
+    });
   }
 };
 
-const getListMessage = async (req, res) => {
+const getListMessages = async (req, res) => {
   try {
-    const messageList = await Messages.find();
-    if (messageList) {
+    const listMessages = await MessagePrivate.find(
+      {
+        conversationId: req.body.conversationId,
+      },
+      '-_id',
+    ).select(['conversationId', 'senderId', 'reciverId', 'text', 'createdAt']);
+    if (!listMessages) {
+      return res.status(400).send({
+        data: null,
+        message: 'List Messages Not Found!',
+        code: 400,
+        success: true,
+      });
+    }
+    if (listMessages) {
       res.status(200).send({
-        data: messageList,
+        data: listMessages,
+        message: null,
         code: 200,
         success: true,
       });
-    } else {
-      res.status(400).send({
-        code: 400,
-        message: "DATA ERROR",
-        success: false,
-      });
     }
   } catch (error) {
-    console.log(error);
+    res.status(500).send({
+      code: 500,
+      message: error,
+      success: false,
+    });
   }
 };
 
 module.exports = {
-  createMessageMG,
-  getListMessage,
+  postNewMessages,
+  getListMessages,
 };

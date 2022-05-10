@@ -1,8 +1,7 @@
-const mongoose = require("mongoose");
-const { TitleModel } = require("../common/common.constants");
+const mongoose = require('mongoose');
+const { TitleModel } = require('../common/common.constants');
 
 const MessageSchema = mongoose.Schema({
-  /* Model */
   uid: { type: String, require: true },
   message: { type: String, require: true },
   account: { type: String, require: true },
@@ -10,17 +9,35 @@ const MessageSchema = mongoose.Schema({
   createAt: { type: Date, require: true },
 });
 
-const ListMessagesSchema = mongoose.Schema({
-  listMessage: [MessageSchema],
-});
+const MessagePrivateSchema = mongoose.Schema(
+  {
+    conversationId: {
+      type: String,
+    },
+    senderId: {
+      type: String,
+      require: true,
+    },
+    reciverId: {
+      type: String,
+      require: true,
+    },
+    text: {
+      type: String,
+      require: true,
+    },
+  },
+  { timestamps: true },
+  { versionKey: false },
+);
 
-const ListMessages = mongoose.model(
-  TitleModel.LIST_MESSAGES,
-  ListMessagesSchema
+const MessagePrivate = mongoose.model(
+  TitleModel.MESSAGE_PRIVATE,
+  MessagePrivateSchema,
 );
 const Messages = mongoose.model(TitleModel.MESSAGE, MessageSchema);
 
 module.exports = {
-  ListMessages,
+  MessagePrivate,
   Messages,
 };

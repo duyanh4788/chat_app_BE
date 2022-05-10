@@ -3,6 +3,7 @@ const TitleModel = {
   MESSAGE: "Messages",
   USER: "User",
   ROOM: "Room",
+  CONVERTSTATION: "convertstation",
 };
 
 const SOCKET_COMMIT = {

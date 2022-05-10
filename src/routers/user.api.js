@@ -1,10 +1,14 @@
-const { Router } = require("express");
-const { User } = require("../models/userModel");
+const { Router } = require('express');
+const { UserPrivate } = require('../models/userModel');
 const {
   getListUser,
   userSignUp,
   userSignIn,
-} = require("../controllers/user.controller");
+  getListUser,
+  getUserById,
+  changeStatusOnline,
+  changeStatusOffline,
+} = require('../controllers/user.controller');
 const {
   checkAccount,
   checkEmailExits,
@@ -13,21 +17,27 @@ const {
   checkNumber,
   checkFullName,
   checkReqLength,
-} = require("../middlewares/auth/authUser.middleware");
+} = require('../middlewares/auth/authUser.middleware');
 const userRouter = Router();
 
-userRouter.get("/listUser", getListUser);
-userRouter.post("/signIn", userSignIn);
+userRouter.post('/signIn', userSignIn);
+
 userRouter.post(
-  "/signUp",
-  checkAccount(User),
-  checkEmailExits(User),
+  '/signUp',
+  checkAccount(UserPrivate),
+  checkEmailExits(UserPrivate),
   checkEmpty,
   checkEmailPattern,
   checkReqLength,
   checkFullName,
-  userSignUp
+  userSignUp,
 );
+
+userRouter.get('/listUser', getListUser);
+userRouter.get('/getUserById/:id', getUserById);
+
+userRouter.post('/changeStatusOnline', changeStatusOnline);
+userRouter.post('/changeStatusOffline', changeStatusOffline);
 
 module.exports = {
   userRouter,
