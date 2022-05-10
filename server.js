@@ -6,16 +6,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const { userRouter } = require("./src/routers/user.api");
 const { messageRouter } = require("./src/routers/message.api");
-<<<<<<< HEAD
 const { convertStationRouter } = require("./src/routers/convertStation.api");
-=======
-const io = require("socket.io")(httpServer, {
-  cors: {
-    origin: process.env.END_POINT,
-  },
-});
-require("./src/socket_io/socket_io")(io);
->>>>>>> main
 
 /* Config Data Base */
 const DATA_MONGO = process.env.DATABASE;
