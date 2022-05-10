@@ -52,9 +52,7 @@ const UserPrivateSchema = mongoose.Schema(
 );
 
 const User = mongoose.model(TitleModel.USER, UserSchema);
-const UserPrivate = mongoose.model(TitleModel.USER_PRIVATE, UserPrivateSchema);
 
 module.exports = {
   User,
-  UserPrivate,
 };

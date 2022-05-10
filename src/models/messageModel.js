@@ -31,13 +31,13 @@ const MessagePrivateSchema = mongoose.Schema(
   { versionKey: false },
 );
 
-const Messages = mongoose.model(TitleModel.MESSAGE, MessageSchema);
 const MessagePrivate = mongoose.model(
   TitleModel.MESSAGE_PRIVATE,
   MessagePrivateSchema,
 );
+const Messages = mongoose.model(TitleModel.MESSAGE, MessageSchema);
 
 module.exports = {
-  Messages,
   MessagePrivate,
+  Messages,
 };

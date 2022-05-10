@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { UserPrivate } = require('../models/userModel');
 const {
+  getListUser,
   userSignUp,
   userSignIn,
   getListUser,

@@ -13,18 +13,14 @@ const userSignUp = async (req, res) => {
       fullName,
       email,
     });
-    await newUser.save();
+    await  newUser.save();
     res.status(200).send({
       data: 'Đăng ký thành công',
       code: 200,
       success: true,
     });
   } catch (error) {
-    res.status(500).send({
-      code: 500,
-      message: error,
-      success: false,
-    });
+    res.status(500).error;
   }
 };
 
@@ -66,11 +62,7 @@ const userSignIn = async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(500).send({
-      code: 500,
-      message: error,
-      success: false,
-    });
+    res.status(500).error;
   }
 };
 
@@ -174,15 +166,12 @@ const changeStatusOffline = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    res.status(500).send({
-      code: 500,
-      message: error,
-      success: false,
-    });
+    res.status(500).send(error);
   }
 };
 
 module.exports = {
+  getListUser,
   userSignUp,
   userSignIn,
   getListUser,
