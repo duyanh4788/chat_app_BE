@@ -25,7 +25,7 @@ const getListMessages = async (req, res) => {
         conversationId: req.body.conversationId,
       },
       '-_id',
-    ).select(['conversationId', 'senderId', 'text', 'createdAt']);
+    ).select(['conversationId', 'senderId', 'reciverId', 'text', 'createdAt']);
     if (!listMessages) {
       return res.status(400).send({
         data: null,

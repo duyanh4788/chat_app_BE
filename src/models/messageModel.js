@@ -18,6 +18,10 @@ const MessagePrivateSchema = mongoose.Schema(
       type: String,
       require: true,
     },
+    reciverId: {
+      type: String,
+      require: true,
+    },
     text: {
       type: String,
       require: true,

@@ -1,4 +1,4 @@
-const getConverStationByUserId = (Model) => async (req, res, next) => {
+const getConverStationByUserId = Model => async (req, res, next) => {
   try {
     const converStationByUserId = await Model.findOne({
       members: { $all: [req.body.senderId, req.body.reciverId] },
