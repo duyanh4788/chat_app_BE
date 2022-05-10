@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "main": "server.js",
   "license": "MIT",
-  "keywords": [
-    "example",
-    "heroku"
-  ],
   "scripts": {
     "start": "node ./server.js",
     "dev": "nodemon ./server.js",
@@ -15,8 +11,7 @@
     "lint": "eslint './src/**/*.{js,jsx}'",
     "lint:fix": "eslint './src/**/*.{js,jsx}' --fix",
     "lint:css": "stylelint src/**/*.css",
-    "prettify": "prettier --write",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prettify": "prettier --write"
   },
   "dependencies": {
     "ansi-regex": "6.0.1",
