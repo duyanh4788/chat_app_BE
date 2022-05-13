@@ -1,6 +1,7 @@
 const { UserPrivate } = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { SECRETKEY } = require('../common/common.constants');
 
 const userSignUp = async (req, res) => {
   try {
@@ -43,20 +44,25 @@ const userSignIn = async (req, res) => {
         success: false,
       });
     }
-    const infoUser = {
-      id: checkAccount.id,
+    const header = {
+      _id: checkAccount.id,
       account: checkAccount.account,
-      fullName: checkAccount.fullName,
-      email: checkAccount.email,
-      avatar: checkAccount.avatar,
-      isOnline: checkAccount.isOnline,
       userTypeCode: checkAccount.userTypeCode,
     };
-    const secrectKey = '123456';
-    const toKen = jwt.sign(infoUser, secrectKey, { expiresIn: 3600 });
+    const toKen = jwt.sign(header, SECRETKEY, { expiresIn: 86400000 });
     if (checkPassWord) {
+      const infoUser = {
+        _id: checkAccount.id,
+        account: checkAccount.account,
+        fullName: checkAccount.fullName,
+        email: checkAccount.email,
+        avatar: checkAccount.avatar,
+        isOnline: checkAccount.isOnline,
+        userTypeCode: checkAccount.userTypeCode,
+        toKen,
+      };
       return res.status(200).send({
-        data: { ...infoUser, toKen },
+        data: infoUser,
         code: 200,
         success: true,
       });
@@ -105,6 +111,7 @@ const getUserById = async (req, res) => {
       'email',
       'avatar',
       'isOnline',
+      '_id',
     ]);
     !userById &&
       res.status(400).send({
@@ -130,14 +137,13 @@ const getUserById = async (req, res) => {
 
 const changeStatusOnline = async (req, res) => {
   try {
-    const data = await UserPrivate.findByIdAndUpdate(req.body.id, {
+    await UserPrivate.findByIdAndUpdate(req.body.id, {
       isOnline: true,
     });
     res.status(200).send({
       data: null,
       code: 200,
       success: true,
-      data,
     });
   } catch (error) {
     res.status(500).send({

@@ -17,6 +17,7 @@ const {
   checkFullName,
   checkReqLength,
 } = require('../middlewares/auth/authUser.middleware');
+const { authenTicate } = require('../middlewares/auth/verifyToken.middleware');
 const userRouter = Router();
 
 userRouter.post('/signIn', userSignIn);
@@ -32,8 +33,8 @@ userRouter.post(
   userSignUp,
 );
 
-userRouter.get('/listUser', getListUser);
-userRouter.get('/getUserById/:id', getUserById);
+userRouter.get('/listUser', authenTicate, getListUser);
+userRouter.get('/getUserById/:id', authenTicate, getUserById);
 
 userRouter.post('/changeStatusOnline', changeStatusOnline);
 userRouter.post('/changeStatusOffline', changeStatusOffline);
