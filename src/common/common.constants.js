@@ -2,7 +2,7 @@ const TitleModel = {
   LIST_MESSAGES: 'ListMessages',
   MESSAGE: 'Messages',
   USER: 'User',
-  USER_PRIVATE:'UserPrivate',
+  USER_PRIVATE: 'UserPrivate',
   ROOM: 'Room',
   MESSAGE_PRIVATE: 'MessagesPrivate',
   CONVERTSTATION: 'convertstation',
@@ -22,8 +22,13 @@ const SOCKET_COMMIT = {
 
 const TEXT_BAD = ['con cặc', 'địt mẹ', 'đụ má', 'chó đẻ', 'cặc', 'địt'];
 
+const USER_TYPE_CODE = ['ADMIN', 'SUPER_ADMIN'];
+const SECRETKEY = '1234@Abcd';
+
 module.exports = {
   TitleModel,
   SOCKET_COMMIT,
   TEXT_BAD,
+  USER_TYPE_CODE,
+  SECRETKEY,
 };
