@@ -7,9 +7,9 @@ Move to the appropriate directory: cd <YOUR_PROJECT_NAME>.
 
 ******** Setup git ********
 
-git checkout -b develop
-git fetch
-git reset --hard origin/develop
+1.git checkout -b develop
+2. git fetch
+3. git reset --hard origin/develop
 Copy file example.env.dev to .env
 
 Run npm run install & yarn install in order to install dependencies.
