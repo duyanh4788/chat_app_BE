@@ -1,35 +1,27 @@
-const { User } = require("../models/userModel");
+let listUsers = [];
 
-let userLists = [];
+const createUser = (socket, user) => {
+  const findUser = listUsers.find(({ _id }) => _id === user._id);
+  if (findUser) return [findUser];
+  if (!findUser) {
+    listUsers.push({ socketId: socket.id, ...user });
+  }
+  return listUsers;
+};
 
-const addUserList = ({ fullName, room, account, uid }) => {
-  try {
-    const checkEmail = User.findOne({ uid });
-    if (checkEmail) {
-      return;
-    } else {
-      const newUser = new User({
-        userName,
-        room,
-        email,
-        createAt: new Date(),
-      });
-      newUser.save();
-      return (userLists = [...userLists, newUser]);
-    }
-  } catch (error) {
-    console.log(error);
+const getSocketById = id => listUsers.find(({ socketId }) => socketId === id);
+const getUserById = id => listUsers.find(({ _id }) => _id === id);
+
+const removeUserList = id => {
+  const index = listUsers.findIndex(({ _id }) => _id !== id);
+  if (index !== -1) {
+    return listUsers.splice(index, 1)[0];
   }
 };
 
-const getUserList = (uid) => {
-  const getUser = User.findOne({ uid });
-};
-
-const removeUserList = (id) =>
-  (userLists = userLists.filter((item) => item.id !== id));
-
 module.exports = {
-  getUserList,
+  createUser,
+  getSocketById,
+  getUserById,
   removeUserList,
 };
