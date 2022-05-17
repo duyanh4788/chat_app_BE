@@ -4,6 +4,8 @@ const app = express();
 const httpServer = require("http").Server(app);
 const mongoose = require("mongoose");
 const cors = require("cors");
+const io = require("socket.io")(httpServer);
+require("../socket_io/socket_io")(io);
 const { userRouter } = require("../routers/user.api");
 const { messageRouter } = require("../routers/message.api");
 const { convertStationRouter } = require("../routers/convertStation.api");
