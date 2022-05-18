@@ -4,16 +4,19 @@
   "main": "server.js",
   "license": "MIT",
   "scripts": {
-    "start": "node ./src/app/server.js",
-    "dev": "nodemon ./src/app/server.js",
+    "build": "tsc",
+    "dev": "nodemon --exec ts-node ./src/server.ts",
+    "start": "nodemon ./dist/server.js",
     "eject": "nodejs-scripts eject",
-    "eslint": "eslint --ext js,ts,tsx",
-    "lint": "eslint './src/**/*.{js,jsx}'",
-    "lint:fix": "eslint './src/**/*.{js,jsx}' --fix",
-    "lint:css": "stylelint src/**/*.css",
-    "prettify": "prettier --write"
+    "eslint": "eslint --ext js,ts",
+    "lint": "eslint './src/**/*.{js,ts}'",
+    "lint:fix": "eslint './src/**/*.{js,ts}' --fix",
+    "prettify": "prettier --write",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@types/express": "4.17.13",
+    "@types/mongoose": "5.11.97",
     "ansi-regex": "6.0.1",
     "bad-words": "^3.0.4",
     "bcryptjs": "^2.4.3",
@@ -23,13 +26,14 @@
     "engine.io": "6.2.0",
     "eslint-config-prettier": "6.10.1",
     "eslint-plugin-prettier": "3.1.2",
-    "express": "^4.17.1",
+    "express": "4.18.1",
     "jsonwebtoken": "^8.5.1",
     "minimist": "1.2.6",
     "mongoose": "^6.0.8",
     "morgan": "^1.10.0",
     "multer": "^1.4.3",
-    "socket.io": "^4.2.0"
+    "socket.io": "^4.2.0",
+    "typescript": "4.6.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.13"
@@ -68,9 +72,9 @@
   },
   "jest": {
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}",
+      "src/**/*.{js,ts}",
       "!src/**/*/*.d.ts",
-      "!src/**/*/Loadable.{js,jsx,ts,tsx}",
+      "!src/**/*/Loadable.{js,ts}",
       "!src/**/*/types.ts",
       "!src/index.tsx",
       "!src/serviceWorker.ts"

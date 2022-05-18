@@ -1,14 +1,12 @@
-const TitleModel = {
+export const TitleModel = {
   LIST_MESSAGES: 'ListMessages',
-  MESSAGE: 'Messages',
-  USER: 'User',
-  USER_PRIVATE: 'UserPrivate',
+  MESSAGES: 'Messages',
+  USERS: 'Users',
   ROOM: 'Room',
-  MESSAGE_PRIVATE: 'MessagesPrivate',
-  CONVERTSTATION: 'convertstation',
+  CONVERTSTATIONS: 'convertstations',
 };
 
-const SOCKET_COMMIT = {
+export const SOCKET_COMMIT = {
   CONNECT: 'connect',
   JOIN_ROOM: 'join_room',
   SEND_MESSAGE: 'send_message',
@@ -22,15 +20,7 @@ const SOCKET_COMMIT = {
   DISCONNECTED: 'disconnected',
 };
 
-const TEXT_BAD = ['con cặc', 'địt mẹ', 'đụ má', 'chó đẻ', 'cặc', 'địt'];
+export const TEXT_BAD = ['con cặc', 'địt mẹ', 'đụ má', 'chó đẻ', 'cặc', 'địt'];
 
-const USER_TYPE_CODE = ['ADMIN', 'SUPER_ADMIN'];
-const SECRETKEY = '1234@Abcd';
-
-module.exports = {
-  TitleModel,
-  SOCKET_COMMIT,
-  TEXT_BAD,
-  USER_TYPE_CODE,
-  SECRETKEY,
-};
+export const USER_TYPE_CODE = ['ADMIN', 'SUPER_ADMIN'];
+export const SECRETKEY = '1234@Abcd';
