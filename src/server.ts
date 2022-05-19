@@ -1,4 +1,5 @@
-require('dotenv').config();
+const dotenv = require("dotenv");
+dotenv.config();
 import app from './app/app';
 
 const PORT: string | number = process.env.PORT || 5000;

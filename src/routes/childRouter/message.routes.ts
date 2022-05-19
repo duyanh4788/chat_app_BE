@@ -1,35 +1,22 @@
-import { Request, Response } from 'express';
+import { Router } from 'express';
+import { MessageControler } from '../../controllers/message.controller';
+import { MessagesMiddleware } from '../../middlewares/messages/message.middleware';
 
 export class MessagesRoutes {
-  public routes(app): void {
-    app.route('/getListMessages').get((req: Request, res: Response) => {
-      res.status(200).send({
-        message: 'Get List Success',
-      });
-    });
+  messagesControler: MessageControler = new MessageControler();
+  messagesMiddleware: MessagesMiddleware = new MessagesMiddleware();
+  public routes(app: Router): void {
+    app
+      .route('/api/v1/listMessage')
+      .post(
+        this.messagesMiddleware.checkConvertStationId,
+        this.messagesControler.postNewMessages,
+      );
+    app
+      .route('/api/v1/newMessage')
+      .post(
+        this.messagesMiddleware.checkUserId,
+        this.messagesControler.getListMessages,
+      );
   }
 }
-
-// const { Router } = require("express");
-// const { UserPrivate } = require("../models/userModel");
-// const { ConvertStation } = require("../models/convertStationModel");
-// const messageRouter = Router();
-// const {
-//   postNewMessages,
-//   getListMessages,
-// } = require("../controllers/message.controller");
-// const {
-//   checkUserId,
-//   checkConvertStationId,
-// } = require("../middlewares/messages/message.middleware");
-
-// messageRouter.post("/newMessage", checkUserId(UserPrivate), postNewMessages);
-// messageRouter.post(
-//   "/getListMessages/",
-//   checkConvertStationId(ConvertStation),
-//   getListMessages
-// );
-
-// module.exports = {
-//   messageRouter,
-// };

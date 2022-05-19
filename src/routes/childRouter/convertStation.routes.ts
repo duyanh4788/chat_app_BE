@@ -1,31 +1,19 @@
-import { Request, Response } from 'express';
+import { ConverStationController } from '../../controllers/convertStation.controller';
+import { Router } from 'express';
+import { ConverStationMiddleware } from '../../middlewares/messages/converStation.middleware';
 
 export class ConverStationRoutes {
-  public routes(app): void {
-    app.route('/saveConvertStation').get((req: Request, res: Response) => {
-      res.status(200).send({
-        message: 'Get List Success',
-      });
-    });
+  converStationController: ConverStationController =
+    new ConverStationController();
+  converStationMiddleware: ConverStationMiddleware =
+    new ConverStationMiddleware();
+  public routes(app: Router): void {
+    app
+      .route('/api/v1/saveConvertStation')
+      .get(
+        this.converStationMiddleware.checkEmptyId,
+        this.converStationMiddleware.getConverStationByUserId,
+        this.converStationController.saveConverStation,
+      );
   }
 }
-
-// const { Router } = require('express');
-// const { ConvertStation } = require('../models/convertStationModel');
-// const convertStationRouter = Router();
-// const {
-//   postSaveConverStation,
-// } = require('../controllers/convertStation.controller');
-// const {
-//   getConverStationByUserId,
-// } = require('../middlewares/messages/converStation.middleware');
-
-// convertStationRouter.post(
-//   '/saveConvertStation',
-//   getConverStationByUserId(ConvertStation),
-//   postSaveConverStation,
-// );
-
-// module.exports = {
-//   convertStationRouter,
-// };

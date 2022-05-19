@@ -19,9 +19,9 @@ interface CheckAccount {
 }
 
 export class UsersControler {
-  public getListUser(req: Request, res: Response) {
+  public async getListUser(req: Request, res: Response) {
     try {
-      const userList = Users.find({}).select([
+      const userList = await Users.find({}).select([
         'account',
         'fullName',
         'email',
@@ -50,9 +50,9 @@ export class UsersControler {
     }
   }
 
-  public getUserById(req: Request, res: Response) {
+  public async getUserById(req: Request, res: Response) {
     try {
-      const userById = Users.findById(req.params.id).select([
+      const userById = await Users.findById(req.params.id).select([
         'account',
         'fullName',
         'email',
@@ -108,10 +108,10 @@ export class UsersControler {
     }
   }
 
-  public userSignIn(req: Request, res: Response) {
+  public async userSignIn(req: Request, res: Response) {
     const { account, passWord } = req.body;
     try {
-      const checkAccount: any = Users.findOne({ account });
+      const checkAccount: any = await Users.findOne({ account });
       if (!checkAccount) {
         return res.status(400).send({
           code: 400,
@@ -159,9 +159,9 @@ export class UsersControler {
     }
   }
 
-  public changeStatusOnline(req: Request, res: Response) {
+  public async changeStatusOnline(req: Request, res: Response) {
     try {
-      Users.findByIdAndUpdate(req.body.id, {
+      await Users.findByIdAndUpdate(req.body.id, {
         isOnline: true,
       });
       res.status(200).send({
@@ -178,7 +178,7 @@ export class UsersControler {
     }
   }
 
-  public changeStatusOffline(req: Request, res: Response) {
+  public async changeStatusOffline(req: Request, res: Response) {
     try {
       if (!req.body.id) {
         return res.status(400).send({
@@ -187,7 +187,7 @@ export class UsersControler {
           success: false,
         });
       }
-      Users.findByIdAndUpdate(req.body.id, {
+      await Users.findByIdAndUpdate(req.body.id, {
         isOnline: false,
       });
       res.status(200).send({

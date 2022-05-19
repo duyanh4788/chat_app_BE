@@ -1,20 +1,20 @@
-import { JWT } from 'jsonwebtoken';
+import * as JWT from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { USER_TYPE_CODE, SECRETKEY } from '../../common/common.constants';
 
 interface TokenPayload {
-  _id: string;
-  account: string;
-  userTypeCode: string;
+  [account: string]: any;
 }
 
 export class VerifyTokenMiddleware {
-  public authenTicate(req: any, res: Response, next: NextFunction) {
+  public authenTicate(req: TokenPayload, res: Response, next: NextFunction) {
     try {
       const token = req.header('Authorization');
       const deCode: TokenPayload = JWT.verify(token, SECRETKEY);
-      req.account = deCode;
-      next();
+      if (deCode) {
+        req.account = deCode;
+        next();
+      }
     } catch (error) {
       res.status(400).send({
         code: 400,
@@ -24,7 +24,7 @@ export class VerifyTokenMiddleware {
     }
   }
 
-  public permissions(req: any, res: Response, next: NextFunction) {
+  public permissions(req: TokenPayload, res: Response, next: NextFunction) {
     try {
       if (
         USER_TYPE_CODE.includes(req.account.userTypeCode) &&
