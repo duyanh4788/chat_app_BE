@@ -7,7 +7,7 @@ export class MessagesRoutes {
   messagesMiddleware: MessagesMiddleware = new MessagesMiddleware();
   public routes(app: Router): void {
     app
-      .route('/api/v1/listMessage')
+      .route('/api/v1/getListMessages')
       .post(
         this.messagesMiddleware.checkConvertStationId,
         this.messagesControler.postNewMessages,

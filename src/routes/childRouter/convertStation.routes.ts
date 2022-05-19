@@ -10,7 +10,7 @@ export class ConverStationRoutes {
   public routes(app: Router): void {
     app
       .route('/api/v1/saveConvertStation')
-      .get(
+      .post(
         this.converStationMiddleware.checkEmptyId,
         this.converStationMiddleware.getConverStationByUserId,
         this.converStationController.saveConverStation,

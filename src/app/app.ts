@@ -2,18 +2,22 @@ import express, { Request, Response, NextFunction } from 'express';
 import * as bodyParser from 'body-parser';
 import cros from 'cors';
 import mongoose from 'mongoose';
+import { createServer } from 'http';
 import { Routes } from '../routes';
+import { Websocket } from '../socket_io/socket_io';
 
 class App {
   public app: express.Application;
   public mainRoutes: Routes = new Routes();
   public mongooseUrl: string | any = process.env.DATABASE;
+  public socket_io = new Websocket();
 
   constructor() {
     this.app = express();
     this.config();
     this.mainRoutes.routes(this.app);
     this.mongooSetup();
+    this.initSocket();
   }
 
   private mongooSetup(): void {
@@ -37,6 +41,11 @@ class App {
       );
       next();
     });
+  }
+
+  private initSocket(): void {
+    const httpServer = createServer();
+    this.socket_io.socketIO(httpServer);
   }
 }
 

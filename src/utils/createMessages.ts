@@ -1,4 +1,9 @@
-const renderMessages = ({ conversationId, senderId, reciverId, text }) => {
+export const renderMessages = ({
+  conversationId,
+  senderId,
+  reciverId,
+  text,
+}) => {
   if (text && text !== null) {
     const data = {
       conversationId,
@@ -10,7 +15,7 @@ const renderMessages = ({ conversationId, senderId, reciverId, text }) => {
   }
 };
 
-const changeStatusOnline = user => {
+export const changeStatusOnline = user => {
   const data = {
     account: user.account,
     avatar: user.avatar,
@@ -22,7 +27,7 @@ const changeStatusOnline = user => {
   return data;
 };
 
-const changeStatusOffline = user => {
+export const changeStatusOffline = user => {
   const data = {
     account: user.account,
     avatar: user.avatar,
@@ -32,10 +37,4 @@ const changeStatusOffline = user => {
     _id: user._id,
   };
   return data;
-};
-
-module.exports = {
-  renderMessages,
-  changeStatusOnline,
-  changeStatusOffline,
 };

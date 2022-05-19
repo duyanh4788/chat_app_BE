@@ -3,8 +3,13 @@ import { TitleModel } from '../../common/common.constants';
 import { Request, Response, NextFunction } from 'express';
 import { MessagesSchema } from '../../models/messageModel';
 import { UsersSchema } from '../../models/userModel';
+import { ConvertStationSchema } from '../../models/convertStationModel';
 
 const Messages = mongoose.model(TitleModel.MESSAGES, MessagesSchema);
+const ConvertStation = mongoose.model(
+  TitleModel.CONVERTSTATIONS,
+  ConvertStationSchema,
+);
 const Users = mongoose.model(TitleModel.USERS, UsersSchema);
 
 export class MessagesMiddleware {
@@ -29,8 +34,8 @@ export class MessagesMiddleware {
     res: Response,
     next: NextFunction,
   ) {
-    const convertStationId = await Messages.findOne({
-      conversationId: req.body.conversationId,
+    const convertStationId = await ConvertStation.findOne({
+      _id: req.body.conversationId,
     });
     if (!convertStationId) {
       return res.status(400).send({
