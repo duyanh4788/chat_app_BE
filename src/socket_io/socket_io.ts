@@ -8,7 +8,6 @@ import {
   renderMessages,
 } from '../utils/createMessages';
 import { createUser, getUserById, removeUserList } from '../utils/createUsers';
-
 interface InfoUser {
   socketId: string;
   _id: string;
