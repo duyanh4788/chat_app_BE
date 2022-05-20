@@ -2,7 +2,6 @@ import express, { Request, Response, NextFunction } from 'express';
 import * as bodyParser from 'body-parser';
 import * as socketIo from 'socket.io';
 import mongoose from 'mongoose';
-import cros from 'cors';
 import { createServer, Server } from 'http';
 import { Routes } from '../routes';
 import { Websocket } from '../socket_io/socket_io';
@@ -39,7 +38,6 @@ class App {
   private config(): void {
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
-    this.app.use(cros());
     this.app.use(function (req: Request, res: Response, next: NextFunction) {
       res.header('Access-Control-Allow-Origin', '*');
       res.header(
