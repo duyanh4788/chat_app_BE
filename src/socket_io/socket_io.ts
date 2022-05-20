@@ -1,5 +1,6 @@
-import { Server } from 'http';
 import Filter from 'bad-words';
+import { Server } from 'socket.io';
+import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { SOCKET_COMMIT, TEXT_BAD } from '../common/common.constants';
 import {
   changeStatusOffline,
@@ -8,14 +9,35 @@ import {
 } from '../utils/createMessages';
 import { createUser, getUserById, removeUserList } from '../utils/createUsers';
 
+interface InfoUser {
+  socketId: string;
+  _id: string;
+  account: string;
+  fullName: string;
+  email: string;
+  avatar: string;
+  isOnline: boolean;
+}
+
+interface DataMessages {
+  conversationId: string;
+  senderId: string;
+  reciverId: string;
+  text: string;
+}
+
 export class Websocket {
-  public socketIO(socket_io: Server) {
-    socket_io.on(SOCKET_COMMIT.CONNECT, socket => {
+  public socketIO(
+    socket_io:
+      | Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
+      | any,
+  ) {
+    socket_io.on(SOCKET_COMMIT.CONNECT, (socket: any) => {
       /** Connect **/
-      socket.on(SOCKET_COMMIT.JOIN_ROOM, infoUser => {
+      socket.on(SOCKET_COMMIT.JOIN_ROOM, (infoUser: InfoUser) => {
         const listUser = createUser(socket, infoUser);
         if (listUser && listUser.length) {
-          const isUser = listUser.find(({ _id }) => _id === infoUser._id);
+          const isUser: any = listUser.find(({ _id }) => _id === infoUser._id);
           /** send notify **/
           socket.emit(
             SOCKET_COMMIT.SEND_MESSAGE_NOTIFY,
@@ -34,7 +56,11 @@ export class Websocket {
       /** send messages **/
       socket.on(
         SOCKET_COMMIT.SEND_MESSAGE,
-        (infoUser, dataMessages, callBackAcknow) => {
+        (
+          infoUser: InfoUser,
+          dataMessages: DataMessages,
+          callBackAcknow: Function,
+        ) => {
           const userBySocketId = getUserById(infoUser._id);
           if (userBySocketId) {
             const filter = new Filter();
@@ -55,7 +81,7 @@ export class Websocket {
         },
       );
       /** disconnect **/
-      socket.on(SOCKET_COMMIT.DISCONNECTED, infoUser => {
+      socket.on(SOCKET_COMMIT.DISCONNECTED, (infoUser: InfoUser) => {
         const userBySocketId = getUserById(infoUser._id);
         if (userBySocketId) {
           socket.broadcast.emit(

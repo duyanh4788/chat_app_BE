@@ -1,23 +1,30 @@
 import express, { Request, Response, NextFunction } from 'express';
 import * as bodyParser from 'body-parser';
-import cros from 'cors';
+import * as socketIo from 'socket.io';
 import mongoose from 'mongoose';
-import { createServer } from 'http';
+import cros from 'cors';
+import { createServer, Server } from 'http';
 import { Routes } from '../routes';
 import { Websocket } from '../socket_io/socket_io';
 
 class App {
   public app: express.Application;
-  public mainRoutes: Routes = new Routes();
-  public mongooseUrl: string | any = process.env.DATABASE;
-  public socket_io = new Websocket();
+  private mainRoutes: Routes = new Routes();
+  private mongooseUrl: string | any = process.env.DATABASE;
+  private server: Server = new Server();
+  private IO: socketIo.Server | undefined;
+  private port: string | number | undefined;
+  private webSocket: Websocket = new Websocket();
 
   constructor() {
+    this.port = process.env.PORT_SOCKET || 5001;
     this.app = express();
     this.config();
     this.mainRoutes.routes(this.app);
     this.mongooSetup();
+    this.server = createServer(this.app);
     this.initSocket();
+    this.listenSocket();
   }
 
   private mongooSetup(): void {
@@ -44,8 +51,14 @@ class App {
   }
 
   private initSocket(): void {
-    const httpServer = createServer();
-    this.socket_io.socketIO(httpServer);
+    this.IO = new socketIo.Server(this.server);
+  }
+
+  private listenSocket(): void {
+    this.server.listen(this.port, () => {
+      console.log('Running SOCKET on port %s', this.port);
+    });
+    this.webSocket.socketIO(this.IO);
   }
 }
 

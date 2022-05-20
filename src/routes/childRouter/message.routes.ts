@@ -10,13 +10,13 @@ export class MessagesRoutes {
       .route('/api/v1/getListMessages')
       .post(
         this.messagesMiddleware.checkConvertStationId,
-        this.messagesControler.postNewMessages,
+        this.messagesControler.getListMessages,
       );
     app
       .route('/api/v1/newMessage')
       .post(
         this.messagesMiddleware.checkUserId,
-        this.messagesControler.getListMessages,
+        this.messagesControler.postNewMessages,
       );
   }
 }

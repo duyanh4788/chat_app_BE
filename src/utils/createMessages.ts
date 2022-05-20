@@ -1,3 +1,13 @@
+interface InfoUser {
+  socketId: string;
+  _id: string;
+  account: string;
+  fullName: string;
+  email: string;
+  avatar: string;
+  isOnline: boolean;
+}
+
 export const renderMessages = ({
   conversationId,
   senderId,
@@ -15,7 +25,7 @@ export const renderMessages = ({
   }
 };
 
-export const changeStatusOnline = user => {
+export const changeStatusOnline = (user: InfoUser) => {
   const data = {
     account: user.account,
     avatar: user.avatar,
@@ -27,7 +37,7 @@ export const changeStatusOnline = user => {
   return data;
 };
 
-export const changeStatusOffline = user => {
+export const changeStatusOffline = (user: InfoUser) => {
   const data = {
     account: user.account,
     avatar: user.avatar,

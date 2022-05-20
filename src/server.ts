@@ -1,11 +1,9 @@
 const dotenv = require('dotenv');
 dotenv.config();
 import app from './app/app';
-import http from 'http';
 
-const PORT: string | number = process.env.PORT || 5000;
-const httpServer = http.createServer(app);
+const PORT: string | number = process.env.PORT_SERVER || 5000;
 
-httpServer.listen(PORT, () => {
-  console.log(`Api on port : ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Running API on port : ${PORT}`);
 });
