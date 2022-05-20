@@ -23,8 +23,8 @@ class App {
     this.mongooSetup();
     this.mainRoutes.routes(this.app);
     this.server = createServer(this.app);
-    // this.initSocket();
-    // this.listenSocket();
+    this.initSocket();
+    this.listenSocket();
   }
 
   private mongooSetup(): void {
@@ -56,8 +56,8 @@ class App {
   }
 
   private listenSocket(): void {
-    this.server.listen(process.env.PORT_SOCKET || 5001, this.host, () => {
-      console.log('Running SOCKET on port %s', process.env.PORT_SOCKET || 5001);
+    this.server.listen(process.env.PORT || 5001, this.host, () => {
+      console.log('Running SOCKET on port %s', process.env.PORT || 5001);
     });
     this.webSocket.socketIO(this.IO);
   }
