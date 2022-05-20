@@ -19,9 +19,10 @@ class App {
   constructor() {
     this.port = process.env.PORT_SOCKET || 5001;
     this.app = express();
-    this.config();
-    this.mainRoutes.routes(this.app);
+    this.configCors();
+    this.configJson();
     this.mongooSetup();
+    this.mainRoutes.routes(this.app);
     this.server = createServer(this.app);
     this.initSocket();
     this.listenSocket();
@@ -36,7 +37,7 @@ class App {
     mongoose.connection;
   }
 
-  private config(): void {
+  public configCors(): void {
     this.app.use(cors());
     this.app.use(function (req: Request, res: Response, next: NextFunction) {
       res.header('Access-Control-Allow-Origin', '*');
@@ -46,6 +47,9 @@ class App {
       );
       next();
     });
+  }
+
+  public configJson(): void {
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
   }
