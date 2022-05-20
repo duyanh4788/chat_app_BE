@@ -1,4 +1,19 @@
-const renderMessages = ({ conversationId, senderId, reciverId, text }) => {
+interface InfoUser {
+  socketId: string;
+  _id: string;
+  account: string;
+  fullName: string;
+  email: string;
+  avatar: string;
+  isOnline: boolean;
+}
+
+export const renderMessages = ({
+  conversationId,
+  senderId,
+  reciverId,
+  text,
+}) => {
   if (text && text !== null) {
     const data = {
       conversationId,
@@ -10,7 +25,7 @@ const renderMessages = ({ conversationId, senderId, reciverId, text }) => {
   }
 };
 
-const changeStatusOnline = user => {
+export const changeStatusOnline = (user: InfoUser) => {
   const data = {
     account: user.account,
     avatar: user.avatar,
@@ -22,7 +37,7 @@ const changeStatusOnline = user => {
   return data;
 };
 
-const changeStatusOffline = user => {
+export const changeStatusOffline = (user: InfoUser) => {
   const data = {
     account: user.account,
     avatar: user.avatar,
@@ -32,10 +47,4 @@ const changeStatusOffline = user => {
     _id: user._id,
   };
   return data;
-};
-
-module.exports = {
-  renderMessages,
-  changeStatusOnline,
-  changeStatusOffline,
 };
