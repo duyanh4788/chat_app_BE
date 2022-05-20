@@ -1,18 +1,20 @@
 {
   "name": "chat_app_socket_io",
   "version": "1.0.0",
-  "main": "server.js",
+  "description": "API SOCKET built with NodeJS, Express, MongoDB and TypeScript",
+  "main": "dist/server.js",
   "license": "MIT",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "dev": "nodemon --exec ts-node ./src/server.ts",
+    "dev": "ts-node ./src/server.ts",
     "start": "nodemon ./dist/server.js",
+    "prod": "npm run build && npm run start",
     "eject": "nodejs-scripts eject",
     "eslint": "eslint --ext js,ts",
     "lint": "eslint './src/**/*.{js,ts}'",
     "lint:fix": "eslint './src/**/*.{js,ts}' --fix",
-    "prettify": "prettier --write",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prettify": "prettier --write"
   },
   "dependencies": {
     "@types/express": "4.17.13",
@@ -76,7 +78,6 @@
       "!src/**/*/*.d.ts",
       "!src/**/*/Loadable.{js,ts}",
       "!src/**/*/types.ts",
-      "!src/index.tsx",
       "!src/serviceWorker.ts"
     ],
     "coverageThreshold": {
