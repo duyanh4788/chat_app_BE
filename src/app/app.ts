@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import * as bodyParser from 'body-parser';
 import * as socketIo from 'socket.io';
 import mongoose from 'mongoose';
+import cors from 'cors';
 import { createServer, Server } from 'http';
 import { Routes } from '../routes';
 import { Websocket } from '../socket_io/socket_io';
@@ -14,9 +15,11 @@ class App {
   private IO: socketIo.Server | undefined;
   private port: string | number | undefined;
   private webSocket: Websocket = new Websocket();
+  private allowedOrigins: string | undefined;
 
   constructor() {
     this.port = process.env.PORT_SOCKET || 5001;
+    this.allowedOrigins = process.env.END_POINT;
     this.app = express();
     this.config();
     this.mainRoutes.routes(this.app);
@@ -36,8 +39,10 @@ class App {
   }
 
   private config(): void {
-    this.app.use(bodyParser.json());
-    this.app.use(bodyParser.urlencoded({ extended: false }));
+    const options: cors.CorsOptions = {
+      origin: this.allowedOrigins,
+    };
+    this.app.use(cors(options));
     this.app.use(function (req: Request, res: Response, next: NextFunction) {
       res.header('Access-Control-Allow-Origin', '*');
       res.header(
@@ -46,6 +51,8 @@ class App {
       );
       next();
     });
+    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({ extended: false }));
   }
 
   private initSocket(): void {
