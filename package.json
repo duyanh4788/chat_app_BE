@@ -9,6 +9,7 @@
     "build": "tsc",
     "dev": "nodemon --exec \"ts-node --cache-directory .tscache\" ./src/server.ts",
     "start": "nodemon -x ts-node ./src/server.ts",
+    "start:dev": "nodemon -x ts-node ./src/server.ts",
     "prod": "npm run build && npm run start",
     "eject": "nodejs-scripts eject",
     "eslint": "eslint --ext js,ts",
