@@ -13,7 +13,7 @@ export const renderMessages = ({
   senderId,
   reciverId,
   text,
-}) => {
+}: any) => {
   if (text && text !== null) {
     const data = {
       conversationId,

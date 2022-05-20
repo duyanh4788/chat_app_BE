@@ -10,7 +10,7 @@ export class VerifyTokenMiddleware {
   public authenTicate(req: TokenPayload, res: Response, next: NextFunction) {
     try {
       const token = req.header('Authorization');
-      const deCode: TokenPayload = JWT.verify(token, SECRETKEY);
+      const deCode: any = JWT.verify(token, SECRETKEY);
       if (deCode) {
         req.account = deCode;
         next();
