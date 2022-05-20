@@ -23,8 +23,8 @@ class App {
     this.mongooSetup();
     this.mainRoutes.routes(this.app);
     this.server = createServer(this.app);
-    this.initSocket();
-    this.listenSocket();
+    // this.initSocket();
+    // this.listenSocket();
   }
 
   private mongooSetup(): void {
