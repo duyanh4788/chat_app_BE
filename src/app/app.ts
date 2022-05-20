@@ -10,6 +10,7 @@ import { Websocket } from '../socket_io/socket_io';
 class App {
   public app: express.Application;
   private mainRoutes: Routes = new Routes();
+  private host: string | any = '0.0.0.0';
   private mongooseUrl: string | any = process.env.DATABASE;
   private server: Server = new Server();
   private IO: socketIo.Server | undefined;
@@ -55,7 +56,7 @@ class App {
   }
 
   private listenSocket(): void {
-    this.server.listen(process.env.PORT_SOCKET || 5001, () => {
+    this.server.listen(process.env.PORT_SOCKET || 5001, this.host, () => {
       console.log('Running SOCKET on port %s', process.env.PORT_SOCKET || 5001);
     });
     this.webSocket.socketIO(this.IO);
