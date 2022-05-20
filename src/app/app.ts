@@ -13,11 +13,9 @@ class App {
   private mongooseUrl: string | any = process.env.DATABASE;
   private server: Server = new Server();
   private IO: socketIo.Server | undefined;
-  private port: string | number | undefined;
   private webSocket: Websocket = new Websocket();
 
   constructor() {
-    this.port = process.env.PORT_SOCKET || 5001;
     this.app = express();
     this.configCors();
     this.configJson();
@@ -57,8 +55,8 @@ class App {
   }
 
   private listenSocket(): void {
-    this.server.listen(this.port, () => {
-      console.log('Running SOCKET on port %s', this.port);
+    this.server.listen(process.env.PORT_SOCKET || 5001, () => {
+      console.log('Running SOCKET on port %s', process.env.PORT_SOCKET || 5001);
     });
     this.webSocket.socketIO(this.IO);
   }
