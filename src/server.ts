@@ -3,7 +3,7 @@ dotenv.config();
 import app from './app/app';
 import { Request, Response } from 'express';
 
-const PORT: string | number | any = process.env.PORT_SERVER || 5000;
+const PORT: string | number | any = process.env.PORT || 5000;
 const HOST: string = '0.0.0.0';
 
 app.get('/', (req: Request, res: Response) => {
