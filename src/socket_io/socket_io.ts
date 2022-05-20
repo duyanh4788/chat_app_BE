@@ -1,5 +1,5 @@
 import Filter from 'bad-words';
-import { Server } from 'socket.io';
+import socket, { Server } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { SOCKET_COMMIT, TEXT_BAD } from '../common/common.constants';
 import {
