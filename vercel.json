@@ -1,6 +1,11 @@
 {
     "version": 2,
     "name": "chat_app",
+    "buildCommand": "npm start",
+    "installCommand": "npm install",
+    "regions": [
+        "fra1"
+    ],
     "builds": [
         {
             "src": "dist/index.js",
