@@ -12,9 +12,17 @@
             "use": "@vercel/node"
         }
     ],
-    "headers": [
+    "routes": [
         {
-            "source": "src/index.ts",
+            "src": "/(.*)",
+            "dest": "src/index.ts",
+            "methods": [
+                "OPTIONS",
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ],
             "headers": [
                 {
                     "key": "Access-Control-Allow-Credentials",
