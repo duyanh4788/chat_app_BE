@@ -13,7 +13,12 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Server is Running ...');
 });
 const httpServer = new http.Server(app);
-const configIo = new socketIo.Server(httpServer);
+const configIo = new socketIo.Server(httpServer, {
+  cors: {
+    origin: process.env.END_POINT,
+    credentials: true
+  }
+});
 const socket = new Websocket();
 socket.socketIO(configIo);
 httpServer.listen(PORT, HOST, () => {
