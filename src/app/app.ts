@@ -27,7 +27,7 @@ class App {
   }
 
   public configCors(): void {
-    this.app.use(cors({ credentials: true, origin: process.env.END_POINT }));
+    this.app.use(cors());
   }
 
   public configJson(): void {
