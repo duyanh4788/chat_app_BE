@@ -18,7 +18,8 @@
                 "DELETE",
                 "OPTIONS",
                 "PATCH"
-            ]
+            ],
+            "headers": "Content-Type, Authorization"
         }
     ]
 }
