@@ -50,7 +50,10 @@ class App {
         mongoose_1.default.connection;
     }
     configCors() {
-        this.app.use((0, cors_1.default)({ credentials: true, origin: process.env.END_POINT }));
+        this.app.use((0, cors_1.default)({
+            origin: process.env.END_POINT_HOME,
+            methods: ['OPTIONS', 'GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
+        }));
     }
     configJson() {
         this.app.use(bodyParser.json());
