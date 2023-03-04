@@ -1,0 +1,1 @@
+{"version":3,"file":"convertStationModel.js","sourceRoot":"","sources":["../../src/models/convertStationModel.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;;AAAA,mDAAqC;AAErC,MAAM,MAAM,GAAG,QAAQ,CAAC,MAAM,CAAC;AAElB,QAAA,oBAAoB,GAAG,IAAI,MAAM,CAC5C;IACE,OAAO,EAAE;QACP,IAAI,EAAE,KAAK;KACZ;CACF,EACD,EAAE,UAAU,EAAE,KAAK,EAAE,CACtB,CAAC"}
