@@ -10,16 +10,16 @@
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "src/server.js",
+            "dest": "https://chat-app-be-sandy.vercel.app/api/$1",
             "methods": [
                 "GET",
                 "POST",
                 "PUT",
                 "DELETE",
-                "OPTIONS",
                 "PATCH"
             ],
             "headers": {
+                "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
                 "Access-Control-Allow-Credentials": "true"
