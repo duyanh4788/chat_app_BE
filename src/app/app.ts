@@ -27,7 +27,10 @@ class App {
   }
 
   public configCors(): void {
-    this.app.use(cors());
+    this.app.use(cors({
+      origin: process.env.END_POINT_HOME,
+      methods: ['OPTIONS', 'GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
+    }));
   }
 
   public configJson(): void {
