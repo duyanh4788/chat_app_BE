@@ -3,14 +3,14 @@
     "name": "chat_app",
     "builds": [
         {
-            "src": "dist/index.js",
+            "src": "src/index.ts",
             "use": "@vercel/node"
         }
     ],
     "routes": [
         {
-            "src": "dist/(.*)",
-            "dest": "dist/index.js"
+            "src": "/(.*)",
+            "dest": "/"
         }
     ]
 }
