@@ -24,5 +24,11 @@
                 "DELETE"
             ]
         }
+    ],
+    "rewrites": [
+        {
+            "source": "/api/(.*)",
+            "destination": "/api"
+        }
     ]
 }
