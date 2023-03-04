@@ -12,10 +12,17 @@
             "use": "@vercel/node"
         }
     ],
-    "rewrites": [
+    "routes": [
         {
-            "source": "/(.*)",
-            "destination": "dist/index.js"
+            "src": "/(.*)",
+            "dest": "dist/index.js",
+            "methods": [
+                "OPTIONS",
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ]
         }
     ]
 }
