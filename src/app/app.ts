@@ -29,6 +29,11 @@ class App {
   public configCors(): void {
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       res.header('Access-Control-Allow-Origin', process.env.END_POINT_HOME);
+      res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
+      res.setHeader(
+        'Access-Control-Allow-Headers',
+        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+      )
       next();
     });
     this.app.options(`${process.env.END_POINT_HOME}`);
