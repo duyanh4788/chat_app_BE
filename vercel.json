@@ -14,7 +14,7 @@
     ],
     "headers": [
         {
-            "source": "/(.*)",
+            "source": "src/index.ts",
             "headers": [
                 {
                     "key": "Access-Control-Allow-Credentials",
