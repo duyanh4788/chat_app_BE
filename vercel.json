@@ -12,19 +12,6 @@
             "use": "@vercel/node"
         }
     ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "dist/index.js",
-            "methods": [
-                "OPTIONS",
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE"
-            ]
-        }
-    ],
     "rewrites": [
         {
             "source": "/(.*)",
