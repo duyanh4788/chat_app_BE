@@ -29,6 +29,7 @@ class App {
   public configCors(): void {
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       res.header('Access-Control-Allow-Origin', process.env.END_POINT_HOME);
+      res.header('Access-Control-Allow-Origin', process.env.END_POINT);
       res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
       res.setHeader(
         'Access-Control-Allow-Headers',
@@ -37,6 +38,7 @@ class App {
       next();
     });
     this.app.options(`${process.env.END_POINT_HOME}`);
+    this.app.options(`${process.env.END_POINT}`);
     this.app.use(cors());
   }
 
