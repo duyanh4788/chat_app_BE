@@ -3,7 +3,7 @@
     "name": "chat_app",
     "builds": [
         {
-            "src": "*.js",
+            "src": "./server.ts",
             "use": "@vercel/node"
         }
     ],
