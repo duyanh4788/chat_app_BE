@@ -17,6 +17,7 @@
             "src": "/(.*)",
             "dest": "dist/index.js",
             "methods": [
+                "OPTIONS",
                 "GET",
                 "POST",
                 "PUT",
