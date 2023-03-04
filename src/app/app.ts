@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import * as bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -27,12 +27,12 @@ class App {
   }
 
   public configCors(): void {
-    this.app.use(cors({
-      origin: process.env.END_POINT_HOME,
-      methods: ['OPTIONS', 'GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
-      credentials: true,
-      maxAge: 3600
-    }));
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
+      res.header('Access-Control-Allow-Origin', process.env.END_POINT_HOME);
+      next();
+    });
+    this.app.options(`${process.env.END_POINT_HOME}`);
+    this.app.use(cors());
   }
 
   public configJson(): void {
