@@ -2,13 +2,13 @@
   "name": "chat_app_socket_io",
   "version": "1.0.0",
   "description": "API SOCKET built with NodeJS, Express, MongoDB and TypeScript",
-  "main": "src/index.ts",
+  "main": "src/server.ts",
   "license": "MIT",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "dev": "nodemon ./src/index.ts",
-    "start": "nodemon ./src/index.ts",
+    "dev": "nodemon ./src/server.ts",
+    "start": "nodemon ./src/server.ts",
     "prod": "npm run build && npm run start",
     "eject": "nodejs-scripts eject",
     "eslint": "eslint --ext js,ts",
@@ -47,6 +47,6 @@
     "extends": "nodejs"
   },
   "engines": {
-    "node": "^16"
+    "node": ">=16 <19"
   }
 }
