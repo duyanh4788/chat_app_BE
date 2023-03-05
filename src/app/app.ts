@@ -1,8 +1,8 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import * as bodyParser from 'body-parser';
 import mongoose from 'mongoose';
+import cors from 'cors';
 import { Routes } from '../routes';
-const cors = require('cors');
 
 class App {
   public app: express.Application;
@@ -27,18 +27,19 @@ class App {
   }
 
   public configCors(): void {
-    const websiteWhitelist = [process.env.END_POINT_HOME, process.env.END_POINT];
-    const corsOptions = {
-      origin: (origin: string, callback: Function) => {
-        if (websiteWhitelist.indexOf(origin) !== -1 || !origin) {
-          callback(null, true);
-        } else {
-          callback(new Error('Not allowed by CORS'));
-        }
-      },
-      credentials: true
-    }
-    this.app.use(cors(corsOptions));
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
+      res.header('Access-Control-Allow-Origin', process.env.END_POINT_HOME);
+      res.header('Access-Control-Allow-Origin', process.env.END_POINT);
+      res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
+      res.setHeader(
+        'Access-Control-Allow-Headers',
+        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+      )
+      next();
+    });
+    this.app.options(`${process.env.END_POINT_HOME}`);
+    this.app.options(`${process.env.END_POINT}`);
+    this.app.use(cors());
   }
 
   public configJson(): void {
