@@ -7,8 +7,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "dev": "nodemon ./src/server.ts",
+    "env-dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "node -r ./node_modules/.bin/ts-node-dev --respawn --transpile-only src/server.ts",
     "start": "node dist/server.js",
+    "watch-ts": "tsc -w",
     "prod": "npm run build && npm run start",
     "eject": "nodejs-scripts eject",
     "eslint": "eslint --ext js,ts",
@@ -38,9 +40,9 @@
     "mongoose": "^6.0.8",
     "morgan": "^1.10.0",
     "multer": "^1.4.3",
-    "nodemon": "2.0.16",
     "socket.io": "^4.2.0",
     "ts-node": "10.7.0",
+    "ts-node-dev": "2.0.0",
     "typescript": "4.6.4"
   },
   "eslintConfig": {
