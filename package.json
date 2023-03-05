@@ -47,6 +47,6 @@
     "extends": "nodejs"
   },
   "engines": {
-    "node": "^16 || ^19"
+    "node": "^16"
   }
 }
