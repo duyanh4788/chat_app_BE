@@ -73,7 +73,7 @@ export class Websocket {
             );
             socket.broadcast.emit(
               SOCKET_COMMIT.SEND_MESSAGE_SENDER,
-              `${userBySocketId.fullName} nhắn tin`,
+              `${userBySocketId.fullName} did messages for you.`,
             );
             callBackAcknow();
           }

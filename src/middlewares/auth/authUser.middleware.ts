@@ -13,7 +13,7 @@ export class AuthUserMiddleware {
     } else {
       res.status(400).send({
         code: 400,
-        message: 'Vui lòng nhập đầy đủ thông tin',
+        message: 'Please input full information.',
         success: false,
       });
     }
@@ -27,7 +27,7 @@ export class AuthUserMiddleware {
     } else {
       res.status(400).send({
         code: 400,
-        message: 'Tài khoản đã tồn tại',
+        message: 'Account have exist.',
         success: false,
       });
     }
@@ -41,7 +41,7 @@ export class AuthUserMiddleware {
     } else {
       res.status(400).send({
         code: 400,
-        message: 'Vui lòng nhập đúng định dạng email',
+        message: 'Please input correct type email.',
         success: false,
       });
     }
@@ -59,7 +59,7 @@ export class AuthUserMiddleware {
     } else {
       res.status(400).send({
         code: 400,
-        message: 'Email đã tồn tại',
+        message: 'Email have exist.',
         success: false,
       });
     }
@@ -77,7 +77,7 @@ export class AuthUserMiddleware {
     } else {
       res.status(400).send({
         code: 400,
-        message: 'Tài khoàn không tồn tại',
+        message: 'Account not found.',
         success: false,
       });
     }
@@ -91,7 +91,7 @@ export class AuthUserMiddleware {
     } else {
       res.status(400).send({
         code: 400,
-        message: 'Vui lòng nhập số',
+        message: 'Please input number.',
         success: false,
       });
     }
@@ -104,7 +104,7 @@ export class AuthUserMiddleware {
     } else {
       res.status(400).send({
         code: 400,
-        message: 'Độ dài tài khoản từ 6 => 20',
+        message: 'length number form 6 => 20',
         success: false,
       });
     }
@@ -117,7 +117,7 @@ export class AuthUserMiddleware {
     } else {
       res.status(400).send({
         code: 400,
-        message: 'Họ tên sai định dạng',
+        message: 'First name and last name wrong format.',
         success: false,
       });
     }

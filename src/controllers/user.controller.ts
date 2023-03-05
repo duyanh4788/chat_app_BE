@@ -95,7 +95,7 @@ export class UsersControler {
       });
       await newUser.save();
       res.status(200).send({
-        data: 'Đăng ký thành công',
+        data: 'Sign Up successfully.',
         code: 200,
         success: true,
       });
@@ -115,7 +115,7 @@ export class UsersControler {
       if (!checkAccount) {
         return res.status(400).send({
           code: 400,
-          message: 'Tài khoản không tồn tại vui lòng đăng ký',
+          message: 'Account not found, pleas sign up.',
           success: false,
         });
       }
@@ -123,7 +123,7 @@ export class UsersControler {
       if (!checkPassWord) {
         return res.status(400).send({
           code: 400,
-          message: 'Mật khẩu không đúng',
+          message: 'Password is wrong.',
           success: false,
         });
       }
