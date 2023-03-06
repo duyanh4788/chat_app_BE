@@ -1,5 +1,4 @@
 import AWS, { S3 } from 'aws-sdk';
-import fs from 'fs';
 import { CreateBucketRequest } from 'aws-sdk/clients/s3';
 import { RestError } from '../error/error';
 
@@ -44,8 +43,9 @@ export class AWS3Services {
 
         const params = {
             Bucket: this.BUCKET,
-            Key: `img/${fileData.originalname}`,
+            Key: `img/${Date.now()}`,
             Body: fileData.buffer,
+            ContentType: fileData.mimetype
         };
 
         try {
