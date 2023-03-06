@@ -2,6 +2,7 @@ import { TitleModel } from '../../common/common.constants';
 import { Request, Response, NextFunction } from 'express';
 import { UsersSchema } from '../../models/userModel';
 import * as mongoose from 'mongoose';
+import { sendRespone } from '../../common/common.success';
 
 const Users = mongoose.model(TitleModel.USERS, UsersSchema);
 
@@ -11,11 +12,7 @@ export class AuthUserMiddleware {
     if (account !== '' && passWord !== '' && fullName !== '' && email !== '') {
       next();
     } else {
-      res.status(400).send({
-        code: 400,
-        message: 'Please input full information.',
-        success: false,
-      });
+      sendRespone(res, 'error', 400, null, 'Please input full information.')
     }
   }
 
@@ -25,11 +22,7 @@ export class AuthUserMiddleware {
     if (!data) {
       next();
     } else {
-      res.status(400).send({
-        code: 400,
-        message: 'Account have exist.',
-        success: false,
-      });
+      sendRespone(res, 'error', 400, null, 'Account have exist.')
     }
   }
 
@@ -39,11 +32,7 @@ export class AuthUserMiddleware {
     if (email.match(pattern)) {
       next();
     } else {
-      res.status(400).send({
-        code: 400,
-        message: 'Please input correct type email.',
-        success: false,
-      });
+      sendRespone(res, 'error', 400, null, 'Please input correct type email.')
     }
   }
 
@@ -57,11 +46,7 @@ export class AuthUserMiddleware {
     if (!data) {
       next();
     } else {
-      res.status(400).send({
-        code: 400,
-        message: 'Email have exist.',
-        success: false,
-      });
+      sendRespone(res, 'error', 400, null, 'Email have exist.')
     }
   }
 
@@ -75,11 +60,7 @@ export class AuthUserMiddleware {
     if (data) {
       next();
     } else {
-      res.status(400).send({
-        code: 400,
-        message: 'Account not found.',
-        success: false,
-      });
+      sendRespone(res, 'error', 400, null, 'Account not found.')
     }
   }
 
@@ -89,11 +70,7 @@ export class AuthUserMiddleware {
     if (phone && phone.match(pattern)) {
       next();
     } else {
-      res.status(400).send({
-        code: 400,
-        message: 'Please input number.',
-        success: false,
-      });
+      sendRespone(res, 'error', 400, null, 'Please input number.')
     }
   }
 
@@ -102,11 +79,7 @@ export class AuthUserMiddleware {
     if (account.length > 4 && account.length < 30) {
       next();
     } else {
-      res.status(400).send({
-        code: 400,
-        message: 'length number form 6 => 20',
-        success: false,
-      });
+      sendRespone(res, 'error', 400, null, 'length number form 6 => 30')
     }
   }
 
@@ -115,11 +88,7 @@ export class AuthUserMiddleware {
     if (fullName !== typeof 'string') {
       next();
     } else {
-      res.status(400).send({
-        code: 400,
-        message: 'First name and last name wrong format.',
-        success: false,
-      });
+      sendRespone(res, 'error', 400, null, 'First name and last name wrong format.')
     }
   }
 }
