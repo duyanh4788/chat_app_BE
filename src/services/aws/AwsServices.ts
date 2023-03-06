@@ -43,10 +43,10 @@ export class AWS3Services {
 
         const params = {
             Bucket: this.BUCKET,
-            Key: `img/${Date.now()}`,
+            Key: `img/${Date.now()}.${fileData.originalname.split('.')[1]}`,
             Body: fileData.buffer,
             ContentType: fileData.mimetype
-        };
+        }; fileData.originalname
 
         try {
             const result = await s3.upload(params).promise();
