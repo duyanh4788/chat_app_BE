@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { ConverStationRoutes } from './childRouter/convertStation.routes';
-import { MessagesRoutes } from './childRouter/message.routes';
-import { UsersRoutes } from './childRouter/user.routes';
+import { ConverStationRoutes } from './chatapp/ConvertStationRoutes';
+import { MessagesRoutes } from './chatapp/MessageRoutes';
+import { UsersRoutes } from './chatapp/UserRoutes';
 
 export class Routes {
   public usersRoutes: UsersRoutes = new UsersRoutes();

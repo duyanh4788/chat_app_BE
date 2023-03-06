@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-interface MessagesSchemaProps {
+export interface MessagesSchemaProps {
   conversationId: String;
   senderId: String;
   reciverId: String;

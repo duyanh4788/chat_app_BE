@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 import { TitleModel } from '../../common/common.constants';
 import { Request, Response, NextFunction } from 'express';
 import { ConvertStationSchema } from '../../models/convertStationModel';
+import { sendRespone } from '../../common/common.success';
 
 const ConvertStation = mongoose.model(
   TitleModel.CONVERTSTATIONS,
@@ -11,21 +12,10 @@ const ConvertStation = mongoose.model(
 export class ConverStationMiddleware {
   public checkEmptyId(req: Request, res: Response, next: NextFunction) {
     const { senderId, reciverId } = req.body;
-    if (
-      senderId &&
-      senderId !== '' &&
-      senderId !== null &&
-      reciverId &&
-      reciverId !== '' &&
-      reciverId !== null
-    ) {
+    if (senderId && senderId !== '' && reciverId && reciverId !== '') {
       return next();
     } else {
-      return res.status(400).send({
-        code: 400,
-        message: 'Id Sender or Reciver is null',
-        success: false,
-      });
+      return sendRespone(res, 'error', 400, null, 'Id Sender or Reciver is null');
     }
   }
   public async getConverStationByUserId(
@@ -49,11 +39,7 @@ export class ConverStationMiddleware {
         next();
       }
     } catch (error) {
-      res.status(500).send({
-        code: 500,
-        message: error,
-        success: false,
-      });
+      return sendRespone(res, 'error', 500, null, 'can not get converstation');
     }
   }
 }
