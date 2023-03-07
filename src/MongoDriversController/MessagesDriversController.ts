@@ -17,9 +17,10 @@ export class MessagesDriversController implements IMessagesDriversRepository {
 
     async getListMessages(conversationId: string): Promise<MessagesSchemaProps[]> {
         const listMessages = await this.Messages.find({
-            conversationId
-        }, '-_id',).select(this.selectUser);
-        if (!listMessages) throw new RestError('data not found', 400)
+            createdAt: { $lt: new Date() }
+        }).sort({ createdAt: -1 }).limit(10).exec()
+        if (!listMessages) throw new RestError('data not found', 400);
+        const totalPage = await this.Messages.count();
         return listMessages
     }
 
