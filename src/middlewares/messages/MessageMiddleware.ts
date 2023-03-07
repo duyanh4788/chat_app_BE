@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 import { MessagesSchema } from '../../models/messageModel';
 import { UsersSchema } from '../../models/userModel';
 import { ConvertStationSchema } from '../../models/convertStationModel';
+import { sendRespone } from '../../common/common.success';
 
 const Messages = mongoose.model(TitleModel.MESSAGES, MessagesSchema);
 const ConvertStation = mongoose.model(
@@ -18,11 +19,7 @@ export class MessagesMiddleware {
       _id: req.body.senderId,
     });
     if (!senderInfor) {
-      return res.status(400).send({
-        code: 400,
-        message: 'sender id not found!',
-        success: false,
-      });
+      return sendRespone(res, 'error', 400, null, 'sender id not found!');
     }
     if (senderInfor) {
       next();
@@ -38,11 +35,7 @@ export class MessagesMiddleware {
       _id: req.body.conversationId,
     });
     if (!convertStationId) {
-      return res.status(400).send({
-        code: 400,
-        message: 'convert station id not found!',
-        success: false,
-      });
+      return sendRespone(res, 'error', 400, null, 'convert station id not found!');
     }
     if (convertStationId) {
       next();

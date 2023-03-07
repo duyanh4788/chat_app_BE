@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-interface UserSchemaProps {
+export interface UserSchemaProps {
   account: String;
   passWord: String;
   fullName: String;

@@ -1,20 +1,22 @@
 import express, { Request, Response, NextFunction } from 'express';
-import * as bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import { Routes } from '../routes';
+import * as bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
 
 class App {
-  public app: express.Application;
+  public App: express.Application;
   private mainRoutes: Routes = new Routes();
   private mongooseUrl: string | any = process.env.DATABASE;
 
   constructor() {
-    this.app = express();
+    this.App = express();
     this.configCors();
     this.configJson();
     this.mongooSetup();
-    this.mainRoutes.routes(this.app);
+    this.mainRoutes.routes(this.App);
   }
 
   private mongooSetup(): void {
@@ -27,7 +29,7 @@ class App {
   }
 
   public configCors(): void {
-    this.app.use((req: Request, res: Response, next: NextFunction) => {
+    this.App.use((req: Request, res: Response, next: NextFunction) => {
       res.header('Access-Control-Allow-Origin', process.env.END_POINT_HOME);
       res.header('Access-Control-Allow-Origin', process.env.END_POINT);
       res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
@@ -37,15 +39,19 @@ class App {
       )
       next();
     });
-    this.app.options(`${process.env.END_POINT_HOME}`);
-    this.app.options(`${process.env.END_POINT}`);
-    this.app.use(cors());
+    this.App.options(`${process.env.END_POINT_HOME}`);
+    this.App.options(`${process.env.END_POINT}`);
+    this.App.use(cors());
   }
 
   public configJson(): void {
-    this.app.use(bodyParser.json());
-    this.app.use(bodyParser.urlencoded({ extended: false }));
+    this.App.use(bodyParser.json());
+    this.App.use(bodyParser.urlencoded({ extended: false }));
+    this.App.use(express.json({ limit: '50mb' }));
+    this.App.use(express.urlencoded({ limit: '50mb', extended: false }));
+    this.App.use(cookieParser());
+    this.App.use(logger('dev'))
   }
 }
 
-export default new App().app;
+export default new App().App;

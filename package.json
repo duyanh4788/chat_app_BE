@@ -21,13 +21,17 @@
   "dependencies": {
     "@types/bad-words": "3.0.1",
     "@types/bcryptjs": "2.4.2",
+    "@types/cookie-parser": "1.4.3",
     "@types/express": "4.17.13",
     "@types/jsonwebtoken": "8.5.8",
     "@types/mongoose": "5.11.97",
+    "@types/morgan": "1.9.4",
     "@types/socket.io": "3.0.2",
     "ansi-regex": "6.0.1",
+    "aws-sdk": "2.1328.0",
     "bad-words": "^3.0.4",
     "bcryptjs": "^2.4.3",
+    "cookie-parser": "1.4.6",
     "date-format": "^3.0.0",
     "debug": "4.3.4",
     "dotenv": "^10.0.0",
@@ -38,10 +42,9 @@
     "jsonwebtoken": "^8.5.1",
     "minimist": "1.2.6",
     "mongoose": "^6.0.8",
-    "morgan": "^1.10.0",
-    "multer": "^1.4.3",
+    "morgan": "1.10.0",
+    "multer": "1.4.5-lts.1",
     "socket.io": "^4.2.0",
-    "ts-node": "10.7.0",
     "ts-node-dev": "2.0.0",
     "typescript": "4.6.4"
   },
@@ -50,5 +53,8 @@
   },
   "engines": {
     "node": ">=14 <15"
+  },
+  "devDependencies": {
+    "@types/multer": "1.4.5"
   }
 }
