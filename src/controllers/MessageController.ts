@@ -23,8 +23,9 @@ export class MessageControler {
 
   public async getListMessages(req: Request, res: Response) {
     try {
-      const listMessages = await this.messagesUseCase.getListMessages(req.body.conversationId);
-      if (!listMessages.length) return sendRespone(res, 'success', 200, [], '')
+      const { conversationId, skip } = req.body;
+      const listMessages = await this.messagesUseCase.getListMessages(conversationId, skip);
+      if (!listMessages) return sendRespone(res, 'success', 200, { listMessages: [], totalPage: 0, skip: 0 }, '')
       return sendRespone(res, 'success', 200, listMessages, '')
     } catch (error) {
       return RestError.manageServerError(res, error, false)

@@ -1,12 +1,9 @@
 import * as mongoose from 'mongoose';
 import { TitleModel } from '../../common/common.constants';
 import { Request, Response, NextFunction } from 'express';
-import { MessagesSchema } from '../../models/messageModel';
 import { UsersSchema } from '../../models/userModel';
 import { ConvertStationSchema } from '../../models/convertStationModel';
-import { sendRespone } from '../../common/common.success';
 
-const Messages = mongoose.model(TitleModel.MESSAGES, MessagesSchema);
 const ConvertStation = mongoose.model(
   TitleModel.CONVERTSTATIONS,
   ConvertStationSchema,
@@ -19,7 +16,7 @@ export class MessagesMiddleware {
       _id: req.body.senderId,
     });
     if (!senderInfor) {
-      return sendRespone(res, 'error', 400, null, 'sender id not found!');
+      return res.status(404).json({ status: 'error', code: 404, data: null, message: 'sender id not found!' });
     }
     if (senderInfor) {
       next();
@@ -35,7 +32,7 @@ export class MessagesMiddleware {
       _id: req.body.conversationId,
     });
     if (!convertStationId) {
-      return sendRespone(res, 'error', 400, null, 'convert station id not found!');
+      return res.status(404).json({ status: 'error', code: 404, data: null, message: 'convert station id not found!' });
     }
     if (convertStationId) {
       next();

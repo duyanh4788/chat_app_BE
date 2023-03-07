@@ -1,5 +1,11 @@
 import * as mongoose from 'mongoose';
 
+export interface ResponseListMessages {
+  listMessages: MessagesSchemaProps[],
+  totalPage: number,
+  skip: number
+}
+
 export interface MessagesSchemaProps {
   conversationId: String;
   senderId: String;

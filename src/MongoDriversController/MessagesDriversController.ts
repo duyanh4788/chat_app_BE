@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 import { TitleModel } from "../common/common.constants";
-import { MessagesSchema, MessagesSchemaProps } from "../models/messageModel";
+import { MessagesSchema, MessagesSchemaProps, ResponseListMessages } from "../models/messageModel";
 import { IMessagesDriversRepository } from "../Repository/IMessagesDriversRepository";
 import { RestError } from "../services/error/error";
 
 export class MessagesDriversController implements IMessagesDriversRepository {
 
     private Messages = mongoose.model(TitleModel.MESSAGES, MessagesSchema);
-    private selectUser = [
+    private selectMsg = [
         'conversationId',
         'senderId',
         'reciverId',
@@ -15,13 +15,15 @@ export class MessagesDriversController implements IMessagesDriversRepository {
         'createdAt',
     ]
 
-    async getListMessages(conversationId: string): Promise<MessagesSchemaProps[]> {
+    async getListMessages(conversationId: string, skip: number): Promise<ResponseListMessages> {
         const listMessages = await this.Messages.find({
-            createdAt: { $lt: new Date() }
-        }).sort({ createdAt: -1 }).limit(10).exec()
-        if (!listMessages) throw new RestError('data not found', 400);
+            conversationId,
+        }).sort({ createdAt: -1 }).skip(skip).limit(10).select(this.selectMsg);
         const totalPage = await this.Messages.count();
-        return listMessages
+        if (!listMessages || listMessages && !listMessages.length) {
+            return { listMessages: [], totalPage, skip: 0 }
+        }
+        return { listMessages: listMessages.reverse(), totalPage, skip: totalPage <= skip ? 0 : skip + 10 }
     }
 
     async createNewMessages(body: MessagesSchemaProps): Promise<MessagesSchemaProps> {

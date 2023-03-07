@@ -10,8 +10,8 @@ export class MessagesUseCase {
         return create
     }
 
-    async getListMessages(conversationId: string) {
-        const listMessages = await this.messagesDriversRepository.getListMessages(conversationId)
+    async getListMessages(conversationId: string, skip: number) {
+        const listMessages = await this.messagesDriversRepository.getListMessages(conversationId, skip)
         return listMessages
     };
 }
