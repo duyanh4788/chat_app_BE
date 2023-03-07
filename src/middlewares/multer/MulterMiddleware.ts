@@ -18,8 +18,9 @@ export class MulterMiddleware {
         limits: { fileSize: 2 * 1024 * 1024 }
     }).single('file');
 
-    public upload = (req: Request, res: Response, next: NextFunction) => {
+    public uploadMulter = (req: Request, res: Response, next: NextFunction) => {
         this.multerMiddleware(req, res, (err: any) => {
+            if (!req.file) return res.status(404).json({ message: 'please input file.' });
             if (err instanceof multer.MulterError) {
                 return res.status(400).json({ message: err.message });
             } else if (err) {

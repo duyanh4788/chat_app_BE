@@ -23,7 +23,7 @@ export class UploadAWSRouter {
       BASE_ROUTE + Routes.UPLOAD_AWS3,
       this.authMiddleware.checkAccount,
       this.verifyTokenMiddleware.authenTicate,
-      this.multerMiddleware.upload,
+      this.multerMiddleware.uploadMulter,
       this.uploadAwsController.uploadAWS,
     );
   }

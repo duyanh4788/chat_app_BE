@@ -6,11 +6,15 @@ export class AWS3Services {
     private readonly BUCKET: string;
     private readonly ACCESS_KEY: string;
     private readonly SECRET_KEY: string;
+    private readonly REGION: string;
+    private readonly DOMAIN: string;
 
     constructor() {
-        this.BUCKET = "chatapp-av";
+        this.BUCKET = process.env.AWS_BUCKET_NAME as string;
         this.ACCESS_KEY = process.env.AWS_ACCESS as string;
         this.SECRET_KEY = process.env.AWS_SECRET as string;
+        this.REGION = process.env.AWS_REGION as string;
+        this.DOMAIN = process.env.AWS_DOMAIN as string;
     }
 
     public configAWS(): S3 {
@@ -25,7 +29,7 @@ export class AWS3Services {
         const params: CreateBucketRequest = {
             Bucket: this.BUCKET,
             CreateBucketConfiguration: {
-                LocationConstraint: "ap-southeast-1",
+                LocationConstraint: this.REGION,
             }
         }
         try {
@@ -50,8 +54,7 @@ export class AWS3Services {
 
         try {
             const result = await s3.upload(params).promise();
-            const domain = 'https://do1o091swiuxr.cloudfront.net/'
-            return { success: true, data: domain + result.Key }
+            return { success: true, data: this.DOMAIN + result.Key }
         } catch (error) {
             throw new RestError('upload failed', 400);
         }
