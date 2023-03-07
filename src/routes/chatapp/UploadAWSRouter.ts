@@ -21,8 +21,8 @@ export class UploadAWSRouter {
   public routes(app: Router): void {
     app.post(
       BASE_ROUTE + Routes.UPLOAD_AWS3,
-      this.authMiddleware.checkAccount,
       this.verifyTokenMiddleware.authenTicate,
+      this.authMiddleware.checkAccountExits,
       this.multerMiddleware.uploadMulter,
       this.uploadAwsController.uploadAWS,
     );

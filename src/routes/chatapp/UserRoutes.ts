@@ -41,11 +41,7 @@ export class UsersRoutes {
 
     app.post(
       BASE_ROUTE + Routes.SIGN_UP,
-      this.authMiddleware.checkAccount,
-      this.authMiddleware.checkEmailExits,
-      this.authMiddleware.checkEmpty,
-      this.authMiddleware.checkEmailPattern,
-      this.authMiddleware.checkReqLength,
+      this.authMiddleware.validateSignUp,
       this.usersController.userSignUp,
     );
 

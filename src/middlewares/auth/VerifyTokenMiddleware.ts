@@ -1,7 +1,6 @@
 import * as JWT from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { USER_TYPE_CODE, SECRETKEY } from '../../common/common.constants';
-import { sendRespone } from '../../common/common.success';
 
 interface TokenPayload {
   [account: string]: any;
@@ -17,7 +16,7 @@ export class VerifyTokenMiddleware {
         next();
       }
     } catch (error) {
-      sendRespone(res, 'error', 400, null, 'Your are not sign in');
+      return res.status(404).json({ status: 'error', code: 404, data: null, message: 'your have does not sign in.' });
     }
   }
 
@@ -32,7 +31,7 @@ export class VerifyTokenMiddleware {
         throw new Error();
       }
     } catch (error) {
-      sendRespone(res, 'error', 400, null, 'Your are note permissions remove account');
+      return res.status(404).json({ status: 'error', code: 404, data: null, message: 'your are does not permissions remove account.' });
     }
   }
 }

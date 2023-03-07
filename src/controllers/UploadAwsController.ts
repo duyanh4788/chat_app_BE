@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { sendRespone } from '../common/common.success';
-import { MulterMiddleware } from '../middlewares/multer/MulterMiddleware';
 import { AWS3Services } from '../services/aws/AwsServices';
 import { RestError } from '../services/error/error';
 
@@ -18,4 +17,8 @@ export class UploadAwsController {
             return RestError.manageServerError(res, error, false)
         }
     }
+}
+
+function sharpe(buffer: Buffer) {
+    throw new Error('Function not implemented.');
 }
