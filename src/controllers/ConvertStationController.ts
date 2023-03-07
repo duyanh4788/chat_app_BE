@@ -5,7 +5,9 @@ import { sendRespone } from '../common/common.success';
 
 export class ConverStationController {
 
-  constructor(private convertStationUseCase: ConvertStationUseCase) { }
+  constructor(private convertStationUseCase: ConvertStationUseCase) {
+    this.saveConverStation = this.saveConverStation.bind(this)
+  }
 
   public async saveConverStation(req: Request, res: Response) {
     const { senderId, reciverId } = req.body;
