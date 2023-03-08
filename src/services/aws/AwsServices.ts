@@ -77,13 +77,18 @@ export class AWS3Services {
         try {
             const s3 = this.configAWS()
             const objects = await s3.listObjects({ Bucket: this.BUCKET }).promise();
-
+            const newDate = new Date().getTime();
+            const twoDay = 17280000
             if (objects.Contents?.length) {
-                const imageObjects = objects.Contents?.filter(obj =>
-                    obj.Key?.toLowerCase().endsWith('.png') ||
-                    obj.Key?.toLowerCase().endsWith('.jpg') ||
-                    obj.Key?.toLowerCase().endsWith('.jpeg')
-                ) ?? [];
+                const imageObjects = objects.Contents?.filter(obj => {
+                    if (obj.Key !== 'img/') {
+                        if ((new Date(obj.LastModified as any).getTime() + twoDay) < newDate) {
+                            return obj
+                        }
+                    }
+                }) ?? [];
+
+                if (!imageObjects.length) return;
 
                 await Promise.all(imageObjects.map(async (obj) => {
                     await s3.deleteObject({ Bucket: this.BUCKET, Key: obj.Key as string }).promise();
