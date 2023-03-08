@@ -73,19 +73,23 @@ export class AWS3Services {
         }
     }
 
-    async getListImagesAWS(s3: S3): Promise<void> {
+    async getListImagesAWS(): Promise<void> {
         try {
+            const s3 = this.configAWS()
             const objects = await s3.listObjects({ Bucket: this.BUCKET }).promise();
-            const imageObjects = objects.Contents?.filter(obj =>
-                obj.Key?.toLowerCase().endsWith('.png') ||
-                obj.Key?.toLowerCase().endsWith('.jpg') ||
-                obj.Key?.toLowerCase().endsWith('.jpeg')
-            ) ?? [];
 
-            await Promise.all(imageObjects.map(async (obj) => {
-                await s3.deleteObject({ Bucket: this.BUCKET, Key: obj.Key as string }).promise();
-                return
-            }))
+            if (objects.Contents?.length) {
+                const imageObjects = objects.Contents?.filter(obj =>
+                    obj.Key?.toLowerCase().endsWith('.png') ||
+                    obj.Key?.toLowerCase().endsWith('.jpg') ||
+                    obj.Key?.toLowerCase().endsWith('.jpeg')
+                ) ?? [];
+
+                await Promise.all(imageObjects.map(async (obj) => {
+                    await s3.deleteObject({ Bucket: this.BUCKET, Key: obj.Key as string }).promise();
+                    return
+                }))
+            }
             return
         } catch (error) {
             return
