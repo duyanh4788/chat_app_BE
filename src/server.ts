@@ -10,6 +10,7 @@ import { RemoveImagesFromAWSJob } from './job/RemoveImagesFromAWSJob'
 
 
 // ********************* logger *********************//
+const newDate = new Date()
 export const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
@@ -17,8 +18,8 @@ export const logger = winston.createLogger({
     winston.format.json()
   ),
   transports: [
-    new winston.transports.File({ filename: './src/logger/error.log', level: 'error' }),
-    new winston.transports.File({ filename: './src/logger/combined.log' }),
+    new winston.transports.File({ filename: `./src/logger/${new Date().getFullYear()}/${new Date().getMonth() + 1}/${new Date().getDate()}/error.log`, level: 'error' }),
+    new winston.transports.File({ filename: `./src/logger/${new Date().getFullYear()}/${new Date().getMonth() + 1}/${new Date().getDate()}/combined.log` }),
   ]
 });
 

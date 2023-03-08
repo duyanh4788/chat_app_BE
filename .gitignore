@@ -4,10 +4,12 @@ coverage
 build
 dist
 node_modules
+logger
 stats.json
 .pnp
 .pnp.js
 .env
+.log
 # misc
 .DS_Store
 npm-debug.log*
