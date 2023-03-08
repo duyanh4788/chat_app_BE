@@ -2,6 +2,9 @@ import Filter from 'bad-words';
 import socket, { Server } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { SOCKET_COMMIT, TEXT_BAD } from '../common/common.constants';
+import { MessagesDriversController } from '../MongoDriversController/MessagesDriversController';
+import { UserDriversController } from '../MongoDriversController/UserDriversController';
+
 import {
   changeStatusOffline,
   changeStatusOnline,
@@ -26,6 +29,15 @@ interface DataMessages {
 }
 
 export class Websocket {
+
+  private messagesDriversController: MessagesDriversController = new MessagesDriversController();
+  private userDriversController: UserDriversController = new UserDriversController();
+
+  constructor() {
+    this.messagesDriversController.createNewMessages = this.messagesDriversController?.createNewMessages.bind(this);
+    this.userDriversController.updateStatus = this.userDriversController.updateStatus.bind(this)
+  }
+
   public socketIO(
     socket_io:
       | Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
@@ -76,6 +88,7 @@ export class Websocket {
               `${userBySocketId.fullName} did messages for you.`,
             );
             callBackAcknow();
+            this.messagesDriversController.createNewMessagesSocket(dataMessages)
           }
         },
       );
@@ -93,6 +106,7 @@ export class Websocket {
           );
         }
         removeUserList(infoUser._id);
+        this.userDriversController.updateStatusSocket(infoUser._id, false);
       });
     });
   }

@@ -46,13 +46,16 @@ export class UserDriversController implements IUserDriversRepository {
     }
 
     async updateStatus(id: string, isOnline: boolean): Promise<boolean> {
-        const user = await this.Users.findById(id);
-        if (!user) {
-            throw new RestError("User does not exist.", 400);
-        }
         await this.Users.findByIdAndUpdate(id, {
             isOnline,
         });
         return true;
+    }
+
+    async updateStatusSocket(id: string, isOnline: boolean): Promise<void> {
+        await this.Users.findByIdAndUpdate(id, {
+            isOnline,
+        });
+        return;
     }
 }

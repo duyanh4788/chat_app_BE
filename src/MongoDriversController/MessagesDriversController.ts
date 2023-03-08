@@ -32,4 +32,9 @@ export class MessagesDriversController implements IMessagesDriversRepository {
         return newMessage
     }
 
+    async createNewMessagesSocket(body: MessagesSchemaProps): Promise<void> {
+        const newMessage = new this.Messages(body);
+        await newMessage.save();
+        return
+    }
 }

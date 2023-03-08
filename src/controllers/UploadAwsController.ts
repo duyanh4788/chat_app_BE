@@ -6,6 +6,7 @@ import { RestError } from '../services/error/error';
 export class UploadAwsController {
     constructor(private aws3: AWS3Services) {
         this.uploadAWS = this.uploadAWS.bind(this)
+        this.removeImageBucketAWS = this.removeImageBucketAWS.bind(this)
     }
 
     public async uploadAWS(req: Request, res: Response) {
@@ -17,8 +18,15 @@ export class UploadAwsController {
             return RestError.manageServerError(res, error, false)
         }
     }
-}
 
-function sharpe(buffer: Buffer) {
-    throw new Error('Function not implemented.');
+    public async removeImageBucketAWS(req: Request, res: Response) {
+        try {
+            const { idImage } = req.body
+            const s3 = this.aws3.configAWS();
+            await this.aws3.removeImageBucketAWS(s3, idImage)
+            return sendRespone(res, 'success', 200, null, 'remove successfullly.')
+        } catch (error) {
+            return RestError.manageServerError(res, error, false)
+        }
+    }
 }

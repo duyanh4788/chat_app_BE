@@ -59,4 +59,36 @@ export class AWS3Services {
             throw new RestError('upload failed', 400);
         }
     }
+
+    async removeImageBucketAWS(s3: S3, idImage: string): Promise<void> {
+        try {
+            const splitUrl = idImage.split(`${this.DOMAIN}`);
+            if (!splitUrl[1]) {
+                throw new RestError('id not found, please try again!')
+            }
+            await s3.deleteObject({ Bucket: this.BUCKET, Key: splitUrl[1] }).promise();
+            return
+        } catch (error) {
+            throw new RestError('remove failed', 400);
+        }
+    }
+
+    async getListImagesAWS(s3: S3): Promise<void> {
+        try {
+            const objects = await s3.listObjects({ Bucket: this.BUCKET }).promise();
+            const imageObjects = objects.Contents?.filter(obj =>
+                obj.Key?.toLowerCase().endsWith('.png') ||
+                obj.Key?.toLowerCase().endsWith('.jpg') ||
+                obj.Key?.toLowerCase().endsWith('.jpeg')
+            ) ?? [];
+
+            await Promise.all(imageObjects.map(async (obj) => {
+                await s3.deleteObject({ Bucket: this.BUCKET, Key: obj.Key as string }).promise();
+                return
+            }))
+            return
+        } catch (error) {
+            return
+        }
+    }
 }

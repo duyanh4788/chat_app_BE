@@ -9,6 +9,7 @@ const BASE_ROUTE = '/api/v1';
 
 enum Routes {
   UPLOAD_AWS3 = '/upload-aws3',
+  REMOVE_IMG_AWS3 = '/remove-img-aws3',
 }
 
 export class UploadAWSRouter {
@@ -25,6 +26,13 @@ export class UploadAWSRouter {
       this.authMiddleware.checkAccountExits,
       this.multerMiddleware.uploadMulter,
       this.uploadAwsController.uploadAWS,
+    );
+
+    app.post(
+      BASE_ROUTE + Routes.REMOVE_IMG_AWS3,
+      this.verifyTokenMiddleware.authenTicate,
+      this.authMiddleware.checkAccountExits,
+      this.uploadAwsController.removeImageBucketAWS,
     );
   }
 
