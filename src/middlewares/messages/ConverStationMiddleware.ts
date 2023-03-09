@@ -1,14 +1,12 @@
-import * as mongoose from 'mongoose';
-import { TitleModel } from '../../common/common.constants';
 import { Request, Response, NextFunction } from 'express';
-import { ConvertStationSchema } from '../../models/convertStationModel';
-
-const ConvertStation = mongoose.model(
-  TitleModel.CONVERTSTATIONS,
-  ConvertStationSchema,
-);
-
+import { IConvertStationDriversRepository } from '../../Repository/IConvertStationDriversRepository';
+import { IUserDriversRepository } from '../../Repository/IUserDriversRepository';
 export class ConverStationMiddleware {
+
+  constructor(private convertStationDriversRepository: IConvertStationDriversRepository, private userDriversRepository: IUserDriversRepository) {
+    this.getConverStationByUserId = this.getConverStationByUserId.bind(this)
+  }
+
   public checkEmptyId(req: Request, res: Response, next: NextFunction) {
     const { senderId, reciverId } = req.body;
     if (senderId && senderId !== '' && reciverId && reciverId !== '') {
@@ -23,12 +21,11 @@ export class ConverStationMiddleware {
     next: NextFunction,
   ) {
     const { senderId, reciverId } = req.body;
-    const converStationByUserId = await ConvertStation.findOne({
-      members: { $all: [senderId, reciverId] },
-    });
+    const converStationByUserId = await this.convertStationDriversRepository.findConverStation(senderId, reciverId)
     if (converStationByUserId) {
+      const reciver = await this.userDriversRepository.findById(reciverId)
       return res.status(200).send({
-        data: converStationByUserId,
+        data: { ...converStationByUserId, avataReciver: reciver?.avatar },
         code: 200,
         success: true,
       });

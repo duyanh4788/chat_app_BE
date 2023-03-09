@@ -14,6 +14,7 @@ enum Routes {
   SIGN_UP = '/signUp',
   CHANGE_STATUS_ONLINE = '/changeStatusOnline',
   CHANGE_STATUS_OFFLINE = '/changeStatusOffline',
+  UPDATE_INFOR = '/update-infor',
 }
 
 
@@ -48,5 +49,7 @@ export class UsersRoutes {
     app.post(BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE, this.usersController.changeStatusOnline);
 
     app.post(BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE, this.usersController.changeStatusOffline);
+
+    app.put(BASE_ROUTE + Routes.UPDATE_INFOR, this.usersController.updateInfo);
   }
 }

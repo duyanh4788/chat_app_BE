@@ -23,18 +23,23 @@ export class MessagesDriversController implements IMessagesDriversRepository {
         if (!listMessages || listMessages && !listMessages.length) {
             return { listMessages: [], totalPage, skip: 0 }
         }
-        return { listMessages: listMessages.reverse(), totalPage, skip: totalPage <= skip ? 0 : skip + 10 }
+        return { listMessages: listMessages.map(item => this.transFromData(item)).reverse(), totalPage, skip: totalPage <= skip ? 0 : skip + 10 }
     }
 
     async createNewMessages(body: MessagesSchemaProps): Promise<MessagesSchemaProps> {
         const newMessage = new this.Messages(body);
         await newMessage.save();
-        return newMessage
+        return this.transFromData(newMessage)
     }
 
     async createNewMessagesSocket(body: MessagesSchemaProps): Promise<void> {
         const newMessage = new this.Messages(body);
         await newMessage.save();
         return
+    }
+
+    private transFromData(data: any) {
+        if (!data) return;
+        return data._doc
     }
 }

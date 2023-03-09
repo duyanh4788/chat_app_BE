@@ -3,6 +3,7 @@ import { Router } from 'express';
 import { ConverStationMiddleware } from '../../middlewares/messages/ConverStationMiddleware';
 import { ConvertStationDriversController } from '../../MongoDriversController/ConvertStationDriversController';
 import { ConvertStationUseCase } from '../../usecase/ConvertStationUseCase';
+import { UserDriversController } from '../../MongoDriversController/UserDriversController';
 
 const BASE_ROUTE = '/api/v1';
 
@@ -12,10 +13,11 @@ enum Routes {
 
 export class ConverStationRoutes {
 
-  convertStationDriversController: ConvertStationDriversController = new ConvertStationDriversController()
+  convertStationDriversController: ConvertStationDriversController = new ConvertStationDriversController();
+  userDriversController: UserDriversController = new UserDriversController();
   convertStationUseCase: ConvertStationUseCase = new ConvertStationUseCase(this.convertStationDriversController)
-  converStationController: ConverStationController = new ConverStationController(this.convertStationUseCase);
-  converStationMiddleware: ConverStationMiddleware = new ConverStationMiddleware();
+  converStationController: ConverStationController = new ConverStationController(this.convertStationUseCase, this.userDriversController);
+  converStationMiddleware: ConverStationMiddleware = new ConverStationMiddleware(this.convertStationDriversController, this.userDriversController);
 
   public routes(app: Router): void {
     app.post(

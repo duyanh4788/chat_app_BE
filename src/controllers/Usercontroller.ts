@@ -14,6 +14,7 @@ export class UsersController {
     this.userSignIn = this.userSignIn.bind(this)
     this.changeStatusOnline = this.changeStatusOnline.bind(this)
     this.changeStatusOffline = this.changeStatusOffline.bind(this)
+    this.updateInfo = this.updateInfo.bind(this)
   }
 
   public async getListUser(req: Request, res: Response) {
@@ -77,6 +78,16 @@ export class UsersController {
       const update = await this.userUseCase.changeStatus(req.body.id, false);
       if (!update) throw new RestError('Update status failed', 400);
       return sendRespone(res, 'success', 200, null, 'update status successfuly')
+    } catch (error) {
+      return RestError.manageServerError(res, error, false)
+    }
+  }
+
+  public async updateInfo(req: Request, res: Response) {
+    try {
+      const update = await this.userUseCase.updateInfo(req.body);
+      if (!update) throw new RestError('Update status failed', 400);
+      return sendRespone(res, 'success', 200, null, 'update successfuly')
     } catch (error) {
       return RestError.manageServerError(res, error, false)
     }

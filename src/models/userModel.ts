@@ -1,13 +1,14 @@
 import * as mongoose from 'mongoose';
 
 export interface UserSchemaProps {
-  account: String;
-  passWord: String;
-  fullName: String;
-  email: String;
-  avatar: String;
-  isOnline: Boolean;
-  userTypeCode: String;
+  _id?: String;
+  account?: String;
+  passWord?: String;
+  fullName?: String;
+  email?: String;
+  avatar?: String;
+  isOnline?: Boolean;
+  userTypeCode?: String;
 }
 
 const Schema = mongoose.Schema;

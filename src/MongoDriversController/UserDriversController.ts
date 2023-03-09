@@ -3,8 +3,6 @@ import { TitleModel } from "../common/common.constants";
 import { UserSchemaProps } from "../models/userModel";
 import { UsersSchema } from '../models/userModel';
 import { IUserDriversRepository } from "../Repository/IUserDriversRepository";
-import { RestError } from "../services/error/error";
-
 
 export class UserDriversController implements IUserDriversRepository {
 
@@ -19,19 +17,19 @@ export class UserDriversController implements IUserDriversRepository {
 
     async findAllLists(): Promise<UserSchemaProps[]> {
         const listUsers = await this.Users.find({}).select(this.selectUser);
-        return listUsers
+        return listUsers.map(item => this.transFromData(item))
     }
 
     async findById(id: string): Promise<UserSchemaProps | undefined> {
         const user = await this.Users.findById(id).select(this.selectUser);
         if (!user) return;
-        return user
+        return this.transFromData(user)
     }
 
     async findByAccount(account: string): Promise<UserSchemaProps | undefined> {
         const user: any = await this.Users.findOne({ account });
         if (!user) return;
-        return user
+        return this.transFromData(user)
     }
 
     async createUser(account: string, hashPassWord: string, fullName: string, email: string): Promise<boolean> {
@@ -57,5 +55,19 @@ export class UserDriversController implements IUserDriversRepository {
             isOnline,
         });
         return;
+    }
+
+    async updateInfo(body: UserSchemaProps): Promise<boolean> {
+        const { _id, fullName, avatar } = body
+        await this.Users.findByIdAndUpdate(_id, {
+            fullName,
+            avatar,
+        });
+        return true;
+    }
+
+    private transFromData(data: any) {
+        if (!data) return;
+        return data._doc
     }
 }

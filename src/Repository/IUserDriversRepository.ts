@@ -11,4 +11,6 @@ export interface IUserDriversRepository {
     createUser(account: string, passWord: string, fullName: string, email: string): Promise<boolean>;
 
     updateStatus(id: string, isOnline: boolean): Promise<boolean>;
+
+    updateInfo(body: UserSchemaProps): Promise<boolean>;
 }

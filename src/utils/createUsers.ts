@@ -11,7 +11,7 @@ interface InfoUser {
 let listUsers: InfoUser[] = [];
 
 export const createUser = (socket: any, user: any) => {
-  const findUser = listUsers.find(({ _id }) => _id === user._id);
+  const findUser = listUsers.find(({ _id }) => _id === user?._id);
   if (findUser) return [findUser];
   if (!findUser) {
     listUsers.push({ socketId: socket.id, ...user });

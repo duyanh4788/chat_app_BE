@@ -39,13 +39,13 @@ export class UserUseCase {
         const checkPassWord = bcrypt.compareSync(passWord, checkAccount.passWord);
         if (!checkPassWord) throw new RestError('Password is wrong.', 400)
         const header = {
-            _id: checkAccount.id,
+            _id: checkAccount._id,
             account: checkAccount.account,
             userTypeCode: checkAccount.userTypeCode,
         };
         const toKen = JWT.sign(header, SECRETKEY, { expiresIn: 86400000 });
         const infoUser = {
-            _id: checkAccount.id,
+            _id: checkAccount._id,
             account: checkAccount.account,
             fullName: checkAccount.fullName,
             email: checkAccount.email,
@@ -65,5 +65,10 @@ export class UserUseCase {
         const update = await this.userDriversController.updateStatus(id, isOnline);
         if (!update) throw new RestError('Update status failed', 400);
         return true
+    }
+
+    async updateInfo(body: UserSchemaProps): Promise<boolean> {
+        const update = await this.userDriversController.updateInfo(body)
+        return update
     }
 }
