@@ -6,9 +6,11 @@ import { Routes } from '../routes';
 import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import crypto from 'crypto'
 
+const secret = crypto.randomBytes(64).toString('hex');
 const sessionOptions: SessionOptions = {
-  secret: 'YOUR_SESSION_SECRET',
+  secret: secret,
   resave: true,
   saveUninitialized: true
 };
