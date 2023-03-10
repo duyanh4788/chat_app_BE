@@ -3,9 +3,9 @@ dotenv.config();
 
 import App from './app/App';
 import * as http from 'http';
+import winston from 'winston';
 import { Websocket } from './socket_io/socket_io';
 import { Server } from 'socket.io';
-import winston from 'winston';
 import { RemoveImagesFromAWSJob } from './job/RemoveImagesFromAWSJob'
 
 
@@ -27,6 +27,7 @@ export const logger = winston.createLogger({
 const removeImagesFromAWSJob = new RemoveImagesFromAWSJob();
 removeImagesFromAWSJob.runJob()
 
+// ********************* Config *********************//
 const PORT: string | number | any = process.env.PORT || 5000;
 const HOST: string = '0.0.0.0';
 

@@ -9,10 +9,19 @@ export class FaceBookService {
     private readonly END_POINT_SERVER: string | any = process.env.END_POINT_SERVER;
 
     constructor(private userDriverRepository: IUserDriversRepository) {
-        this.initializeFacebookStrategy();
+        this.initializeLoginFacebook();
     }
 
-    public initializeFacebookStrategy() {
+    public initializeLoginFacebook() {
+
+        passport.serializeUser((user, done) => {
+            done(null, user as UserSchemaProps);
+        });
+
+        passport.deserializeUser((user, done) => {
+            done(null, user as UserSchemaProps);
+        });
+
         passport.use(new FacebookStrategy({
             clientID: this.FB_ID,
             clientSecret: this.FB_KEY,
@@ -24,17 +33,17 @@ export class FaceBookService {
             if (checkEmail) {
                 return cb(null, checkEmail)
             }
-            await this.userDriverRepository.createUser(_json.email.split('@')[0] + '_' + _json.id, _json.id, _json.name, _json.email, UserTypeCreate.FACEBOOK, _json.id)
-            return cb(null, profile)
+            const avatar = `https://graph.facebook.com/${_json.id}/picture?type=large`
+            const create = await this.userDriverRepository.createUser(_json.email.split('@')[0] + '_' + _json.id, "", _json.name, _json.email, UserTypeCreate.FACEBOOK, _json.id, avatar)
+            return cb(null, create)
         }));
+    }
 
-        passport.serializeUser((user, done) => {
-            done(null, user as UserSchemaProps);
-        });
+    public authenticate() {
+        return passport.authenticate('facebook');
+    }
 
-        passport.deserializeUser((user, done) => {
-            done(null, user as UserSchemaProps);
-        });
-
+    public handleCallback() {
+        return passport.authenticate('facebook', { successRedirect: this.END_POINT_SERVER + '/profile-fb', failureRedirect: process.env.END_POINT_HOME });
     }
 }

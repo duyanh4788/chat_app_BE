@@ -37,12 +37,13 @@ export class UserDriversController implements IUserDriversRepository {
         return this.transFromData(user)
     }
 
-    async createUser(account: string, hashPassWord: string, fullName: string, email: string, userTypeCreate: UserTypeCreate, userTypeCreateId: string = ''): Promise<UserSchemaProps> {
+    async createUser(account: string, hashPassWord: string, fullName: string, email: string, userTypeCreate: UserTypeCreate, userTypeCreateId: string = '', avatar: string = ''): Promise<UserSchemaProps> {
         const newUser = new this.Users({
             account,
             passWord: hashPassWord,
             fullName,
             email,
+            avatar,
             userTypeCreate,
             userTypeCreateId
         });

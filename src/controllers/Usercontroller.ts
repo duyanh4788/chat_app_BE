@@ -16,7 +16,9 @@ export class UsersController {
     this.changeStatusOffline = this.changeStatusOffline.bind(this)
     this.updateInfo = this.updateInfo.bind(this)
     this.profileFacebook = this.profileFacebook.bind(this)
+    this.profileGoogle = this.profileGoogle.bind(this)
     this.userSignUpWithFB = this.userSignUpWithFB.bind(this)
+    this.userSignUpWithGG = this.userSignUpWithGG.bind(this)
   }
 
   public async getListUser(req: Request, res: Response) {
@@ -56,10 +58,15 @@ export class UsersController {
 
   public async userSignUpWithFB(req: Request, res: Response) {
     try {
-      const { account, passWord, fullName, email } = req.body;
-      const create = await this.userUseCase.userSignUpWithFB(account, passWord, fullName, email);
-      if (!create) throw new RestError('Sign Up failed', 400);
-      return sendRespone(res, 'success', 200, create, 'sign in with FB successfully.')
+      return sendRespone(res, 'success', 200, `${process.env.END_POINT_SERVER}/login-fb`, 'login successfuly')
+    } catch (error) {
+      return RestError.manageServerError(res, error, false)
+    }
+  }
+
+  public async userSignUpWithGG(req: Request, res: Response) {
+    try {
+      return sendRespone(res, 'success', 200, `${process.env.END_POINT_SERVER}/login-gg`, 'login successfuly')
     } catch (error) {
       return RestError.manageServerError(res, error, false)
     }
@@ -112,6 +119,19 @@ export class UsersController {
         return res.redirect(process.env.END_POINT_HOME as string)
       }
       const create = await this.userUseCase.profileFacebook(req.user)
+      if (!create) return res.redirect(process.env.END_POINT_HOME as string)
+      return res.redirect(`${process.env.END_POINT_HOME}?token=${create.toKen}?_id=${create._id}` as string)
+    } catch (error) {
+      return res.redirect(process.env.END_POINT_HOME as string)
+    }
+  }
+
+  public async profileGoogle(req: Request, res: Response) {
+    try {
+      if (!req.isAuthenticated() || !req.user) {
+        return res.redirect(process.env.END_POINT_HOME as string)
+      }
+      const create = await this.userUseCase.profileGoogle(req.user)
       if (!create) return res.redirect(process.env.END_POINT_HOME as string)
       return res.redirect(`${process.env.END_POINT_HOME}?token=${create.toKen}?_id=${create._id}` as string)
     } catch (error) {

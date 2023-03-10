@@ -10,7 +10,7 @@ export interface IUserDriversRepository {
 
     findByAccount(account: string): Promise<UserSchemaProps | undefined>;
 
-    createUser(account: string, passWord: string, fullName: string, email: string, userTypeCreate: UserTypeCreate, userTypeCreateId?: string): Promise<UserSchemaProps>;
+    createUser(account: string, passWord: string, fullName: string, email: string, userTypeCreate: UserTypeCreate, userTypeCreateId?: string, avatar?: string): Promise<UserSchemaProps>;
 
     updateStatus(id: string, isOnline: boolean): Promise<boolean>;
 
