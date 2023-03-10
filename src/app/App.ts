@@ -1,10 +1,18 @@
 import express, { Request, Response, NextFunction } from 'express';
+import seesion, { SessionOptions } from 'express-session'
 import mongoose from 'mongoose';
 import cors from 'cors';
 import { Routes } from '../routes';
 import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+
+const sessionOptions: SessionOptions = {
+  secret: 'YOUR_SESSION_SECRET',
+  resave: true,
+  saveUninitialized: true
+};
+
 
 class App {
   public App: express.Application;
@@ -42,6 +50,8 @@ class App {
     this.App.options(`${process.env.END_POINT_HOME}`);
     this.App.options(`${process.env.END_POINT}`);
     this.App.use(cors());
+    this.App.use(seesion(sessionOptions));
+
   }
 
   public configJson(): void {

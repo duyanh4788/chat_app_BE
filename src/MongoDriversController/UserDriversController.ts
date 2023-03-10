@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import { TitleModel } from "../common/common.constants";
-import { UserSchemaProps } from "../models/userModel";
-import { UsersSchema } from '../models/userModel';
+import { UserSchemaProps, UsersSchema, UserTypeCreate } from "../models/userModel";
 import { IUserDriversRepository } from "../Repository/IUserDriversRepository";
 
 export class UserDriversController implements IUserDriversRepository {
@@ -32,15 +31,23 @@ export class UserDriversController implements IUserDriversRepository {
         return this.transFromData(user)
     }
 
-    async createUser(account: string, hashPassWord: string, fullName: string, email: string): Promise<boolean> {
+    async findByEmail(email: string): Promise<UserSchemaProps | undefined> {
+        const user: any = await this.Users.findOne({ email });
+        if (!user) return;
+        return this.transFromData(user)
+    }
+
+    async createUser(account: string, hashPassWord: string, fullName: string, email: string, userTypeCreate: UserTypeCreate, userTypeCreateId: string = ''): Promise<UserSchemaProps> {
         const newUser = new this.Users({
             account,
             passWord: hashPassWord,
             fullName,
             email,
+            userTypeCreate,
+            userTypeCreateId
         });
-        await newUser.save();
-        return true
+        const create = await newUser.save();
+        return this.transFromData(create)
     }
 
     async updateStatus(id: string, isOnline: boolean): Promise<boolean> {

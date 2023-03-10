@@ -15,6 +15,8 @@ export class UsersController {
     this.changeStatusOnline = this.changeStatusOnline.bind(this)
     this.changeStatusOffline = this.changeStatusOffline.bind(this)
     this.updateInfo = this.updateInfo.bind(this)
+    this.profileFacebook = this.profileFacebook.bind(this)
+    this.userSignUpWithFB = this.userSignUpWithFB.bind(this)
   }
 
   public async getListUser(req: Request, res: Response) {
@@ -46,7 +48,18 @@ export class UsersController {
       const { account, passWord, fullName, email } = req.body;
       const create = await this.userUseCase.userSignUp(account, passWord, fullName, email);
       if (!create) throw new RestError('Sign Up failed', 400);
-      return sendRespone(res, 'success', 200, null, 'Sign Up successfully.')
+      return sendRespone(res, 'success', 200, null, 'sign up successfully.')
+    } catch (error) {
+      return RestError.manageServerError(res, error, false)
+    }
+  }
+
+  public async userSignUpWithFB(req: Request, res: Response) {
+    try {
+      const { account, passWord, fullName, email } = req.body;
+      const create = await this.userUseCase.userSignUpWithFB(account, passWord, fullName, email);
+      if (!create) throw new RestError('Sign Up failed', 400);
+      return sendRespone(res, 'success', 200, create, 'sign in with FB successfully.')
     } catch (error) {
       return RestError.manageServerError(res, error, false)
     }
@@ -90,6 +103,19 @@ export class UsersController {
       return sendRespone(res, 'success', 200, null, 'update successfuly')
     } catch (error) {
       return RestError.manageServerError(res, error, false)
+    }
+  }
+
+  public async profileFacebook(req: Request, res: Response) {
+    try {
+      if (!req.isAuthenticated() || !req.user) {
+        return res.redirect(process.env.END_POINT_HOME as string)
+      }
+      const create = await this.userUseCase.profileFacebook(req.user)
+      if (!create) return res.redirect(process.env.END_POINT_HOME as string)
+      return res.redirect(`${process.env.END_POINT_HOME}?token=${create.toKen}?_id=${create._id}` as string)
+    } catch (error) {
+      return res.redirect(process.env.END_POINT_HOME as string)
     }
   }
 }
