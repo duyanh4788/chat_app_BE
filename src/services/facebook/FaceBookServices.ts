@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Profile, Strategy as FacebookStrategy } from 'passport-facebook';
-import { UserSchemaProps, UserTypeCreate } from '../../models/userModel';
+import { StatusCreate, UserSchemaProps, UserTypeCreate } from '../../models/userModel';
 import { IUserDriversRepository } from '../../Repository/IUserDriversRepository';
 
 export class FaceBookService {
@@ -34,7 +34,7 @@ export class FaceBookService {
                 return cb(null, checkEmail)
             }
             const avatar = `https://graph.facebook.com/${_json.id}/picture?type=large`
-            const create = await this.userDriverRepository.createUser(_json.email.split('@')[0] + '_' + _json.id, "", _json.name, _json.email, UserTypeCreate.FACEBOOK, _json.id, avatar)
+            const create = await this.userDriverRepository.createUser(_json.email.split('@')[0] + '_' + _json.id, "", _json.name, _json.email, StatusCreate.ACTIVE, UserTypeCreate.FACEBOOK, _json.id, avatar)
             return cb(null, create)
         }));
     }

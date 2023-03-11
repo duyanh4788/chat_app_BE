@@ -7,6 +7,9 @@ import { FaceBookService } from '../../services/facebook/FaceBookServices';
 import { UserUseCase } from '../../usecase/UserUseCase';
 import passport from 'passport';
 import { GoogleServices } from '../../services/google/GoogleServices';
+import { AuthenticatorUseCase } from '../../usecase/AuthenticatorUseCase';
+import { AuthenticatorStationDriversController } from '../../MongoDriversController/AuthenticatorStationDriversController';
+import { NodeMailerServices } from '../../services/nodemailer/MailServices';
 
 const BASE_ROUTE = '/api/v1';
 
@@ -15,6 +18,7 @@ enum Routes {
   GET_USER_BY_ID = '/getUserById/:id',
   SIGN_IN = '/signIn',
   SIGN_UP = '/signUp',
+  ACTIVE_USER = '/active/:authCode',
   CHANGE_STATUS_ONLINE = '/changeStatusOnline',
   CHANGE_STATUS_OFFLINE = '/changeStatusOffline',
   UPDATE_INFOR = '/update-infor',
@@ -28,12 +32,15 @@ enum Routes {
 
 
 export class UsersRoutes {
+  private nodeMailerServices: NodeMailerServices = new NodeMailerServices()
   private userDriversController: UserDriversController = new UserDriversController();
+  private authenticatorStationDriversController: AuthenticatorStationDriversController = new AuthenticatorStationDriversController();
   private faceBookService: FaceBookService = new FaceBookService(this.userDriversController);
   private googleServices: GoogleServices = new GoogleServices(this.userDriversController);
   private userUseCase: UserUseCase = new UserUseCase(this.userDriversController);
-  private usersController: UsersController = new UsersController(this.userUseCase);
-  private authMiddleware: AuthUserMiddleware = new AuthUserMiddleware();
+  private AuthenticatorUseCase: AuthenticatorUseCase = new AuthenticatorUseCase(this.authenticatorStationDriversController);
+  private usersController: UsersController = new UsersController(this.userUseCase, this.AuthenticatorUseCase, this.nodeMailerServices);
+  private authMiddleware: AuthUserMiddleware = new AuthUserMiddleware(this.userDriversController);
   private verifyTokenMiddleware: VerifyTokenMiddleware = new VerifyTokenMiddleware();
 
   public routes(app: Router): void {
@@ -50,6 +57,7 @@ export class UsersRoutes {
     );
     app.post(BASE_ROUTE + Routes.SIGN_IN, this.usersController.userSignIn);
     app.post(BASE_ROUTE + Routes.SIGN_UP, this.authMiddleware.validateSignUp, this.usersController.userSignUp);
+    app.get(BASE_ROUTE + Routes.ACTIVE_USER, this.usersController.activeUser);
     app.post(BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE, this.usersController.changeStatusOnline);
     app.post(BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE, this.usersController.changeStatusOffline);
     app.put(BASE_ROUTE + Routes.UPDATE_INFOR, this.usersController.updateInfo);

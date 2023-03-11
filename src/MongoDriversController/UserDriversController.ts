@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import { TitleModel } from "../common/common.constants";
-import { UserSchemaProps, UsersSchema, UserTypeCreate } from "../models/userModel";
+import { StatusCreate, UserSchemaProps, UsersSchema, UserTypeCreate } from "../models/userModel";
 import { IUserDriversRepository } from "../Repository/IUserDriversRepository";
+import { RestError } from "../services/error/error";
 
 export class UserDriversController implements IUserDriversRepository {
 
@@ -12,14 +13,26 @@ export class UserDriversController implements IUserDriversRepository {
         'email',
         'avatar',
         'isOnline',
+        'statusCreate',
+        'twoFA',
+        'type2FA',
     ]
 
     async findAllLists(): Promise<UserSchemaProps[]> {
-        const listUsers = await this.Users.find({}).select(this.selectUser);
+        const listUsers = await this.Users.find({ statusCreate: StatusCreate.ACTIVE }).select(this.selectUser);
         return listUsers.map(item => this.transFromData(item))
     }
 
     async findById(id: string): Promise<UserSchemaProps | undefined> {
+        const user = await this.Users.findById(id).select(this.selectUser);
+        if (!user) return;
+        if (user && user.statusCreate as string === StatusCreate.IN_ACTIVE) {
+            throw new RestError('account have inactive, please activate code in email or resend code.', 401)
+        }
+        return this.transFromData(user)
+    }
+
+    async getUserByIdNoneStatus(id: string): Promise<UserSchemaProps | undefined> {
         const user = await this.Users.findById(id).select(this.selectUser);
         if (!user) return;
         return this.transFromData(user)
@@ -28,16 +41,22 @@ export class UserDriversController implements IUserDriversRepository {
     async findByAccount(account: string): Promise<UserSchemaProps | undefined> {
         const user: any = await this.Users.findOne({ account });
         if (!user) return;
+        if (user && user.statusCreate as string === StatusCreate.IN_ACTIVE) {
+            throw new RestError('account have inactive, please activate code in email or resend code.', 401)
+        }
         return this.transFromData(user)
     }
 
     async findByEmail(email: string): Promise<UserSchemaProps | undefined> {
         const user: any = await this.Users.findOne({ email });
         if (!user) return;
+        if (user && user.statusCreate as string === StatusCreate.IN_ACTIVE) {
+            throw new RestError('account have inactive, please activate code in email or resend code.', 401)
+        }
         return this.transFromData(user)
     }
 
-    async createUser(account: string, hashPassWord: string, fullName: string, email: string, userTypeCreate: UserTypeCreate, userTypeCreateId: string = '', avatar: string = ''): Promise<UserSchemaProps> {
+    async createUser(account: string, hashPassWord: string, fullName: string, email: string, statusCreate: string, userTypeCreate: UserTypeCreate, userTypeCreateId: string = '', avatar: string = ''): Promise<UserSchemaProps> {
         const newUser = new this.Users({
             account,
             passWord: hashPassWord,
@@ -45,7 +64,8 @@ export class UserDriversController implements IUserDriversRepository {
             email,
             avatar,
             userTypeCreate,
-            userTypeCreateId
+            userTypeCreateId,
+            statusCreate
         });
         const create = await newUser.save();
         return this.transFromData(create)
@@ -72,6 +92,15 @@ export class UserDriversController implements IUserDriversRepository {
             avatar,
         });
         return true;
+    }
+
+    async updateStatusCreate(userId: string, statusCreate: string): Promise<void> {
+        await this.Users.findOneAndUpdate(
+            { _id: userId },
+            { statusCreate: statusCreate },
+            { new: true }
+        );
+        return
     }
 
     private transFromData(data: any) {

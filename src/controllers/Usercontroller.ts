@@ -2,15 +2,19 @@ import { Request, Response } from 'express';
 import { RestError } from '../services/error/error';
 import { sendRespone } from '../common/common.success';
 import { UserUseCase } from '../usecase/UserUseCase';
-
+import { AuthenticatorUseCase } from '../usecase/AuthenticatorUseCase';
+import { INodeMailerServices } from '../Repository/INodeMailerServices';
+import { AuthenticatorSchemaProps } from '../models/authenticatorModel';
+import { StatusCreate } from '../models/userModel';
 
 export class UsersController {
 
-  constructor(private userUseCase: UserUseCase) {
+  constructor(private userUseCase: UserUseCase, private authenticatorUseCase: AuthenticatorUseCase, private nodeMailerServicese: INodeMailerServices) {
 
     this.getListUser = this.getListUser.bind(this)
     this.getUserById = this.getUserById.bind(this)
     this.userSignUp = this.userSignUp.bind(this)
+    this.activeUser = this.activeUser.bind(this)
     this.userSignIn = this.userSignIn.bind(this)
     this.changeStatusOnline = this.changeStatusOnline.bind(this)
     this.changeStatusOffline = this.changeStatusOffline.bind(this)
@@ -50,7 +54,30 @@ export class UsersController {
       const { account, passWord, fullName, email } = req.body;
       const create = await this.userUseCase.userSignUp(account, passWord, fullName, email);
       if (!create) throw new RestError('Sign Up failed', 400);
+      const authCode = await this.authenticatorUseCase.createAutCode(create._id as string);
+      this.nodeMailerServicese.sendWelcomeUserNotification(create, authCode)
       return sendRespone(res, 'success', 200, null, 'sign up successfully.')
+    } catch (error) {
+      return RestError.manageServerError(res, error, false)
+    }
+  }
+
+  public async activeUser(req: Request, res: Response) {
+    try {
+      const { authCode } = req.params;
+      if (!authCode) throw new RestError('code invalid.', 401);
+      const checkCode = await this.authenticatorUseCase.findAuthCode(authCode);
+      for (let [key, value] of checkCode.entries()) {
+        if (key) {
+          await this.userUseCase.updateStatusCreate(value.userId as string, StatusCreate.ACTIVE)
+          return sendRespone(res, 'success', 200, 'active successfully, please login.', '')
+        }
+        if (!key) {
+          const findUser = await this.userUseCase.getUserByIdNoneStatus(value.userId as string)
+          this.nodeMailerServicese.sendWelcomeUserNotification(findUser, authCode)
+          return sendRespone(res, 'success', 200, 'your code is expired, we have send code to email, please checked in email and activate.', '')
+        }
+      }
     } catch (error) {
       return RestError.manageServerError(res, error, false)
     }

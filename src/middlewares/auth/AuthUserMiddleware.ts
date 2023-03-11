@@ -3,10 +3,16 @@ import { Request, Response, NextFunction } from 'express';
 import { UsersSchema } from '../../models/userModel';
 import * as mongoose from 'mongoose';
 import { validateValue } from '../../utils/validate';
+import { IUserDriversRepository } from '../../Repository/IUserDriversRepository';
 
 const Users = mongoose.model(TitleModel.USERS, UsersSchema);
 
 export class AuthUserMiddleware {
+
+  constructor(private userDriversRepository: IUserDriversRepository) {
+    this.validateSignUp = this.validateSignUp.bind(this);
+    this.checkAccountExits = this.checkAccountExits.bind(this);
+  }
 
   public async validateSignUp(req: Request, res: Response, next: NextFunction) {
     const { account, passWord, fullName, email } = req.body;
@@ -19,11 +25,11 @@ export class AuthUserMiddleware {
     if (account.length <= 4 && account.length >= 30) {
       return res.status(404).json({ status: 'error', code: 404, data: null, message: 'length number form 6 => 30' });
     }
-    const acc = await Users.findOne({ account });
+    const acc = await this.userDriversRepository.findByAccount(account);
     if (acc) {
       return res.status(404).json({ status: 'error', code: 404, data: null, message: 'user have exist.' });
     }
-    const em = await Users.findOne({ email });
+    const em = await this.userDriversRepository.findByEmail(account);
     if (em) {
       return res.status(404).json({ status: 'error', code: 404, data: null, message: 'email have exist.' });
     }
@@ -32,7 +38,7 @@ export class AuthUserMiddleware {
 
   public async checkAccountExits(req: Request, res: Response, next: NextFunction) {
     const { account } = req.body;
-    const data = await Users.findOne({ account });
+    const data = await this.userDriversRepository.findByAccount(account);
     if (!data) {
       next();
     } else {

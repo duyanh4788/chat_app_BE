@@ -6,6 +6,16 @@ export enum UserTypeCreate {
   CHATAPP = 'CHATAPP',
 }
 
+export enum StatusCreate {
+  IN_ACTIVE = 'IN_ACTIVE',
+  ACTIVE = 'ACTIVE',
+}
+
+export enum Type2FA {
+  AUTH_CODE = 'AUTH_CODE',
+  PASSPORT = 'PASSPORT',
+}
+
 export interface UserSchemaProps {
   _id?: String;
   account?: String;
@@ -14,6 +24,9 @@ export interface UserSchemaProps {
   email?: String;
   avatar?: String;
   isOnline?: Boolean;
+  statusCreate?: Type2FA;
+  twoFA?: boolean;
+  type2FA?: Type2FA;
   userTypeCode?: String;
   userTypeCreate?: UserTypeCreate;
   userTypeCreateId?: String;
@@ -57,6 +70,18 @@ export const UsersSchema = new Schema<UserSchemaProps>(
     },
     userTypeCreateId: {
       type: String,
+      default: '',
+    },
+    statusCreate: {
+      type: Schema.Types.Mixed,
+      default: '',
+    },
+    twoFA: {
+      type: Boolean,
+      default: false,
+    },
+    type2FA: {
+      type: Schema.Types.Mixed,
       default: '',
     },
   },

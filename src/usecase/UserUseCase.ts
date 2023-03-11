@@ -1,4 +1,4 @@
-import { UserSchemaProps, UserTypeCreate } from "../models/userModel";
+import { StatusCreate, UserSchemaProps, UserTypeCreate } from "../models/userModel";
 import { IUserDriversRepository } from "../Repository/IUserDriversRepository";
 import { RestError } from "../services/error/error";
 import * as bcrypt from 'bcryptjs';
@@ -25,10 +25,18 @@ export class UserUseCase {
         return user
     }
 
+    async getUserByIdNoneStatus(id: string): Promise<UserSchemaProps> {
+        const user = await this.userDriversController.getUserByIdNoneStatus(id);
+        if (!user) {
+            throw new RestError('USER NOT FOUND!', 400)
+        }
+        return user
+    }
+
     async userSignUp(account: string, passWord: string, fullName: string, email: string): Promise<UserSchemaProps> {
         const salt = bcrypt.genSaltSync(10);
         const hashPassWord = bcrypt.hashSync(passWord, salt);
-        const create = await this.userDriversController.createUser(account, hashPassWord, fullName, email, UserTypeCreate.CHATAPP);
+        const create = await this.userDriversController.createUser(account, hashPassWord, fullName, email, StatusCreate.IN_ACTIVE, UserTypeCreate.CHATAPP);
         if (!create) throw new RestError('Signup failed, please contact admin', 400)
         return create
     }
@@ -66,6 +74,10 @@ export class UserUseCase {
     async profileGoogle(body: UserSchemaProps) {
         if (!body) return;
         return this.configHashPass(body)
+    }
+
+    async updateStatusCreate(userId: string, statusCreate: string): Promise<void> {
+        return await this.userDriversController.updateStatusCreate(userId, statusCreate)
     }
 
     private configHashPass(user: UserSchemaProps) {

@@ -3,7 +3,8 @@ export const TitleModel = {
   MESSAGES: 'Messages',
   USERS: 'Users',
   ROOM: 'Room',
-  CONVERTSTATIONS: 'convertstations',
+  CONVERTSTATIONS: 'Convertstations',
+  AUTHENTICATOR: 'Authenticators',
 };
 
 export const SOCKET_COMMIT = {

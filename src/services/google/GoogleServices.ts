@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy, Profile } from 'passport-google-oauth20';
-import { UserSchemaProps, UserTypeCreate } from '../../models/userModel';
+import { StatusCreate, UserSchemaProps, UserTypeCreate } from '../../models/userModel';
 import { IUserDriversRepository } from "../../Repository/IUserDriversRepository";
 
 export class GoogleServices {
@@ -35,7 +35,7 @@ export class GoogleServices {
                 return cb(null, checkEmail);
             }
             const username = email?.split('@')[0] + '_' + id;
-            const user = await this.userDriverRepository.createUser(username, '', profile.displayName, email as string, UserTypeCreate.GOOGLE, id, picture);
+            const user = await this.userDriverRepository.createUser(username, '', profile.displayName, email as string, StatusCreate.ACTIVE, UserTypeCreate.GOOGLE, id, picture);
             return cb(null, user);
         }));
     }
