@@ -28,13 +28,15 @@ export class FaceBookService {
             callbackURL: `${this.END_POINT_SERVER}/callback-fb`,
             profileFields: ['id', 'displayName', 'email', 'picture.type(large)'],
         }, async (accessToken: string, refreshToken: string, profile: Profile, cb: Function) => {
-            const { _json } = profile
-            const checkEmail = await this.userDriverRepository.findByEmail(_json.email);
+            const { _json } = profile;
+            const email = _json.email ? _json.email : _json.name.split(' ').join("") + '_' + _json.id + '@facebook.com';
+            const account = _json.email ? _json.email.split('@')[0] + '_' + _json.id : _json.name.split(' ').join("") + '_' + _json.id;
+            const checkEmail = await this.userDriverRepository.findByEmail(email);
             if (checkEmail) {
                 return cb(null, checkEmail)
             }
             const avatar = `https://graph.facebook.com/${_json.id}/picture?type=large`
-            const create = await this.userDriverRepository.createUser(_json.email.split('@')[0] + '_' + _json.id, "", _json.name, _json.email, StatusCreate.ACTIVE, UserTypeCreate.FACEBOOK, _json.id, avatar)
+            const create = await this.userDriverRepository.createUser(account, "", _json.name, email, StatusCreate.ACTIVE, UserTypeCreate.FACEBOOK, _json.id, avatar)
             return cb(null, create)
         }));
     }
