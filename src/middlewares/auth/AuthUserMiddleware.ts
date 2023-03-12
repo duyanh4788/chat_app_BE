@@ -1,11 +1,6 @@
-import { TitleModel } from '../../common/common.constants';
 import { Request, Response, NextFunction } from 'express';
-import { UsersSchema } from '../../models/userModel';
-import * as mongoose from 'mongoose';
 import { validateValue } from '../../utils/validate';
 import { IUserDriversRepository } from '../../Repository/IUserDriversRepository';
-
-const Users = mongoose.model(TitleModel.USERS, UsersSchema);
 
 export class AuthUserMiddleware {
 
