@@ -5,8 +5,8 @@ export class AuthenticatorUseCase {
 
     constructor(private authenticatorStationDriversRepository: IAuthenticatorStationDriversRepository) { }
 
-    async createAutCode(userId: string): Promise<string> {
-        const code = await this.authenticatorStationDriversRepository.createAutCode(userId);
+    async createAuthCode(userId: string): Promise<string> {
+        const code = await this.authenticatorStationDriversRepository.createAuthCode(userId);
         return code;
     }
 
@@ -20,7 +20,11 @@ export class AuthenticatorUseCase {
         return code;
     }
 
-    async findAuthCode(userId: string): Promise<Map<boolean, AuthenticatorSchemaProps>> {
-        return await this.authenticatorStationDriversRepository.findAuthCode(userId);
+    async findAuthCode(authCode: string): Promise<Map<boolean, AuthenticatorSchemaProps>> {
+        return await this.authenticatorStationDriversRepository.findAuthCode(authCode);
+    }
+
+    async findAuthCodeAndRemove(authCode: string): Promise<void> {
+        return await this.authenticatorStationDriversRepository.findAuthCodeAndRemove(authCode);
     }
 }

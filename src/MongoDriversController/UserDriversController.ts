@@ -26,7 +26,7 @@ export class UserDriversController implements IUserDriversRepository {
     async findById(id: string): Promise<UserSchemaProps | undefined> {
         const user = await this.Users.findById(id).select(this.selectUser);
         if (!user) return;
-        if (user && user.statusCreate as string === StatusCreate.IN_ACTIVE) {
+        if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
             throw new RestError('account have inactive, please activate code in email or resend code.', 401)
         }
         return this.transFromData(user)
@@ -41,7 +41,7 @@ export class UserDriversController implements IUserDriversRepository {
     async findByAccount(account: string): Promise<UserSchemaProps | undefined> {
         const user: any = await this.Users.findOne({ account });
         if (!user) return;
-        if (user && user.statusCreate as string === StatusCreate.IN_ACTIVE) {
+        if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
             throw new RestError('account have inactive, please activate code in email or resend code.', 401)
         }
         return this.transFromData(user)
@@ -50,7 +50,7 @@ export class UserDriversController implements IUserDriversRepository {
     async findByEmail(email: string): Promise<UserSchemaProps | undefined> {
         const user: any = await this.Users.findOne({ email });
         if (!user) return;
-        if (user && user.statusCreate as string === StatusCreate.IN_ACTIVE) {
+        if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
             throw new RestError('account have inactive, please activate code in email or resend code.', 401)
         }
         return this.transFromData(user)
@@ -95,10 +95,16 @@ export class UserDriversController implements IUserDriversRepository {
     }
 
     async updateStatusCreate(userId: string, statusCreate: string): Promise<void> {
-        await this.Users.findOneAndUpdate(
-            { _id: userId },
-            { statusCreate: statusCreate },
-            { new: true }
+        await this.Users.findByIdAndUpdate(userId, {
+            statusCreate
+        });
+        return
+    }
+
+    async updatePassWord(userId: string, newPassWord: string): Promise<void> {
+        await this.Users.findByIdAndUpdate(userId, {
+            passWord: newPassWord
+        }
         );
         return
     }

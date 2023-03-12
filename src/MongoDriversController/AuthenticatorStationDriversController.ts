@@ -4,11 +4,12 @@ import { AuthenticatorSchema, AuthenticatorSchemaProps } from "../models/authent
 import { IAuthenticatorStationDriversRepository } from "../Repository/IAuthenticatorStationDriversRepository";
 import { RestError } from "../services/error/error";
 import { ramdomAuthCode } from "../utils/ramdomAuthCode";
+import { checkTimerAuthenticator } from "../utils/timer";
 
 export class AuthenticatorStationDriversController implements IAuthenticatorStationDriversRepository {
     private Authenticators = mongoose.model(TitleModel.AUTHENTICATOR, AuthenticatorSchema);
 
-    async createAutCode(userId: string): Promise<string> {
+    async createAuthCode(userId: string): Promise<string> {
         const authCode = ramdomAuthCode(6);
         const model = new this.Authenticators({
             userId,
@@ -20,7 +21,7 @@ export class AuthenticatorStationDriversController implements IAuthenticatorStat
     }
 
     async findByUserId(userId: string): Promise<AuthenticatorSchemaProps> {
-        const code = await this.Authenticators.find({ userId });
+        const code = await this.Authenticators.findOne({ userId });
         return this.transFromData(code)
     }
 
@@ -38,7 +39,7 @@ export class AuthenticatorStationDriversController implements IAuthenticatorStat
         let findCode = await this.Authenticators.findOne({ authCode })
         if (!findCode) throw new RestError('code invalid.', 401)
         let mapAuthCode: Map<boolean, AuthenticatorSchemaProps> = new Map();
-        const checkTime = new Date(findCode.dateTimeCreate).getTime() < new Date().getTime() - 3600000;
+        const checkTime = checkTimerAuthenticator(findCode.dateTimeCreate)
         if (checkTime) {
             const authCode = ramdomAuthCode(6);
             findCode.authCode = authCode;
@@ -51,6 +52,13 @@ export class AuthenticatorStationDriversController implements IAuthenticatorStat
         mapAuthCode.set(true, this.transFromData(findCode))
         return mapAuthCode
     }
+
+    async findAuthCodeAndRemove(authCode: string): Promise<void> {
+        let findCode = await this.Authenticators.findOne({ authCode });
+        if (!findCode) throw new RestError('code invalid.', 401);
+        await findCode.delete();
+        return;
+    };
 
 
     private transFromData(data: any) {

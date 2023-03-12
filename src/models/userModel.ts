@@ -24,7 +24,7 @@ export interface UserSchemaProps {
   email?: String;
   avatar?: String;
   isOnline?: Boolean;
-  statusCreate?: Type2FA;
+  statusCreate?: StatusCreate;
   twoFA?: boolean;
   type2FA?: Type2FA;
   userTypeCode?: String;

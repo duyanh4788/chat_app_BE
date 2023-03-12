@@ -28,6 +28,9 @@ enum Routes {
   LOGIN_GG = '/login-gg',
   CALL_BACK_GG = '/callback-gg',
   PROFILE_GG = '/profile-gg',
+  ORDER_RESET_PASSWORD = '/order-reset-password',
+  RESEND_ORDER_RESET_PASSWORD = '/resend-order-reset-password',
+  RESET_PASSWORD = '/reset-password',
 }
 
 
@@ -61,6 +64,9 @@ export class UsersRoutes {
     app.post(BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE, this.usersController.changeStatusOnline);
     app.post(BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE, this.usersController.changeStatusOffline);
     app.put(BASE_ROUTE + Routes.UPDATE_INFOR, this.usersController.updateInfo);
+    app.post(BASE_ROUTE + Routes.ORDER_RESET_PASSWORD, this.usersController.orderResetPassWord);
+    app.post(BASE_ROUTE + Routes.RESEND_ORDER_RESET_PASSWORD, this.usersController.resendOrderResetPassWord);
+    app.post(BASE_ROUTE + Routes.RESET_PASSWORD, this.usersController.resetPassWord);
 
 
 

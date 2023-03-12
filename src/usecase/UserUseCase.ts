@@ -25,6 +25,14 @@ export class UserUseCase {
         return user
     }
 
+    async getUserByEmail(email: string): Promise<UserSchemaProps> {
+        const user = await this.userDriversController.findByEmail(email);
+        if (!user) {
+            throw new RestError('USER NOT FOUND!', 400)
+        }
+        return user
+    }
+
     async getUserByIdNoneStatus(id: string): Promise<UserSchemaProps> {
         const user = await this.userDriversController.getUserByIdNoneStatus(id);
         if (!user) {
@@ -64,6 +72,12 @@ export class UserUseCase {
     async updateInfo(body: UserSchemaProps): Promise<boolean> {
         const update = await this.userDriversController.updateInfo(body)
         return update
+    }
+
+    async updatePassWord(userId: string, newPassWord: string): Promise<void> {
+        const salt = bcrypt.genSaltSync(10);
+        const hashPassWord = bcrypt.hashSync(newPassWord, salt);
+        return await this.userDriversController.updatePassWord(userId, hashPassWord)
     }
 
     async profileFacebook(body: UserSchemaProps) {
