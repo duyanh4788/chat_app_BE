@@ -1,7 +1,7 @@
-import { UserSchemaProps } from "../models/userModel";
+import { UserSchemaProps } from '../models/userModel';
 
 export interface INodeMailerServices {
-    sendWelcomeUserNotification(user: UserSchemaProps, authCode: string): Promise<void>;
+  sendWelcomeUserNotification(user: UserSchemaProps, authCode: string): Promise<void>;
 
-    sendAuthCodeResetPassWord(user: UserSchemaProps, authCode: string): Promise<void>;
+  sendAuthCodeResetPassWord(user: UserSchemaProps, authCode: string): Promise<void>;
 }

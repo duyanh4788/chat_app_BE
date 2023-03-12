@@ -11,16 +11,25 @@ export class VerifyTokenMiddleware {
     try {
       const token = req.header('Authorization');
       const deCode: any = JWT.verify(token, SECRETKEY);
-      const getTime = Math.round(new Date().getTime() / 1000)
+      const getTime = Math.round(new Date().getTime() / 1000);
       if (!deCode || deCode.exp < getTime) {
-        return res.status(404).json({ status: 'error', code: 404, data: null, message: 'token expired, please login again.' });
+        return res
+          .status(404)
+          .json({
+            status: 'error',
+            code: 404,
+            data: null,
+            message: 'token expired, please login again.'
+          });
       }
       if (deCode) {
         req.account = deCode;
         next();
       }
     } catch (error) {
-      return res.status(404).json({ status: 'error', code: 404, data: null, message: 'you have don`t not sign in.' });
+      return res
+        .status(404)
+        .json({ status: 'error', code: 404, data: null, message: 'you have don`t not sign in.' });
     }
   }
 
@@ -35,7 +44,14 @@ export class VerifyTokenMiddleware {
         throw new Error();
       }
     } catch (error) {
-      return res.status(404).json({ status: 'error', code: 404, data: null, message: 'you are does not permissions remove account.' });
+      return res
+        .status(404)
+        .json({
+          status: 'error',
+          code: 404,
+          data: null,
+          message: 'you are does not permissions remove account.'
+        });
     }
   }
 }

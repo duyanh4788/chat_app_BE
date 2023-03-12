@@ -4,8 +4,9 @@
     "moduleResolution": "node",
     "pretty": true,
     "sourceMap": true,
-    "target": "es6",
+    "target": "es2020",
     "outDir": "./dist",
+    "rootDir": "./src",
     "baseUrl": "../src",
     "allowJs": true,
     "skipLibCheck": true,
@@ -16,15 +17,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noFallthroughCasesInSwitch": true,
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
-    ]
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
 }

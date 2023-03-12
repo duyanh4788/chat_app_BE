@@ -1,10 +1,9 @@
-import { IConvertStationDriversRepository } from "../Repository/IConvertStationDriversRepository";
-
+import { IConvertStationDriversRepository } from '../Repository/IConvertStationDriversRepository';
 
 export class ConvertStationUseCase {
-    constructor(private convertStationDriversRepository: IConvertStationDriversRepository) { }
+  constructor(private convertStationDriversRepository: IConvertStationDriversRepository) {}
 
-    async saveConverStation(senderId: string, reciverId: string) {
-        return await this.convertStationDriversRepository.saveConverStation(senderId, reciverId)
-    }
+  async saveConverStation(senderId: string, reciverId: string) {
+    return await this.convertStationDriversRepository.saveConverStation(senderId, reciverId);
+  }
 }

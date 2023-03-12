@@ -1,9 +1,8 @@
 import Mail from 'nodemailer/lib/mailer';
 import nodemailer from 'nodemailer';
 
-import { INodeMailerServices } from "../../Repository/INodeMailerServices";
+import { INodeMailerServices } from '../../Repository/INodeMailerServices';
 import { UserSchemaProps } from '../../models/userModel';
-
 
 export class NodeMailerServices implements INodeMailerServices {
   private nodemailerTransport: Mail;

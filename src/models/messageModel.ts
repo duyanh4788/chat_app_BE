@@ -1,9 +1,9 @@
 import * as mongoose from 'mongoose';
 
 export interface ResponseListMessages {
-  listMessages: MessagesSchemaProps[],
-  totalPage: number,
-  skip: number
+  listMessages: MessagesSchemaProps[];
+  totalPage: number;
+  skip: number;
 }
 
 export interface MessagesSchemaProps {
@@ -18,20 +18,20 @@ const Schema = mongoose.Schema;
 export const MessagesSchema = new Schema<MessagesSchemaProps>(
   {
     conversationId: {
-      type: String,
+      type: String
     },
     senderId: {
       type: String,
-      require: true,
+      require: true
     },
     reciverId: {
       type: String,
-      require: true,
+      require: true
     },
     text: {
       type: String,
-      require: true,
-    },
+      require: true
+    }
   },
-  { timestamps: true, versionKey: false },
+  { timestamps: true, versionKey: false }
 );

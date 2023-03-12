@@ -3,17 +3,17 @@ import * as mongoose from 'mongoose';
 export enum UserTypeCreate {
   FACEBOOK = 'FACEBOOK',
   GOOGLE = 'GOOGLE',
-  CHATAPP = 'CHATAPP',
+  CHATAPP = 'CHATAPP'
 }
 
 export enum StatusCreate {
   IN_ACTIVE = 'IN_ACTIVE',
-  ACTIVE = 'ACTIVE',
+  ACTIVE = 'ACTIVE'
 }
 
 export enum Type2FA {
   AUTH_CODE = 'AUTH_CODE',
-  PASSPORT = 'PASSPORT',
+  PASSPORT = 'PASSPORT'
 }
 
 export interface UserSchemaProps {
@@ -39,51 +39,51 @@ export const UsersSchema = new Schema<UserSchemaProps>(
     account: {
       type: String,
       required: true,
-      unique: true,
+      unique: true
     },
     passWord: {
-      type: String,
+      type: String
     },
     fullName: {
-      type: String,
+      type: String
     },
     email: {
       type: String,
       required: true,
-      unique: true,
+      unique: true
     },
     avatar: {
       type: String,
-      default: '',
+      default: ''
     },
     isOnline: {
       type: Boolean,
-      default: false,
+      default: false
     },
     userTypeCode: {
       type: String,
-      default: 'USER',
+      default: 'USER'
     },
     userTypeCreate: {
       type: Schema.Types.Mixed,
-      default: '',
+      default: ''
     },
     userTypeCreateId: {
       type: String,
-      default: '',
+      default: ''
     },
     statusCreate: {
       type: Schema.Types.Mixed,
-      default: '',
+      default: ''
     },
     twoFA: {
       type: Boolean,
-      default: false,
+      default: false
     },
     type2FA: {
       type: Schema.Types.Mixed,
-      default: '',
-    },
+      default: ''
+    }
   },
-  { timestamps: true, versionKey: false },
+  { timestamps: true, versionKey: false }
 );

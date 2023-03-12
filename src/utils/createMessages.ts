@@ -8,18 +8,13 @@ interface InfoUser {
   isOnline: boolean;
 }
 
-export const renderMessages = ({
-  conversationId,
-  senderId,
-  reciverId,
-  text,
-}: any) => {
+export const renderMessages = ({ conversationId, senderId, reciverId, text }: any) => {
   if (text && text !== null) {
     const data = {
       conversationId,
       senderId,
       reciverId,
-      text,
+      text
     };
     return data;
   }
@@ -32,7 +27,7 @@ export const changeStatusOnline = (user: InfoUser) => {
     email: user.email,
     fullName: user.fullName,
     isOnline: true,
-    _id: user._id,
+    _id: user._id
   };
   return data;
 };
@@ -44,7 +39,7 @@ export const changeStatusOffline = (user: InfoUser) => {
     email: user.email,
     fullName: user.fullName,
     isOnline: false,
-    _id: user._id,
+    _id: user._id
   };
   return data;
 };

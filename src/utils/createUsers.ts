@@ -19,8 +19,7 @@ export const createUser = (socket: any, user: any) => {
   return listUsers;
 };
 
-export const getSocketById = (id: string) =>
-  listUsers.find(({ socketId }) => socketId === id);
+export const getSocketById = (id: string) => listUsers.find(({ socketId }) => socketId === id);
 
 export const getUserById = (id: string) => listUsers.find(({ _id }) => _id === id);
 

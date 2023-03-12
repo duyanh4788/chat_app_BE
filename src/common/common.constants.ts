@@ -4,7 +4,7 @@ export const TitleModel = {
   USERS: 'Users',
   ROOM: 'Room',
   CONVERTSTATIONS: 'Convertstations',
-  AUTHENTICATOR: 'Authenticators',
+  AUTHENTICATOR: 'Authenticators'
 };
 
 export const SOCKET_COMMIT = {
@@ -18,7 +18,7 @@ export const SOCKET_COMMIT = {
   CHANGE_STATUS_ONLINE: 'change_status_online',
   CHANGE_STATUS_OFFLINE: 'change_status_offline',
   MESSAGE_NOT_AVALID: 'Xin đừng chửi láo',
-  DISCONNECTED: 'disconnected',
+  DISCONNECTED: 'disconnected'
 };
 
 export const TEXT_BAD = ['con cặc', 'địt mẹ', 'đụ má', 'chó đẻ', 'cặc', 'địt'];

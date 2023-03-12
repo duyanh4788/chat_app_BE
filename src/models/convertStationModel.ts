@@ -5,8 +5,8 @@ const Schema = mongoose.Schema;
 export const ConvertStationSchema = new Schema(
   {
     members: {
-      type: Array,
-    },
+      type: Array
+    }
   },
-  { versionKey: false },
+  { versionKey: false }
 );

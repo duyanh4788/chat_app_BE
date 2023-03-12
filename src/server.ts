@@ -6,26 +6,31 @@ import * as http from 'http';
 import winston from 'winston';
 import { Websocket } from './socket_io/socket_io';
 import { Server } from 'socket.io';
-import { RemoveImagesFromAWSJob } from './job/RemoveImagesFromAWSJob'
-
+import { RemoveImagesFromAWSJob } from './job/RemoveImagesFromAWSJob';
 
 // ********************* logger *********************//
-const newDate = new Date()
+const newDate = new Date();
 export const logger = winston.createLogger({
   level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
+  format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
   transports: [
-    new winston.transports.File({ filename: `./src/logger/${new Date().getFullYear()}/${new Date().getMonth() + 1}/${new Date().getDate()}/error.log`, level: 'error' }),
-    new winston.transports.File({ filename: `./src/logger/${new Date().getFullYear()}/${new Date().getMonth() + 1}/${new Date().getDate()}/combined.log` }),
+    new winston.transports.File({
+      filename: `./src/logger/${new Date().getFullYear()}/${
+        new Date().getMonth() + 1
+      }/${new Date().getDate()}/error.log`,
+      level: 'error'
+    }),
+    new winston.transports.File({
+      filename: `./src/logger/${new Date().getFullYear()}/${
+        new Date().getMonth() + 1
+      }/${new Date().getDate()}/combined.log`
+    })
   ]
 });
 
 // ********************* BaseJob *********************//
 const removeImagesFromAWSJob = new RemoveImagesFromAWSJob();
-removeImagesFromAWSJob.runJob()
+removeImagesFromAWSJob.runJob();
 
 // ********************* Config *********************//
 const PORT: string | number | any = process.env.PORT || 5000;

@@ -1,8 +1,7 @@
-import { MessagesSchemaProps, ResponseListMessages } from "../models/messageModel";
-
+import { MessagesSchemaProps, ResponseListMessages } from '../models/messageModel';
 
 export interface IMessagesDriversRepository {
-    getListMessages(conversationId: string, skip: number): Promise<ResponseListMessages>;
+  getListMessages(conversationId: string, skip: number): Promise<ResponseListMessages>;
 
-    createNewMessages(body: MessagesSchemaProps): Promise<MessagesSchemaProps>;
+  createNewMessages(body: MessagesSchemaProps): Promise<MessagesSchemaProps>;
 }

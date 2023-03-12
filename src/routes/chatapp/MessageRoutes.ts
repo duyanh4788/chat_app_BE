@@ -8,12 +8,12 @@ const BASE_ROUTE = '/api/v1';
 
 enum Routes {
   GET_LIST_MESSAGES = '/getListMessages',
-  NEW_MESSAGE = '/newMessage',
+  NEW_MESSAGE = '/newMessage'
 }
 
 export class MessagesRoutes {
   messagesDriversController: MessagesDriversController = new MessagesDriversController();
-  messagesUseCase: MessagesUseCase = new MessagesUseCase(this.messagesDriversController)
+  messagesUseCase: MessagesUseCase = new MessagesUseCase(this.messagesDriversController);
   messagesControler: MessageControler = new MessageControler(this.messagesUseCase);
   messagesMiddleware: MessagesMiddleware = new MessagesMiddleware();
 
@@ -21,12 +21,12 @@ export class MessagesRoutes {
     app.post(
       BASE_ROUTE + Routes.GET_LIST_MESSAGES,
       this.messagesMiddleware.checkConvertStationId,
-      this.messagesControler.getListMessages,
+      this.messagesControler.getListMessages
     );
     app.post(
       BASE_ROUTE + Routes.NEW_MESSAGE,
       this.messagesMiddleware.checkUserId,
-      this.messagesControler.postNewMessages,
+      this.messagesControler.postNewMessages
     );
   }
 }

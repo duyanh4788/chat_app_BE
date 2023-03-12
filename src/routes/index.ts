@@ -8,7 +8,7 @@ export class Routes {
   public usersRoutes: UsersRoutes = new UsersRoutes();
   public messagesRoutes: MessagesRoutes = new MessagesRoutes();
   public converStationRoutes: ConverStationRoutes = new ConverStationRoutes();
-  public uploadAWSRouter: UploadAWSRouter = new UploadAWSRouter()
+  public uploadAWSRouter: UploadAWSRouter = new UploadAWSRouter();
   public routes(app: Router): void {
     this.usersRoutes.routes(app);
     this.messagesRoutes.routes(app);

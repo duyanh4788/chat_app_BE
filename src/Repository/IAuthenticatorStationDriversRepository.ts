@@ -1,15 +1,13 @@
-import { AuthenticatorSchemaProps } from "../models/authenticatorModel";
-
+import { AuthenticatorSchemaProps } from '../models/authenticatorModel';
 
 export interface IAuthenticatorStationDriversRepository {
+  createAuthCode(userId: string): Promise<string>;
 
-    createAuthCode(userId: string): Promise<string>;
+  findByUserId(userId: string): Promise<AuthenticatorSchemaProps>;
 
-    findByUserId(userId: string): Promise<AuthenticatorSchemaProps>;
+  updateAuthCode(userId: string): Promise<string>;
 
-    updateAuthCode(userId: string): Promise<string>;
+  findAuthCode(authCode: string): Promise<Map<boolean, AuthenticatorSchemaProps>>;
 
-    findAuthCode(authCode: string): Promise<Map<boolean, AuthenticatorSchemaProps>>;
-
-    findAuthCodeAndRemove(authCode: string): Promise<void>;
+  findAuthCodeAndRemove(authCode: string): Promise<void>;
 }

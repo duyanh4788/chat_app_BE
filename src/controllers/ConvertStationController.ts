@@ -5,9 +5,11 @@ import { sendRespone } from '../common/common.success';
 import { IUserDriversRepository } from '../Repository/IUserDriversRepository';
 
 export class ConverStationController {
-
-  constructor(private convertStationUseCase: ConvertStationUseCase, private userDriversRepository: IUserDriversRepository) {
-    this.saveConverStation = this.saveConverStation.bind(this)
+  constructor(
+    private convertStationUseCase: ConvertStationUseCase,
+    private userDriversRepository: IUserDriversRepository
+  ) {
+    this.saveConverStation = this.saveConverStation.bind(this);
   }
 
   public async saveConverStation(req: Request, res: Response) {
@@ -15,10 +17,10 @@ export class ConverStationController {
     try {
       const create = await this.convertStationUseCase.saveConverStation(senderId, reciverId);
       if (!create) throw new RestError('connect friend failed', 400);
-      const reciver = await this.userDriversRepository.findById(reciverId)
-      return sendRespone(res, 'success', 200, { ...create, avataReciver: reciver?.avatar }, '')
+      const reciver = await this.userDriversRepository.findById(reciverId);
+      return sendRespone(res, 'success', 200, { ...create, avataReciver: reciver?.avatar }, '');
     } catch (error) {
-      return RestError.manageServerError(res, error, false)
+      return RestError.manageServerError(res, error, false);
     }
   }
 }

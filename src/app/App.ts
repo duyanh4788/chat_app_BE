@@ -1,12 +1,12 @@
 import express, { Request, Response, NextFunction } from 'express';
-import seesion, { SessionOptions } from 'express-session'
+import seesion, { SessionOptions } from 'express-session';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import { Routes } from '../routes';
 import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
-import crypto from 'crypto'
+import crypto from 'crypto';
 
 const secret = crypto.randomBytes(64).toString('hex');
 const sessionOptions: SessionOptions = {
@@ -14,7 +14,6 @@ const sessionOptions: SessionOptions = {
   resave: true,
   saveUninitialized: true
 };
-
 
 class App {
   public App: express.Application;
@@ -34,7 +33,7 @@ class App {
     mongoose
       .connect(this.mongooseUrl)
       .then(() => console.log('MongoDB connect success'))
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
     mongoose.connection;
   }
 
@@ -42,18 +41,17 @@ class App {
     this.App.use((req: Request, res: Response, next: NextFunction) => {
       res.header('Access-Control-Allow-Origin', process.env.END_POINT_HOME);
       res.header('Access-Control-Allow-Origin', process.env.END_POINT);
-      res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
+      res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
       res.setHeader(
         'Access-Control-Allow-Headers',
         'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-      )
+      );
       next();
     });
     this.App.options(`${process.env.END_POINT_HOME}`);
     this.App.options(`${process.env.END_POINT}`);
     this.App.use(cors());
     this.App.use(seesion(sessionOptions));
-
   }
 
   public configJson(): void {
@@ -62,7 +60,7 @@ class App {
     this.App.use(express.json({ limit: '50mb' }));
     this.App.use(express.urlencoded({ limit: '50mb', extended: false }));
     this.App.use(cookieParser());
-    this.App.use(logger('dev'))
+    this.App.use(logger('dev'));
   }
 }
 
