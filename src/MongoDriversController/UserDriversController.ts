@@ -105,10 +105,12 @@ export class UserDriversController implements IUserDriversRepository {
   }
 
   async updateInfo(body: UserSchemaProps): Promise<boolean> {
-    const { _id, fullName, avatar } = body;
+    const { _id, fullName, avatar, twoFA, type2FA } = body;
     await this.Users.findByIdAndUpdate(_id, {
       fullName,
-      avatar
+      avatar,
+      twoFA: !!twoFA,
+      type2FA
     });
     return true;
   }
