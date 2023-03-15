@@ -46,7 +46,7 @@ export class AuthUserMiddleware {
         .status(404)
         .json({ status: 'error', code: 404, data: null, message: 'user have exist.' });
     }
-    const em = await this.userDriversRepository.findByEmail(account);
+    const em = await this.userDriversRepository.findByEmail(email);
     if (em) {
       return res
         .status(404)
