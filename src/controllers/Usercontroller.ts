@@ -240,7 +240,7 @@ export class UsersController {
   }
 
   public async resetPassWord(req: Request, res: Response) {
-    const client = await mongoDB.connect(process.env.DATABASE, { useNewUrlParser: true });
+    const client = new mongoDB.MongoClient(process.env.DATABASE as string);
     const session = client.startSession();
     session.startTransaction();
     try {
