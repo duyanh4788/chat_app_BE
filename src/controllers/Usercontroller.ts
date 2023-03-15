@@ -7,7 +7,7 @@ import { INodeMailerServices } from '../Repository/INodeMailerServices';
 import { StatusCreate, UserSchemaProps } from '../models/userModel';
 import { checkTimerAuthenticator } from '../utils/timer';
 import { validateObjectReqBody } from '../utils/validate';
-import { MongoClient } from 'mongodb';
+import * as mongoDB from "mongodb";
 
 export class UsersController {
   constructor(
@@ -240,7 +240,7 @@ export class UsersController {
   }
 
   public async resetPassWord(req: Request, res: Response) {
-    const client = await MongoClient.connect(process.env.DATABASE as string);
+    const client = await mongoDB.MongoClient.connect(process.env.DATABASE as string);
     const session = client.startSession();
     session.startTransaction();
     try {
