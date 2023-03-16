@@ -7,11 +7,17 @@ import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import { SECRETKEY } from '../common/common.constants';
+import MongoStore from 'connect-mongo';
 
 const sessionOptions: SessionOptions = {
   secret: SECRETKEY,
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  store: MongoStore.create({
+    mongoUrl: process.env.DATABASE,
+    ttl: 14 * 24 * 60 * 60,
+    autoRemove: 'native'
+  })
 };
 
 class App {
