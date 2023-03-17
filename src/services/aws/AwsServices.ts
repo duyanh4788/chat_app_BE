@@ -1,5 +1,5 @@
-import AWS, { S3 } from 'aws-sdk';
-import { CreateBucketRequest } from 'aws-sdk/clients/s3';
+import { Upload } from "@aws-sdk/lib-storage";
+import { CreateBucketCommandInput, S3 } from "@aws-sdk/client-s3";
 import { RestError } from '../error/error';
 
 export class AWS3Services {
@@ -18,28 +18,44 @@ export class AWS3Services {
   }
 
   public configAWS(): S3 {
-    const s3 = new AWS.S3({
-      accessKeyId: this.ACCESS_KEY,
-      secretAccessKey: this.SECRET_KEY
+    const s3 = new S3({
+      region: this.REGION,
+      credentials: {
+        accessKeyId: this.ACCESS_KEY,
+        secretAccessKey: this.SECRET_KEY
+      }
     });
     return s3;
   }
 
   async createBucket(s3: S3): Promise<void> {
-    const params: CreateBucketRequest = {
+    const params: CreateBucketCommandInput = {
       Bucket: this.BUCKET,
       CreateBucketConfiguration: {
         LocationConstraint: this.REGION
       }
     };
     try {
-      const checkBucket = await s3.headBucket({ Bucket: this.BUCKET }).promise();
+      const checkBucket = await s3.headBucket({ Bucket: this.BUCKET });
       if (checkBucket) {
-        await s3.createBucket(params).promise();
+        await s3.createBucket(params);
         return;
       }
     } catch (error) {
       throw new RestError('Unable create bucket', 400);
+    }
+  }
+
+  async removeImageBucketAWS(s3: S3, idImage: string): Promise<void> {
+    try {
+      const splitUrl = idImage.split(`${this.DOMAIN}`);
+      if (!splitUrl[1]) {
+        throw new RestError('id not found, please try again!');
+      }
+      await s3.deleteObject({ Bucket: this.BUCKET, Key: splitUrl[1] });
+      return;
+    } catch (error) {
+      throw new RestError('remove failed', 400);
     }
   }
 
@@ -53,30 +69,21 @@ export class AWS3Services {
     fileData.originalname;
 
     try {
-      const result = await s3.upload(params).promise();
-      return { success: true, data: this.DOMAIN + result.Key };
+      const result = await new Upload({
+        client: s3,
+        params
+      }).done();
+      const { Key }: any = result
+      return { success: true, data: this.DOMAIN + Key };
     } catch (error) {
       throw new RestError('upload failed', 400);
-    }
-  }
-
-  async removeImageBucketAWS(s3: S3, idImage: string): Promise<void> {
-    try {
-      const splitUrl = idImage.split(`${this.DOMAIN}`);
-      if (!splitUrl[1]) {
-        throw new RestError('id not found, please try again!');
-      }
-      await s3.deleteObject({ Bucket: this.BUCKET, Key: splitUrl[1] }).promise();
-      return;
-    } catch (error) {
-      throw new RestError('remove failed', 400);
     }
   }
 
   async getListImagesAWS(): Promise<void> {
     try {
       const s3 = this.configAWS();
-      const objects = await s3.listObjects({ Bucket: this.BUCKET }).promise();
+      const objects = await s3.listObjects({ Bucket: this.BUCKET });
       const newDate = new Date().getTime();
       const twoDay = 17280000;
       if (objects.Contents?.length) {
@@ -93,7 +100,7 @@ export class AWS3Services {
 
         await Promise.all(
           imageObjects.map(async (obj) => {
-            await s3.deleteObject({ Bucket: this.BUCKET, Key: obj.Key as string }).promise();
+            await s3.deleteObject({ Bucket: this.BUCKET, Key: obj.Key as string });
             return;
           })
         );

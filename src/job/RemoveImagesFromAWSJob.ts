@@ -8,8 +8,6 @@ export class RemoveImagesFromAWSJob extends BaseJob {
   aWS3Services: AWS3Services = new AWS3Services();
   constructor() {
     super();
-
-    this.aWS3Services.removeImageBucketAWS = this.aWS3Services.removeImageBucketAWS.bind(this);
   }
 
   async job(): Promise<any> {

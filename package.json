@@ -18,6 +18,7 @@
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "dependencies": {
+    "@aws-sdk/lib-storage": "3.293.0",
     "@types/bad-words": "3.0.1",
     "@types/bcryptjs": "2.4.2",
     "@types/cookie-parser": "1.4.3",
@@ -32,6 +33,7 @@
     "@types/passport-google-oauth20": "2.0.11",
     "@types/socket.io": "3.0.2",
     "@types/winston": "2.4.4",
+    "aws-client-s3": "1.4.5",
     "aws-sdk": "2.1328.0",
     "bad-words": "^3.0.4",
     "bcryptjs": "^2.4.3",
