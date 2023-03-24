@@ -5,6 +5,7 @@ import { AuthUserMiddleware } from '../../middlewares/auth/AuthUserMiddleware';
 import { VerifyTokenMiddleware } from '../../middlewares/auth/VerifyTokenMiddleware';
 import { MulterMiddleware } from '../../middlewares/multer/MulterMiddleware';
 import { UserDriversController } from '../../MongoDriversController/UserDriversController';
+import { NodeMailerServices } from '../../services/nodemailer/MailServices';
 
 const BASE_ROUTE = '/api/v1';
 

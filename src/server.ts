@@ -9,16 +9,17 @@ import { Server } from 'socket.io';
 import { RemoveImagesFromAWSJob } from './job/RemoveImagesFromAWSJob';
 import { Connections } from './monitor/Connecttions';
 
-export const isDevelopment = process.env.NODE_ENV === 'development' ? true : false
-
+export const isDevelopment = process.env.NODE_ENV === 'development' ? true : false;
 
 // ********************* BaseJob *********************//
 const removeImagesFromAWSJob = new RemoveImagesFromAWSJob();
 removeImagesFromAWSJob.runJob();
 
+// ********************* monitor *********************//
+new Connections().readMonitorServer();
+
 // ********************* Config *********************//
-const PORT: string | number | any = process.env.PORT || 5000;
-const HOST: string = '0.0.0.0';
+const PORT: string | number = process.env.PORT || 5000;
 
 const httpServer: http.Server = http.createServer(App);
 
@@ -32,17 +33,12 @@ const configIo = new Server(httpServer, {
 const socket = new Websocket();
 socket.socketIO(configIo);
 
-
-// ********************* monitor *********************//
-const monitor = new Connections();
-monitor.readMonitorServer()
-
 if (isDevelopment) {
   App.get('/', (req: Request, res: Response) => {
     res.send('Server is Running ...');
   });
 }
 
-httpServer.listen(PORT, HOST, () => {
+httpServer.listen(PORT, () => {
   console.log(`Running API on port : ${PORT}`);
 });

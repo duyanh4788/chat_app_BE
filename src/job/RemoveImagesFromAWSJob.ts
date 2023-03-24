@@ -1,5 +1,5 @@
 import { AWS3Services } from '../services/aws/AwsServices';
-import { logger } from '../services/logger/Logger';
+import { logger } from '../services/loggerservice/Logger';
 import { BaseJob } from './BaseJob';
 
 export class RemoveImagesFromAWSJob extends BaseJob {

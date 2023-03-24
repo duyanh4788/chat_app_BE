@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { isDevelopment } from "../server"
-import { logger } from "../services/logger/Logger";
+import { logger } from "../services/loggerservice/Logger";
 
 export class DataBase {
     private readonly MONGOOSE_URL: string | any = process.env.DATABASE;

@@ -1,14 +1,16 @@
-import Mail from 'nodemailer/lib/mailer';
 import nodemailer from 'nodemailer';
-
 import { INodeMailerServices } from '../../Repository/INodeMailerServices';
 import { UserSchemaProps } from '../../models/userModel';
 
 export class NodeMailerServices implements INodeMailerServices {
-  private nodemailerTransport: Mail;
-  private readonly baseUrl: string | undefined = process.env.END_POINT_HOME;
+  private nodemailerTransport!: nodemailer.Transporter;
+  private readonly BASE_URL: string | undefined = process.env.END_POINT_HOME;
 
   constructor() {
+    this.startNodeMailer()
+  }
+
+  async startNodeMailer() {
     this.nodemailerTransport = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -16,7 +18,7 @@ export class NodeMailerServices implements INodeMailerServices {
         pass: 'lqsceqququpalcvj'
       }
     });
-    this.nodemailerTransport.verify(function (error, success) {
+    this.nodemailerTransport.verify((error, success) => {
       if (error) {
         console.log('Mail server connection failed', error);
       } else {
@@ -66,7 +68,7 @@ export class NodeMailerServices implements INodeMailerServices {
                             <h1>Welcome</h1>
                             <p>You are one step away from your brand new ChatApp account !</p>
                             <p>To access all of ChatApp’s amazing features, <br>get started by verifying your email.</br></p>
-                            <a href='${this.baseUrl}?authCode=${authCode}'><strong>Verify your account</strong></a>
+                            <a href='${this.BASE_URL}?authCode=${authCode}'><strong>Verify your account</strong></a>
                             <p>See you there,<br> Your friends at ChatApp<br></p>
                         </div>
                 
@@ -217,11 +219,11 @@ export class NodeMailerServices implements INodeMailerServices {
   }
 
   private async sendMail(toEmail: string, subject: string, htmlContent: string) {
-    await this.nodemailerTransport.sendMail({
-      from: 'ChatApp Notification <duyanh4788@gmail.com>',
-      to: toEmail,
-      subject: subject,
-      html: htmlContent
-    });
+    // await this.nodemailerTransport.sendMail({
+    //   from: 'ChatApp Notification <duyanh4788@gmail.com>',
+    //   to: toEmail,
+    //   subject: subject,
+    //   html: htmlContent
+    // });
   }
 }
