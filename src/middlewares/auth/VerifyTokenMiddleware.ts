@@ -17,7 +17,7 @@ export class VerifyTokenMiddleware {
           .status(404)
           .json({
             status: 'error',
-            code: 404,
+            code: 401,
             data: null,
             message: 'token expired, please login again.'
           });

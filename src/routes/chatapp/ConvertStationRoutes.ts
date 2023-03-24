@@ -4,6 +4,7 @@ import { ConverStationMiddleware } from '../../middlewares/messages/ConverStatio
 import { ConvertStationDriversController } from '../../MongoDriversController/ConvertStationDriversController';
 import { ConvertStationUseCase } from '../../usecase/ConvertStationUseCase';
 import { UserDriversController } from '../../MongoDriversController/UserDriversController';
+import { VerifyTokenMiddleware } from '../../middlewares/auth/VerifyTokenMiddleware';
 
 const BASE_ROUTE = '/api/v1';
 
@@ -12,6 +13,7 @@ enum Routes {
 }
 
 export class ConverStationRoutes {
+  private verifyTokenMiddleware: VerifyTokenMiddleware = new VerifyTokenMiddleware();
   convertStationDriversController: ConvertStationDriversController =
     new ConvertStationDriversController();
   userDriversController: UserDriversController = new UserDriversController();
@@ -30,6 +32,7 @@ export class ConverStationRoutes {
   public routes(app: Router): void {
     app.post(
       BASE_ROUTE + Routes.SAVE_CONVERSTATION,
+      this.verifyTokenMiddleware.authenTicate,
       this.converStationMiddleware.checkEmptyId,
       this.converStationMiddleware.getConverStationByUserId,
       this.converStationController.saveConverStation
