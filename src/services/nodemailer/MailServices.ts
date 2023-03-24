@@ -204,7 +204,7 @@ export class NodeMailerServices implements INodeMailerServices {
                 
                         <div style='overflow-wrap: break-word; background-color:#ffffff; line-height: 140%; padding: 30px;'>
                             <h1>Hi Admin</h1>
-                            <p>System has connect: ${numberConectDb} || Memory overload : ${memory} MB</p>
+                            <p>System hass connected: ${numberConectDb} || Memory overload : ${memory} MB</p>
                         </div>
                 
                         <div style='background-color:#55abce; color: white; text-align: center; padding:10px 0;'>
@@ -214,16 +214,18 @@ export class NodeMailerServices implements INodeMailerServices {
                 </body>
             </head>
             </html>`;
-    await this.sendMail('duyanh4788@gmail.com', 'Welcome to ChatApp By duyanh4788', baseMail);
+    await this.sendMail('duyanh4788@gmail.com', 'Notifycation overload server', baseMail);
     return;
   }
 
   private async sendMail(toEmail: string, subject: string, htmlContent: string) {
-    // await this.nodemailerTransport.sendMail({
-    //   from: 'ChatApp Notification <duyanh4788@gmail.com>',
-    //   to: toEmail,
-    //   subject: subject,
-    //   html: htmlContent
-    // });
+    await this.nodemailerTransport.sendMail({
+      from: 'ChatApp Notification <duyanh4788@gmail.com>',
+      to: toEmail,
+      subject: subject,
+      html: htmlContent
+    });
   }
 }
+
+export const nodeMailerServices = new NodeMailerServices();

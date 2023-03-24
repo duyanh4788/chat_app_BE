@@ -1,11 +1,10 @@
 import mongoose from 'mongoose';
 import os from 'os';
 import process from 'process';
-import { NodeMailerServices } from '../services/nodemailer/MailServices';
+import { nodeMailerServices } from '../services/nodemailer/MailServices';
 
 export class Connections {
     private readonly _SECOND: number = 5000;
-    private mailServices: NodeMailerServices = new NodeMailerServices();
 
     constructor() { }
 
@@ -19,7 +18,7 @@ export class Connections {
 
             if (numberConectDb > maxConnect) {
                 console.log(`Connect overload detected!!! Memory usage: ${memory / 1024 / 1024} MB`);
-                await this.mailServices.sendOverLoadSystem(memory / 1024 / 1024, numberConectDb)
+                await nodeMailerServices.sendOverLoadSystem(memory / 1024 / 1024, numberConectDb)
             }
         }, this._SECOND)
     }

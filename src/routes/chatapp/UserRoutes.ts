@@ -9,7 +9,6 @@ import passport from 'passport';
 import { GoogleServices } from '../../services/google/GoogleServices';
 import { AuthenticatorUseCase } from '../../usecase/AuthenticatorUseCase';
 import { AuthenticatorStationDriversController } from '../../MongoDriversController/AuthenticatorStationDriversController';
-import { NodeMailerServices } from '../../services/nodemailer/MailServices';
 
 const BASE_ROUTE = '/api/v1';
 
@@ -34,7 +33,6 @@ enum Routes {
 }
 
 export class UsersRoutes {
-  private nodeMailerServices: NodeMailerServices = new NodeMailerServices();
   private userDriversController: UserDriversController = new UserDriversController();
   private authenticatorStationDriversController: AuthenticatorStationDriversController =
     new AuthenticatorStationDriversController();
@@ -47,7 +45,6 @@ export class UsersRoutes {
   private usersController: UsersController = new UsersController(
     this.userUseCase,
     this.AuthenticatorUseCase,
-    this.nodeMailerServices
   );
   private authMiddleware: AuthUserMiddleware = new AuthUserMiddleware(this.userDriversController);
   private verifyTokenMiddleware: VerifyTokenMiddleware = new VerifyTokenMiddleware();

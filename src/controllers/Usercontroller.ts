@@ -3,17 +3,16 @@ import { RestError } from '../services/error/error';
 import { sendRespone } from '../common/common.success';
 import { UserUseCase } from '../usecase/UserUseCase';
 import { AuthenticatorUseCase } from '../usecase/AuthenticatorUseCase';
-import { INodeMailerServices } from '../Repository/INodeMailerServices';
 import { StatusCreate, UserSchemaProps } from '../models/userModel';
 import { checkTimerAuthenticator } from '../utils/timer';
 import { validateObjectReqBody } from '../utils/validate';
 import * as mongoDB from "mongodb";
+import { nodeMailerServices } from '../services/nodemailer/MailServices';
 
 export class UsersController {
   constructor(
     private userUseCase: UserUseCase,
     private authenticatorUseCase: AuthenticatorUseCase,
-    private nodeMailerServicese: INodeMailerServices
   ) {
     this.getListUser = this.getListUser.bind(this);
     this.getUserById = this.getUserById.bind(this);
@@ -62,7 +61,7 @@ export class UsersController {
       const create = await this.userUseCase.userSignUp(account, passWord, fullName, email);
       if (!create) throw new RestError('Sign Up failed', 400);
       const authCode = await this.authenticatorUseCase.createAuthCode(create._id as string);
-      this.nodeMailerServicese.sendWelcomeUserNotification(create, authCode);
+      nodeMailerServices.sendWelcomeUserNotification(create, authCode);
       return sendRespone(res, 'success', 200, null, 'sign up successfully.');
     } catch (error) {
       return RestError.manageServerError(res, error, false);
@@ -81,7 +80,7 @@ export class UsersController {
         }
         if (!key) {
           const findUser = await this.userUseCase.getUserByIdNoneStatus(value.userId as string);
-          this.nodeMailerServicese.sendWelcomeUserNotification(findUser, authCode);
+          nodeMailerServices.sendWelcomeUserNotification(findUser, authCode);
           return sendRespone(
             res,
             'success',
@@ -208,7 +207,7 @@ export class UsersController {
           ''
         );
       const authCode = await this.authenticatorUseCase.createAuthCode(user._id as string);
-      this.nodeMailerServicese.sendAuthCodeResetPassWord(user, authCode);
+      nodeMailerServices.sendAuthCodeResetPassWord(user, authCode);
       return sendRespone(res, 'success', 200, 'we have send authenticator code to email.', '');
     } catch (error) {
       return RestError.manageServerError(res, error, false);
@@ -232,7 +231,7 @@ export class UsersController {
           ''
         );
       const authCode = await this.authenticatorUseCase.updateAuthCode(user._id as string);
-      this.nodeMailerServicese.sendAuthCodeResetPassWord(user, authCode);
+      nodeMailerServices.sendAuthCodeResetPassWord(user, authCode);
       return sendRespone(res, 'success', 200, 'we have send authenticator code to email.', '');
     } catch (error) {
       return RestError.manageServerError(res, error, false);
