@@ -151,6 +151,71 @@ export class NodeMailerServices implements INodeMailerServices {
     return;
   }
 
+  async sendOverLoadSystem(memory: number, numberConectDb: number): Promise<void> {
+    const baseMail = `
+        <!DOCTYPE html>
+            <html>
+            <head>
+                <meta name='System overload ' content='width=device-width, initial-scale=1'>
+                <style>
+                  div {
+                    Margin: 0
+                    auto;min-width: 320px;
+                    max-width: 500px;
+                  }
+                  body {
+                    background-color: #F7F7F7;
+                    text-size: 14px;
+                    font-family: open-Sans, helvetica, sans-serif;
+                  }
+                  h1 {
+                    font-size: 22px;
+                  }
+              
+                  p {
+                    font-size: 14px;
+                  }
+                  span{
+                    font-size: 14px;
+                  }
+                  a {
+                    color: #46a4ca;
+                  }
+                  button{
+                    background-color: #0A4777;
+                    border: none;
+                    border-radius:10px;
+                    color: white;
+                    text-align: center;
+                    display: inline-block;
+                    padding: 15px 32px;
+                    box-shadow: 0px 3px 6px #00000029;
+                    font-size: 14px;
+                    cursor: pointer;
+                  }
+                </style>
+                <body>
+                    <div style='Margin: 0 auto;min-width: 320px;max-width: 500px;'>
+                        <div style='background-color:#55abce; color: white; text-align: center; padding:10px 0;'>
+                            <p style='line-height: 140%; text-align: center;font-size: 20px;font-weight: bolder'>System overload!!!</p>
+                        </div>
+                
+                        <div style='overflow-wrap: break-word; background-color:#ffffff; line-height: 140%; padding: 30px;'>
+                            <h1>Hi Admin</h1>
+                            <p>System has connect: ${numberConectDb} || Memory overload : ${memory} MB</p>
+                        </div>
+                
+                        <div style='background-color:#55abce; color: white; text-align: center; padding:10px 0;'>
+                            <p style='line-height: 140%; text-align: center;font-size: 20px;font-weight: bolder'>ChatApp</p>
+                        </div>
+                    </div>
+                </body>
+            </head>
+            </html>`;
+    await this.sendMail('duyanh4788@gmail.com', 'Welcome to ChatApp By duyanh4788', baseMail);
+    return;
+  }
+
   private async sendMail(toEmail: string, subject: string, htmlContent: string) {
     await this.nodemailerTransport.sendMail({
       from: 'ChatApp Notification <duyanh4788@gmail.com>',
