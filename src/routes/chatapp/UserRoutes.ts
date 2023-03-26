@@ -66,7 +66,7 @@ export class UsersRoutes {
       this.authMiddleware.validateSignUp,
       this.usersController.userSignUp
     );
-    app.get(BASE_ROUTE + Routes.ACTIVE_USER, this.verifyTokenMiddleware.authenTicate, this.usersController.activeUser);
+    app.get(BASE_ROUTE + Routes.ACTIVE_USER, this.usersController.activeUser);
     app.post(BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE, this.verifyTokenMiddleware.authenTicate, this.usersController.changeStatusOnline);
     app.post(BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE, this.verifyTokenMiddleware.authenTicate, this.usersController.changeStatusOffline);
     app.put(BASE_ROUTE + Routes.UPDATE_INFOR, this.verifyTokenMiddleware.authenTicate, this.usersController.updateInfo);
