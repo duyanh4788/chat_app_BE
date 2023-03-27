@@ -39,10 +39,7 @@ class App {
 
   public configCors(): void {
     this.App.use(seesion(sessionOptions));
-    this.App.use(cors({
-      origin: process.env.END_POINT_HOME,
-      credentials: true
-    }));
+    this.App.use(cors());
   }
 
   public configJson(): void {
