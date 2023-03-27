@@ -8,6 +8,7 @@ import { Websocket } from './socket_io/socket_io';
 import { Server } from 'socket.io';
 import { RemoveImagesFromAWSJob } from './job/RemoveImagesFromAWSJob';
 import { Connections } from './monitor/Connecttions';
+import { makeHttpPostRequest } from './https/Https';
 
 export const isDevelopment = process.env.NODE_ENV === 'development' ? true : false;
 
@@ -19,7 +20,7 @@ removeImagesFromAWSJob.runJob();
 new Connections().readMonitorServer();
 
 // ********************* Config *********************//
-const PORT: string | number = process.env.PORT || 5000;
+const PORT: string | number = process.env.PORT || 50005;
 
 const httpServer: http.Server = http.createServer(App);
 
@@ -42,3 +43,8 @@ if (isDevelopment) {
 httpServer.listen(PORT, () => {
   console.log(`Running API on port : ${PORT}`);
 });
+
+if (!isDevelopment) {
+  makeHttpPostRequest();
+}
+
