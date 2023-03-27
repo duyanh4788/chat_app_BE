@@ -4,7 +4,6 @@ dotenv.config();
 import App from './app/App';
 import { Request, Response } from 'express';
 import * as http from 'http';
-import * as https from 'https';
 import { Websocket } from './socket_io/socket_io';
 import { Server } from 'socket.io';
 import { RemoveImagesFromAWSJob } from './job/RemoveImagesFromAWSJob';
@@ -21,35 +20,25 @@ new Connections().readMonitorServer();
 
 // ********************* Config *********************//
 const PORT: string | number = process.env.PORT || 50005;
+
+const httpServer: http.Server = http.createServer(App);
+
+const configIo = new Server(httpServer, {
+  cors: {
+    origin: process.env.END_POINT,
+    credentials: true
+  }
+});
+
+const socket = new Websocket();
+socket.socketIO(configIo);
+
 if (isDevelopment) {
-  const httpServer: http.Server = http.createServer(App);
-  const configIo = new Server(httpServer, {
-    cors: {
-      origin: process.env.END_POINT,
-      credentials: true
-    }
-  });
-  const socket = new Websocket();
-  socket.socketIO(configIo);
   App.get('/', (req: Request, res: Response) => {
     res.send('Server is Running ...');
   });
-  httpServer.listen(PORT, () => {
-    console.log(`Running API on port : ${PORT}`);
-  });
 }
 
-if (!isDevelopment) {
-  const httpsServer: https.Server = https.createServer(App);
-  const configIo = new Server(httpsServer, {
-    cors: {
-      origin: process.env.END_POINT,
-      credentials: true
-    }
-  });
-  const socket = new Websocket();
-  socket.socketIO(configIo);
-  httpsServer.listen(PORT, () => {
-    console.log(`Running API on port : ${PORT}`);
-  });
-}
+httpServer.listen(PORT, () => {
+  console.log(`Running API on port : ${PORT}`);
+});
