@@ -26,14 +26,19 @@ export function makeHttpPostRequest(): Promise<string> {
             });
 
             res.on('end', () => {
+                console.log(body);
+
                 if (res.statusCode && res.statusCode / 2 === 100) {
+                    console.log('success');
                     resolve('Success');
                 } else {
+                    console.log('failed');
                     resolve('Failure');
                 }
             });
 
             res.on('error', (error) => {
+                console.log('error:', error);
                 reject(Error('HTTP call failed'));
             });
         });
