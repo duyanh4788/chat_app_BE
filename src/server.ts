@@ -22,6 +22,10 @@ new Connections().readMonitorServer();
 // ********************* Config *********************//
 const PORT: string | number = process.env.PORT || 50005;
 
+if (!isDevelopment) {
+  makeHttpPostRequest();
+}
+
 const httpServer: http.Server = http.createServer(App);
 
 const configIo = new Server(httpServer, {
@@ -43,8 +47,4 @@ if (isDevelopment) {
 httpServer.listen(PORT, () => {
   console.log(`Running API on port : ${PORT}`);
 });
-
-if (!isDevelopment) {
-  makeHttpPostRequest();
-}
 
