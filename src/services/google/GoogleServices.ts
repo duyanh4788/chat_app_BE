@@ -6,7 +6,7 @@ import { IUserDriversRepository } from '../../Repository/IUserDriversRepository'
 export class GoogleServices {
   private readonly GG_ID: string | any = process.env.GG_ID;
   private readonly GG_KEY: string | any = process.env.GG_KEY;
-  private readonly END_POINT_SERVER: string | any = process.env.END_POINT_SERVER;
+  private readonly END_POINT_SERVER: string | any = 'http://localhost:50005/api/v1';
 
   constructor(private userDriverRepository: IUserDriversRepository) {
     this.initializeLoginGoogle();
