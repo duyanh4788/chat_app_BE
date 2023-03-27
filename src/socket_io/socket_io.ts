@@ -43,11 +43,13 @@ export class Websocket {
         const listUser = createUser(socket, infoUser);
         if (listUser && listUser.length) {
           const isUser: any = listUser.find(({ _id }) => _id === infoUser._id);
-          this.userDriversController.updateStatusSocket(isUser._id, true);
-          /** send notify **/
-          socket.emit(SOCKET_COMMIT.SEND_MESSAGE_NOTIFY, `Hello ${isUser.fullName}`);
-          socket.broadcast.emit(SOCKET_COMMIT.CHANGE_STATUS_ONLINE, changeStatusOnline(isUser));
-          socket.broadcast.emit(SOCKET_COMMIT.SEND_MESSAGE_NOTIFY, `${isUser.fullName} Online`);
+          if (isUser._id) {
+            this.userDriversController.updateStatusSocket(isUser._id, true);
+            /** send notify **/
+            socket.emit(SOCKET_COMMIT.SEND_MESSAGE_NOTIFY, `Hello ${isUser.fullName}`);
+            socket.broadcast.emit(SOCKET_COMMIT.CHANGE_STATUS_ONLINE, changeStatusOnline(isUser));
+            socket.broadcast.emit(SOCKET_COMMIT.SEND_MESSAGE_NOTIFY, `${isUser.fullName} Online`);
+          }
         }
       });
       /** send messages **/

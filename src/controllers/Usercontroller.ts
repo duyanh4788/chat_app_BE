@@ -172,7 +172,7 @@ export class UsersController {
       const create = await this.userUseCase.profileFacebook(req.user);
       if (!create) return res.redirect(process.env.END_POINT_HOME as string);
       return res.redirect(
-        `${process.env.END_POINT_HOME}?token=${create.toKen}?_id=${create._id}` as string
+        `${process.env.END_POINT_HOME}/?token=${create.toKen}?_id=${create._id}` as string
       );
     } catch (error) {
       return res.redirect(process.env.END_POINT_HOME as string);
@@ -187,7 +187,7 @@ export class UsersController {
       const create = await this.userUseCase.profileGoogle(req.user);
       if (!create) return res.redirect(process.env.END_POINT_HOME as string);
       return res.redirect(
-        `${process.env.END_POINT_HOME}?token=${create.toKen}?_id=${create._id}` as string
+        `${process.env.END_POINT_HOME}/?token=${create.toKen}?_id=${create._id}` as string
       );
     } catch (error) {
       return res.redirect(process.env.END_POINT_HOME as string);

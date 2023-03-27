@@ -38,20 +38,11 @@ class App {
   }
 
   public configCors(): void {
-    this.App.use((req: Request, res: Response, next: NextFunction) => {
-      res.header('Access-Control-Allow-Origin', process.env.END_POINT_HOME);
-      res.header('Access-Control-Allow-Origin', process.env.END_POINT);
-      res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-      res.setHeader(
-        'Access-Control-Allow-Headers',
-        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-      );
-      next();
-    });
-    this.App.options(`${process.env.END_POINT_HOME}`);
-    this.App.options(`${process.env.END_POINT}`);
-    this.App.use(cors());
     this.App.use(seesion(sessionOptions));
+    this.App.use(cors({
+      origin: process.env.END_POINT_HOME,
+      credentials: true
+    }));
   }
 
   public configJson(): void {
