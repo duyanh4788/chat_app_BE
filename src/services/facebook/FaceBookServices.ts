@@ -7,7 +7,7 @@ import { removeAccentsVN } from '../../utils/accents';
 export class FaceBookService {
   private readonly FB_ID: string | any = process.env.FB_ID;
   private readonly FB_KEY: string | any = process.env.FB_KEY;
-  private readonly END_POINT_SERVER: string | any = 'http://localhost:50005/api/v1';
+  private readonly END_POINT_SERVER: string | any = process.env.END_POINT_SERVER;
 
   constructor(private userDriverRepository: IUserDriversRepository) {
     this.initializeLoginFacebook();
