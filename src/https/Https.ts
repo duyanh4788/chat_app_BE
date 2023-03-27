@@ -3,7 +3,7 @@ import https from 'https';
 export function makeHttpPostRequest(): Promise<string> {
     const options: https.RequestOptions = {
         protocol: 'https:',
-        hostname: 'postman-echo.com',
+        hostname: 'anhthuanhtu.com',
         port: 443,
         method: 'POST',
         path: '/post',
