@@ -13,6 +13,8 @@ export class UsersController {
   constructor(
     private userUseCase: UserUseCase,
     private authenticatorUseCase: AuthenticatorUseCase,
+    private readonly URL_FB: string = 'https://www.facebook.com/v16.0/dialog/oauth',
+    private readonly URL_GG: string = 'https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?response_type=code',
   ) {
     this.getListUser = this.getListUser.bind(this);
     this.getUserById = this.getUserById.bind(this);
@@ -101,7 +103,7 @@ export class UsersController {
         res,
         'success',
         200,
-        `${process.env.END_POINT_SERVER}/login-fb`,
+        `${this.URL_FB}?client_id=${process.env.FB_ID}&redirect_uri=${process.env.END_POINT_SERVER}/callback-fb`,
         'login successfuly'
       );
     } catch (error) {
@@ -115,7 +117,7 @@ export class UsersController {
         res,
         'success',
         200,
-        `${process.env.END_POINT_SERVER}/login-gg`,
+        `${this.URL_GG}&redirect_uri=${process.env.END_POINT_SERVER}/callback-gg&scope=profile email&client_id=${process.env.GG_ID}`,
         'login successfuly'
       );
     } catch (error) {
