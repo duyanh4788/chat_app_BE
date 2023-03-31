@@ -267,7 +267,7 @@ export class UsersController {
     const user = await this.userUseCase.getUserByEmail(email);
     if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
       throw new RestError(
-        'account have inactive, please activate code in email or resend code.',
+        'account have inactive, please activate code in email or spam.',
         401
       );
     }

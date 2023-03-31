@@ -29,7 +29,7 @@ export class UserDriversController implements IUserDriversRepository {
     if (!user) return;
     if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
       throw new RestError(
-        'account have inactive, please activate code in email or resend code.',
+        'account have inactive, please activate code in email or spam.',
         401
       );
     }
@@ -47,7 +47,7 @@ export class UserDriversController implements IUserDriversRepository {
     if (!user) return;
     if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
       throw new RestError(
-        'account have inactive, please activate code in email or resend code.',
+        'account have inactive, please activate code in email or spam.',
         401
       );
     }
@@ -59,7 +59,7 @@ export class UserDriversController implements IUserDriversRepository {
     if (!user) return;
     if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
       throw new RestError(
-        'account have inactive, please activate code in email or resend code.',
+        'account have inactive, please activate code in email or spam.',
         401
       );
     }
