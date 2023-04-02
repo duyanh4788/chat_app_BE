@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { RestError } from '../services/error/error';
-import { sendRespone } from '../common/common.success';
 import { UserUseCase } from '../usecase/UserUseCase';
 import { AuthenticatorUseCase } from '../usecase/AuthenticatorUseCase';
 import { StatusCreate, UserSchemaProps } from '../models/userModel';
@@ -8,6 +7,7 @@ import { checkTimerAuthenticator } from '../utils/timer';
 import { validateObjectReqBody } from '../utils/validate';
 import * as mongoDB from "mongodb";
 import { nodeMailerServices } from '../services/nodemailer/MailServices';
+import { SendRespone } from '../services/success/success';
 
 export class UsersController {
   constructor(
@@ -39,7 +39,7 @@ export class UsersController {
       if (listUsers && !listUsers.length) {
         throw new RestError('DATA NOT FOUND!', 400);
       }
-      return sendRespone(res, 'success', 200, listUsers, '');
+      return new SendRespone({ data: listUsers }).send(res)
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -51,7 +51,7 @@ export class UsersController {
       if (!user) {
         throw new RestError('USER NOT FOUND!', 400);
       }
-      return sendRespone(res, 'success', 200, user, '');
+      return new SendRespone({ data: user }).send(res)
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -64,7 +64,7 @@ export class UsersController {
       if (!create) throw new RestError('Sign Up failed', 400);
       const authCode = await this.authenticatorUseCase.createAuthCode(create._id as string);
       nodeMailerServices.sendWelcomeUserNotification(create, authCode);
-      return sendRespone(res, 'success', 200, null, 'sign up successfully.');
+      return new SendRespone({ message: 'sign up successfully, please check email or spam and active account.' }).send(res)
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -78,18 +78,12 @@ export class UsersController {
       for (let [key, value] of checkCode.entries()) {
         if (key) {
           await this.userUseCase.updateStatusCreate(value.userId as string, StatusCreate.ACTIVE);
-          return sendRespone(res, 'success', 200, 'active successfully, please login.', '');
+          return new SendRespone({ message: 'active successfully, please login.' }).send(res)
         }
         if (!key) {
           const findUser = await this.userUseCase.getUserByIdNoneStatus(value.userId as string);
           nodeMailerServices.sendWelcomeUserNotification(findUser, authCode);
-          return sendRespone(
-            res,
-            'success',
-            200,
-            'your code is expired, we have send code to email, please checked in email and activate.',
-            ''
-          );
+          return new SendRespone({ message: 'your code is expired, we have send code to email, please checked in email and activate.' }).send(res)
         }
       }
     } catch (error) {
@@ -99,13 +93,7 @@ export class UsersController {
 
   public async userSignUpWithFB(req: Request, res: Response) {
     try {
-      return sendRespone(
-        res,
-        'success',
-        200,
-        `${this.URL_FB}?client_id=${process.env.FB_ID}&redirect_uri=${process.env.END_POINT_SERVER}/callback-fb`,
-        'login successfuly'
-      );
+      return new SendRespone({ data: `${this.URL_FB}?client_id=${process.env.FB_ID}&redirect_uri=${process.env.END_POINT_SERVER}/callback-fb` }).send(res)
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -113,13 +101,7 @@ export class UsersController {
 
   public async userSignUpWithGG(req: Request, res: Response) {
     try {
-      return sendRespone(
-        res,
-        'success',
-        200,
-        `${this.URL_GG}&redirect_uri=${process.env.END_POINT_SERVER}/callback-gg&scope=profile email&client_id=${process.env.GG_ID}`,
-        'login successfuly'
-      );
+      return new SendRespone({ data: `${this.URL_GG}&redirect_uri=${process.env.END_POINT_SERVER}/callback-gg&scope=profile email&client_id=${process.env.GG_ID}` }).send(res)
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -130,7 +112,7 @@ export class UsersController {
       const { account, passWord } = req.body;
       const userSignIn = await this.userUseCase.userSignIn(account, passWord);
       if (!userSignIn) throw new RestError('login failed', 400);
-      return sendRespone(res, 'success', 200, userSignIn, 'login successfuly');
+      return new SendRespone({ data: userSignIn, message: 'login successfuly' }).send(res)
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -140,7 +122,7 @@ export class UsersController {
     try {
       const update = await this.userUseCase.changeStatus(req.body.id, true);
       if (!update) throw new RestError('Update status failed', 400);
-      return sendRespone(res, 'success', 200, null, 'update status successfuly');
+      return new SendRespone({ message: 'update status successfuly' }).send(res)
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -150,7 +132,7 @@ export class UsersController {
     try {
       const update = await this.userUseCase.changeStatus(req.body.id, false);
       if (!update) throw new RestError('Update status failed', 400);
-      return sendRespone(res, 'success', 200, null, 'update status successfuly');
+      return new SendRespone({ message: 'update status successfuly' }).send(res)
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -160,7 +142,7 @@ export class UsersController {
     try {
       const update = await this.userUseCase.updateInfo(req.body);
       if (!update) throw new RestError('Update status failed', 400);
-      return sendRespone(res, 'success', 200, null, 'update successfuly');
+      return new SendRespone({ message: 'update successfuly' }).send(res)
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -169,30 +151,31 @@ export class UsersController {
   public async profileFacebook(req: Request, res: Response) {
     try {
       if (!req.isAuthenticated() || !req.user) {
-        return res.redirect(process.env.END_POINT_HOME as string);
+        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res)
       }
       const create = await this.userUseCase.profileFacebook(req.user);
-      if (!create) return res.redirect(process.env.END_POINT_HOME as string);
-      return res.redirect(
-        `${process.env.END_POINT_HOME}/?token=${create.toKen}?_id=${create._id}` as string
-      );
+      if (!create) {
+        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res)
+
+      }
+      return new SendRespone({ data: `${process.env.END_POINT_HOME}/?token=${create.toKen}?_id=${create._id}` }).redirect(res)
     } catch (error) {
-      return res.redirect(process.env.END_POINT_HOME as string);
+      return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res)
     }
   }
 
   public async profileGoogle(req: Request, res: Response) {
     try {
       if (!req.isAuthenticated() || !req.user) {
-        return res.redirect(process.env.END_POINT_HOME as string);
+        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res)
       }
       const create = await this.userUseCase.profileGoogle(req.user);
-      if (!create) return res.redirect(process.env.END_POINT_HOME as string);
-      return res.redirect(
-        `${process.env.END_POINT_HOME}/?token=${create.toKen}?_id=${create._id}` as string
-      );
+      if (!create) {
+        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res)
+      }
+      return new SendRespone({ data: `${process.env.END_POINT_HOME}/?token=${create.toKen}?_id=${create._id}` }).redirect(res)
     } catch (error) {
-      return res.redirect(process.env.END_POINT_HOME as string);
+      return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res)
     }
   }
 
@@ -201,16 +184,10 @@ export class UsersController {
       const user = await this.checkUserByEmail(req);
       const findCode = await this.authenticatorUseCase.findByUserId(user._id as string);
       if (findCode)
-        return sendRespone(
-          res,
-          'success',
-          200,
-          'we have send authenticator code to email, please checked to email or resend order code.',
-          ''
-        );
+        return new SendRespone({ message: 'we have send authenticator code to email, please checked to email or resend order code.' }).send(res)
       const authCode = await this.authenticatorUseCase.createAuthCode(user._id as string);
       nodeMailerServices.sendAuthCodeResetPassWord(user, authCode);
-      return sendRespone(res, 'success', 200, 'we have send authenticator code to email.', '');
+      return new SendRespone({ message: 'we have send authenticator code to email.' }).send(res)
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -225,16 +202,10 @@ export class UsersController {
       }
       const checkTime = checkTimerAuthenticator(findCode.dateTimeCreate);
       if (!checkTime)
-        return sendRespone(
-          res,
-          'success',
-          200,
-          'we have send authenticator code to email, please checked to email or try again after 1 hour.',
-          ''
-        );
+        return new SendRespone({ message: 'we have send authenticator code to email, please checked to email or try again after 1 hour.' }).send(res)
       const authCode = await this.authenticatorUseCase.updateAuthCode(user._id as string);
       nodeMailerServices.sendAuthCodeResetPassWord(user, authCode);
-      return sendRespone(res, 'success', 200, 'we have send authenticator code to email.', '');
+      return new SendRespone({ message: 'we have send authenticator code to email.' }).send(res)
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -253,7 +224,7 @@ export class UsersController {
       await this.userUseCase.updatePassWord(user._id as string, newPassWord);
       await session.commitTransaction();
       session.endSession();
-      return sendRespone(res, 'success', 200, 'upadte password successfully.', '');
+      return new SendRespone({ message: 'upadte password successfully.' }).send(res)
     } catch (error) {
       await session.abortTransaction();
       session.endSession();

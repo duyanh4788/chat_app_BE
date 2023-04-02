@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { sendRespone } from '../common/common.success';
 import { RestError } from '../services/error/error';
+import { SendRespone } from '../services/success/success';
 import { MessagesUseCase } from '../usecase/MessagesUseCase';
 
 export class MessageControler {
@@ -13,7 +13,8 @@ export class MessageControler {
     try {
       const create = await this.messagesUseCase.postNewMessages(req.body);
       if (!create) throw new RestError('send messages failed', 400);
-      return sendRespone(res, 'success', 200, create, '');
+      return new SendRespone({ data: create }).send(res)
+
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -23,9 +24,8 @@ export class MessageControler {
     try {
       const { conversationId, skip } = req.body;
       const listMessages = await this.messagesUseCase.getListMessages(conversationId, skip);
-      if (!listMessages)
-        return sendRespone(res, 'success', 200, { listMessages: [], totalPage: 0, skip: 0 }, '');
-      return sendRespone(res, 'success', 200, listMessages, '');
+      if (!listMessages) return new SendRespone({ data: { listMessages: [], totalPage: 0, skip: 0 } }).send(res)
+      return new SendRespone({ data: listMessages }).send(res)
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }

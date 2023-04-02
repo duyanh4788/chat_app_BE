@@ -20,26 +20,28 @@ export const renderMessages = ({ conversationId, senderId, reciverId, text }: an
   }
 };
 
-export const changeStatusOnline = (user: InfoUser) => {
+export const changeStatusLogin = (user: InfoUser, isOnline: boolean) => {
   const data = {
     account: user.account,
     avatar: user.avatar,
     email: user.email,
     fullName: user.fullName,
-    isOnline: true,
+    isOnline,
     _id: user._id
   };
   return data;
 };
 
-export const changeStatusOffline = (user: InfoUser) => {
+export const changeStatusIsNewMsg = (user: InfoUser, isNewMsg: boolean) => {
   const data = {
     account: user.account,
     avatar: user.avatar,
     email: user.email,
     fullName: user.fullName,
-    isOnline: false,
+    isOnline: user.isOnline,
+    isNewMsg,
     _id: user._id
   };
   return data;
 };
+

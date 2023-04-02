@@ -10,7 +10,7 @@ interface InfoUser {
 
 let listUsers: InfoUser[] = [];
 
-export const createUser = (socket: any, user: any) => {
+export const createUser = (socket: any, user: any): InfoUser[] => {
   const findUser = listUsers.find(({ _id }) => _id === user?._id);
   if (findUser) return [findUser];
   if (!findUser) {
@@ -19,9 +19,11 @@ export const createUser = (socket: any, user: any) => {
   return listUsers;
 };
 
-export const getSocketById = (id: string) => listUsers.find(({ socketId }) => socketId === id);
+export const getSocketById = (id: string): InfoUser => {
+  return listUsers.find(({ socketId }) => socketId === id) as InfoUser;
+}
 
-export const getUserById = (id: string) => listUsers.find(({ _id }) => _id === id);
+export const getUserById = (id: string): InfoUser => listUsers.find(({ _id }) => _id === id) as InfoUser;
 
 export const removeUserList = (id: string) => {
   const index = listUsers.findIndex(({ _id }) => _id !== id);

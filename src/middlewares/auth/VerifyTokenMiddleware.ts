@@ -1,6 +1,7 @@
 import * as JWT from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { USER_TYPE_CODE, SECRETKEY } from '../../common/common.constants';
+import { SendRespone } from '../../services/success/success';
 
 interface TokenPayload {
   [account: string]: any;
@@ -13,45 +14,25 @@ export class VerifyTokenMiddleware {
       const deCode: any = JWT.verify(token, SECRETKEY);
       const getTime = Math.round(new Date().getTime() / 1000);
       if (!deCode || deCode.exp < getTime) {
-        return res
-          .status(404)
-          .json({
-            status: 'error',
-            code: 401,
-            data: null,
-            message: 'token expired, please login again.'
-          });
+        return new SendRespone({ status: 'error', code: 401, message: 'token expired, please login again.' }).send(res);
       }
       if (deCode) {
         req.account = deCode;
         next();
       }
     } catch (error) {
-      return res
-        .status(404)
-        .json({ status: 'error', code: 404, data: null, message: 'you have don`t not sign in.' });
+      return new SendRespone({ status: 'error', code: 404, message: 'you have do not sign in.' }).send(res);
     }
   }
 
   public permissions(req: TokenPayload, res: Response, next: NextFunction) {
-    try {
-      if (
-        USER_TYPE_CODE.includes(req.account.userTypeCode) &&
-        req.account !== parseInt(req.params.account)
-      ) {
-        next();
-      } else {
-        throw new Error();
-      }
-    } catch (error) {
-      return res
-        .status(404)
-        .json({
-          status: 'error',
-          code: 404,
-          data: null,
-          message: 'you are does not permissions remove account.'
-        });
+    if (
+      USER_TYPE_CODE.includes(req.account.userTypeCode) &&
+      req.account !== parseInt(req.params.account)
+    ) {
+      next();
+    } else {
+      return new SendRespone({ status: 'error', code: 404, message: 'you are does not permissions remove account.' }).send(res);
     }
   }
 }

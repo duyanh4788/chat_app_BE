@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { IConvertStationDriversRepository } from '../../Repository/IConvertStationDriversRepository';
 import { IUserDriversRepository } from '../../Repository/IUserDriversRepository';
+import { SendRespone } from '../../services/success/success';
 export class ConverStationMiddleware {
   constructor(
     private convertStationDriversRepository: IConvertStationDriversRepository,
@@ -14,9 +15,7 @@ export class ConverStationMiddleware {
     if (senderId && senderId !== '' && reciverId && reciverId !== '') {
       return next();
     } else {
-      return res
-        .status(404)
-        .json({ status: 'error', code: 404, data: null, message: 'id Sender or Reciver is null!' });
+      return new SendRespone({ status: 'error', code: 404, message: 'id Sender or Reciver is null!' }).send(res);
     }
   }
   public async getConverStationByUserId(req: Request, res: Response, next: NextFunction) {
@@ -27,11 +26,7 @@ export class ConverStationMiddleware {
     );
     if (converStationByUserId) {
       const reciver = await this.userDriversRepository.findById(reciverId);
-      return res.status(200).send({
-        data: { ...converStationByUserId, avataReciver: reciver?.avatar },
-        code: 200,
-        success: true
-      });
+      return new SendRespone({ data: { ...converStationByUserId, avataReciver: reciver?.avatar } }).send(res);
     }
     if (!converStationByUserId) {
       next();

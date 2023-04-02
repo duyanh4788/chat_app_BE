@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { ConvertStationUseCase } from '../usecase/ConvertStationUseCase';
 import { RestError } from '../services/error/error';
-import { sendRespone } from '../common/common.success';
 import { IUserDriversRepository } from '../Repository/IUserDriversRepository';
+import { SendRespone } from '../services/success/success';
 
 export class ConverStationController {
   constructor(
@@ -18,7 +18,7 @@ export class ConverStationController {
       const create = await this.convertStationUseCase.saveConverStation(senderId, reciverId);
       if (!create) throw new RestError('connect friend failed', 400);
       const reciver = await this.userDriversRepository.findById(reciverId);
-      return sendRespone(res, 'success', 200, { ...create, avataReciver: reciver?.avatar }, '');
+      return new SendRespone({ status: 'success', code: 200, data: { ...create, avataReciver: reciver?.avatar }, message: '' }).send(res)
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }

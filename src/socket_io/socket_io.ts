@@ -1,11 +1,11 @@
 import Filter from 'bad-words';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { SOCKET_COMMIT, TEXT_BAD } from '../common/common.constants';
 import { MessagesDriversController } from '../MongoDriversController/MessagesDriversController';
 import { UserDriversController } from '../MongoDriversController/UserDriversController';
 
-import { changeStatusOffline, changeStatusOnline, renderMessages } from '../utils/createMessages';
+import { changeStatusIsNewMsg, changeStatusLogin, renderMessages } from '../utils/createMessages';
 import { createUser, getUserById, removeUserList } from '../utils/createUsers';
 interface InfoUser {
   socketId: string;
@@ -35,19 +35,19 @@ export class Websocket {
   }
 
   public socketIO(
-    socket_io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any> | any
+    socket_io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>
   ) {
-    socket_io.on(SOCKET_COMMIT.CONNECT, (socket: any) => {
+    socket_io.on(SOCKET_COMMIT.CONNECT, (socket: Socket) => {
       /** Connect **/
       socket.on(SOCKET_COMMIT.JOIN_ROOM, (infoUser: InfoUser) => {
         const listUser = createUser(socket, infoUser);
         if (listUser && listUser.length) {
-          const isUser: any = listUser.find(({ _id }) => _id === infoUser._id);
+          const isUser = listUser.find(({ _id }) => _id === infoUser._id) as InfoUser;
           if (isUser._id) {
             this.userDriversController.updateStatusSocket(isUser._id, true);
             /** send notify **/
             socket.emit(SOCKET_COMMIT.SEND_MESSAGE_NOTIFY, `Hello ${isUser.fullName}`);
-            socket.broadcast.emit(SOCKET_COMMIT.CHANGE_STATUS_ONLINE, changeStatusOnline(isUser));
+            socket.broadcast.emit(SOCKET_COMMIT.CHANGE_STATUS_ONLINE, changeStatusLogin(isUser, true));
             socket.broadcast.emit(SOCKET_COMMIT.SEND_MESSAGE_NOTIFY, `${isUser.fullName} Online`);
           }
         }
@@ -66,7 +66,7 @@ export class Websocket {
             socket_io.emit(SOCKET_COMMIT.SEND_LIST_MESSAGE, renderMessages(dataMessages));
             socket.broadcast.emit(
               SOCKET_COMMIT.SEND_MESSAGE_SENDER,
-              `${userBySocketId.fullName} did messages for you.`
+              { userBySender: changeStatusIsNewMsg(userBySocketId as InfoUser, true), reciverId: dataMessages.reciverId, message: `${userBySocketId.fullName} did messages for you.` }
             );
             callBackAcknow();
             this.messagesDriversController.createNewMessagesSocket(dataMessages);
@@ -79,7 +79,7 @@ export class Websocket {
         if (userBySocketId) {
           socket.broadcast.emit(
             SOCKET_COMMIT.CHANGE_STATUS_OFFLINE,
-            changeStatusOffline(userBySocketId)
+            changeStatusLogin(userBySocketId, false)
           );
           socket.broadcast.emit(
             SOCKET_COMMIT.SEND_MESSAGE_NOTIFY,

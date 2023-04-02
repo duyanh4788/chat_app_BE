@@ -1,6 +1,7 @@
 import multer, { FileFilterCallback } from 'multer';
 import { Request, Response, NextFunction } from 'express';
 import sharp from 'sharp';
+import { SendRespone } from '../../services/success/success';
 export class MulterMiddleware {
   private fileFilter = (req: Request, file: Express.Multer.File, callback: FileFilterCallback) => {
     const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
@@ -21,13 +22,14 @@ export class MulterMiddleware {
 
   public uploadMulter = (req: Request, res: Response, next: NextFunction) => {
     this.multerMiddleware(req, res, async (err: any) => {
-      if (!req.file)
-        return res.status(404).json({ message: err.message || 'please try again later.' });
+      if (!req.file) {
+        return new SendRespone({ status: 'error', code: 404, message: err.message || 'please try again later.' }).send(res);
 
+      }
       if (err instanceof multer.MulterError) {
-        return res.status(400).json({ message: err.message });
+        return new SendRespone({ status: 'error', code: 400, message: err.message }).send(res);
       } else if (err) {
-        return res.status(500).json({ message: 'Internal error' });
+        return new SendRespone({ status: 'error', code: 500, message: 'Internal error!' }).send(res);
       }
 
       const resize = await sharp(req.file.buffer)
