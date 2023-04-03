@@ -17,13 +17,25 @@ export class AuthUserMiddleware {
       !validateValue(fullName) &&
       !validateValue(email)
     ) {
-      return new SendRespone({ status: 'error', code: 404, message: 'Please input full information.' }).send(res)
+      return new SendRespone({
+        status: 'error',
+        code: 404,
+        message: 'Please input full information.'
+      }).send(res);
     }
     if (!email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
-      return new SendRespone({ status: 'error', code: 404, message: 'Please input correct type email.' }).send(res);
+      return new SendRespone({
+        status: 'error',
+        code: 404,
+        message: 'Please input correct type email.'
+      }).send(res);
     }
     if (account.length <= 4 && account.length >= 30) {
-      return new SendRespone({ status: 'error', code: 404, message: 'length number form 6 => 30' }).send(res);
+      return new SendRespone({
+        status: 'error',
+        code: 404,
+        message: 'length number form 6 => 30'
+      }).send(res);
     }
     const acc = await this.userDriversRepository.findByAccount(account);
     if (acc) {
@@ -31,7 +43,9 @@ export class AuthUserMiddleware {
     }
     const em = await this.userDriversRepository.findByEmail(email);
     if (em) {
-      return new SendRespone({ status: 'error', code: 404, message: 'email have exist.' }).send(res);
+      return new SendRespone({ status: 'error', code: 404, message: 'email have exist.' }).send(
+        res
+      );
     }
     next();
   }
@@ -42,7 +56,9 @@ export class AuthUserMiddleware {
     if (!data) {
       next();
     } else {
-      return new SendRespone({ status: 'error', code: 404, message: 'account have exist.' }).send(res);
+      return new SendRespone({ status: 'error', code: 404, message: 'account have exist.' }).send(
+        res
+      );
     }
   }
 
@@ -52,7 +68,9 @@ export class AuthUserMiddleware {
     if (phone && phone.match(pattern)) {
       next();
     } else {
-      return new SendRespone({ status: 'error', code: 404, message: 'please input number.' }).send(res);
+      return new SendRespone({ status: 'error', code: 404, message: 'please input number.' }).send(
+        res
+      );
     }
   }
 }

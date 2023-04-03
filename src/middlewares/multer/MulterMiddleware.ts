@@ -23,13 +23,18 @@ export class MulterMiddleware {
   public uploadMulter = (req: Request, res: Response, next: NextFunction) => {
     this.multerMiddleware(req, res, async (err: any) => {
       if (!req.file) {
-        return new SendRespone({ status: 'error', code: 404, message: err.message || 'please try again later.' }).send(res);
-
+        return new SendRespone({
+          status: 'error',
+          code: 404,
+          message: err.message || 'please try again later.'
+        }).send(res);
       }
       if (err instanceof multer.MulterError) {
         return new SendRespone({ status: 'error', code: 400, message: err.message }).send(res);
       } else if (err) {
-        return new SendRespone({ status: 'error', code: 500, message: 'Internal error!' }).send(res);
+        return new SendRespone({ status: 'error', code: 500, message: 'Internal error!' }).send(
+          res
+        );
       }
 
       const resize = await sharp(req.file.buffer)

@@ -28,10 +28,7 @@ export class UserDriversController implements IUserDriversRepository {
     const user = await this.Users.findById(id).select(this.selectUser);
     if (!user) return;
     if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
-      throw new RestError(
-        'account have inactive, please activate code in email or spam.',
-        401
-      );
+      throw new RestError('account have inactive, please activate code in email or spam.', 401);
     }
     return this.transFromData(user);
   }
@@ -46,10 +43,7 @@ export class UserDriversController implements IUserDriversRepository {
     const user: any = await this.Users.findOne({ account });
     if (!user) return;
     if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
-      throw new RestError(
-        'account have inactive, please activate code in email or spam.',
-        401
-      );
+      throw new RestError('account have inactive, please activate code in email or spam.', 401);
     }
     return this.transFromData(user);
   }
@@ -58,10 +52,7 @@ export class UserDriversController implements IUserDriversRepository {
     const user: any = await this.Users.findOne({ email });
     if (!user) return;
     if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
-      throw new RestError(
-        'account have inactive, please activate code in email or spam.',
-        401
-      );
+      throw new RestError('account have inactive, please activate code in email or spam.', 401);
     }
     return this.transFromData(user);
   }

@@ -44,7 +44,7 @@ export class UsersRoutes {
   );
   private usersController: UsersController = new UsersController(
     this.userUseCase,
-    this.AuthenticatorUseCase,
+    this.AuthenticatorUseCase
   );
   private authMiddleware: AuthUserMiddleware = new AuthUserMiddleware(this.userDriversController);
   private verifyTokenMiddleware: VerifyTokenMiddleware = new VerifyTokenMiddleware();
@@ -67,9 +67,21 @@ export class UsersRoutes {
       this.usersController.userSignUp
     );
     app.get(BASE_ROUTE + Routes.ACTIVE_USER, this.usersController.activeUser);
-    app.post(BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE, this.verifyTokenMiddleware.authenTicate, this.usersController.changeStatusOnline);
-    app.post(BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE, this.verifyTokenMiddleware.authenTicate, this.usersController.changeStatusOffline);
-    app.put(BASE_ROUTE + Routes.UPDATE_INFOR, this.verifyTokenMiddleware.authenTicate, this.usersController.updateInfo);
+    app.post(
+      BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE,
+      this.verifyTokenMiddleware.authenTicate,
+      this.usersController.changeStatusOnline
+    );
+    app.post(
+      BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE,
+      this.verifyTokenMiddleware.authenTicate,
+      this.usersController.changeStatusOffline
+    );
+    app.put(
+      BASE_ROUTE + Routes.UPDATE_INFOR,
+      this.verifyTokenMiddleware.authenTicate,
+      this.usersController.updateInfo
+    );
     app.post(BASE_ROUTE + Routes.ORDER_RESET_PASSWORD, this.usersController.orderResetPassWord);
     app.post(
       BASE_ROUTE + Routes.RESEND_ORDER_RESET_PASSWORD,

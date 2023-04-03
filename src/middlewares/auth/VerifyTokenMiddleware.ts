@@ -14,14 +14,22 @@ export class VerifyTokenMiddleware {
       const deCode: any = JWT.verify(token, SECRETKEY);
       const getTime = Math.round(new Date().getTime() / 1000);
       if (!deCode || deCode.exp < getTime) {
-        return new SendRespone({ status: 'error', code: 401, message: 'token expired, please login again.' }).send(res);
+        return new SendRespone({
+          status: 'error',
+          code: 401,
+          message: 'token expired, please login again.'
+        }).send(res);
       }
       if (deCode) {
         req.account = deCode;
         next();
       }
     } catch (error) {
-      return new SendRespone({ status: 'error', code: 404, message: 'you have do not sign in.' }).send(res);
+      return new SendRespone({
+        status: 'error',
+        code: 404,
+        message: 'you have do not sign in.'
+      }).send(res);
     }
   }
 
@@ -32,7 +40,11 @@ export class VerifyTokenMiddleware {
     ) {
       next();
     } else {
-      return new SendRespone({ status: 'error', code: 404, message: 'you are does not permissions remove account.' }).send(res);
+      return new SendRespone({
+        status: 'error',
+        code: 404,
+        message: 'you are does not permissions remove account.'
+      }).send(res);
     }
   }
 }

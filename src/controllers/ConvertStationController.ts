@@ -18,7 +18,12 @@ export class ConverStationController {
       const create = await this.convertStationUseCase.saveConverStation(senderId, reciverId);
       if (!create) throw new RestError('connect friend failed', 400);
       const reciver = await this.userDriversRepository.findById(reciverId);
-      return new SendRespone({ status: 'success', code: 200, data: { ...create, avataReciver: reciver?.avatar }, message: '' }).send(res)
+      return new SendRespone({
+        status: 'success',
+        code: 200,
+        data: { ...create, avataReciver: reciver?.avatar },
+        message: ''
+      }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }

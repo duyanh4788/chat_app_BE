@@ -15,7 +15,11 @@ export class ConverStationMiddleware {
     if (senderId && senderId !== '' && reciverId && reciverId !== '') {
       return next();
     } else {
-      return new SendRespone({ status: 'error', code: 404, message: 'id Sender or Reciver is null!' }).send(res);
+      return new SendRespone({
+        status: 'error',
+        code: 404,
+        message: 'id Sender or Reciver is null!'
+      }).send(res);
     }
   }
   public async getConverStationByUserId(req: Request, res: Response, next: NextFunction) {
@@ -26,7 +30,9 @@ export class ConverStationMiddleware {
     );
     if (converStationByUserId) {
       const reciver = await this.userDriversRepository.findById(reciverId);
-      return new SendRespone({ data: { ...converStationByUserId, avataReciver: reciver?.avatar } }).send(res);
+      return new SendRespone({
+        data: { ...converStationByUserId, avataReciver: reciver?.avatar }
+      }).send(res);
     }
     if (!converStationByUserId) {
       next();

@@ -34,9 +34,7 @@ export class Websocket {
     this.userDriversController.updateStatus = this.userDriversController.updateStatus.bind(this);
   }
 
-  public socketIO(
-    socket_io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>
-  ) {
+  public socketIO(socket_io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>) {
     socket_io.on(SOCKET_COMMIT.CONNECT, (socket: Socket) => {
       /** Connect **/
       socket.on(SOCKET_COMMIT.JOIN_ROOM, (infoUser: InfoUser) => {
@@ -47,7 +45,10 @@ export class Websocket {
             this.userDriversController.updateStatusSocket(isUser._id, true);
             /** send notify **/
             socket.emit(SOCKET_COMMIT.SEND_MESSAGE_NOTIFY, `Hello ${isUser.fullName}`);
-            socket.broadcast.emit(SOCKET_COMMIT.CHANGE_STATUS_ONLINE, changeStatusLogin(isUser, true));
+            socket.broadcast.emit(
+              SOCKET_COMMIT.CHANGE_STATUS_ONLINE,
+              changeStatusLogin(isUser, true)
+            );
             socket.broadcast.emit(SOCKET_COMMIT.SEND_MESSAGE_NOTIFY, `${isUser.fullName} Online`);
           }
         }
@@ -64,10 +65,11 @@ export class Websocket {
               return callBackAcknow(SOCKET_COMMIT.MESSAGE_NOT_AVALID);
             }
             socket_io.emit(SOCKET_COMMIT.SEND_LIST_MESSAGE, renderMessages(dataMessages));
-            socket.broadcast.emit(
-              SOCKET_COMMIT.SEND_MESSAGE_SENDER,
-              { userBySender: changeStatusIsNewMsg(userBySocketId as InfoUser, true), reciverId: dataMessages.reciverId, message: `${userBySocketId.fullName} did messages for you.` }
-            );
+            socket.broadcast.emit(SOCKET_COMMIT.SEND_MESSAGE_SENDER, {
+              userBySender: changeStatusIsNewMsg(userBySocketId as InfoUser, true),
+              reciverId: dataMessages.reciverId,
+              message: `${userBySocketId.fullName} did messages for you.`
+            });
             callBackAcknow();
             this.messagesDriversController.createNewMessagesSocket(dataMessages);
           }

@@ -1,4 +1,4 @@
-import { logger } from "../services/loggerservice/Logger";
+import { logger } from '../services/loggerservice/Logger';
 
 export abstract class BaseJob {
   abstract JOB_INTERVAL: number;

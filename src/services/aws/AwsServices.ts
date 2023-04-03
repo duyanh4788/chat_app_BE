@@ -1,5 +1,5 @@
-import { Upload } from "@aws-sdk/lib-storage";
-import { CreateBucketCommandInput, S3 } from "@aws-sdk/client-s3";
+import { Upload } from '@aws-sdk/lib-storage';
+import { CreateBucketCommandInput, S3 } from '@aws-sdk/client-s3';
 import { RestError } from '../error/error';
 
 export class AWS3Services {
@@ -73,7 +73,7 @@ export class AWS3Services {
         client: s3,
         params
       }).done();
-      const { Key }: any = result
+      const { Key }: any = result;
       return { success: true, data: this.DOMAIN + Key };
     } catch (error) {
       throw new RestError('upload failed', 400);

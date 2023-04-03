@@ -44,4 +44,3 @@ export const changeStatusIsNewMsg = (user: InfoUser, isNewMsg: boolean) => {
   };
   return data;
 };
-

@@ -5,7 +5,7 @@ import { AuthenticatorUseCase } from '../usecase/AuthenticatorUseCase';
 import { StatusCreate, UserSchemaProps } from '../models/userModel';
 import { checkTimerAuthenticator } from '../utils/timer';
 import { validateObjectReqBody } from '../utils/validate';
-import * as mongoDB from "mongodb";
+import * as mongoDB from 'mongodb';
 import { nodeMailerServices } from '../services/nodemailer/MailServices';
 import { SendRespone } from '../services/success/success';
 
@@ -14,7 +14,7 @@ export class UsersController {
     private userUseCase: UserUseCase,
     private authenticatorUseCase: AuthenticatorUseCase,
     private readonly URL_FB: string = 'https://www.facebook.com/v16.0/dialog/oauth',
-    private readonly URL_GG: string = 'https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?response_type=code',
+    private readonly URL_GG: string = 'https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?response_type=code'
   ) {
     this.getListUser = this.getListUser.bind(this);
     this.getUserById = this.getUserById.bind(this);
@@ -39,7 +39,7 @@ export class UsersController {
       if (listUsers && !listUsers.length) {
         throw new RestError('DATA NOT FOUND!', 400);
       }
-      return new SendRespone({ data: listUsers }).send(res)
+      return new SendRespone({ data: listUsers }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -51,7 +51,7 @@ export class UsersController {
       if (!user) {
         throw new RestError('USER NOT FOUND!', 400);
       }
-      return new SendRespone({ data: user }).send(res)
+      return new SendRespone({ data: user }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -64,7 +64,9 @@ export class UsersController {
       if (!create) throw new RestError('Sign Up failed', 400);
       const authCode = await this.authenticatorUseCase.createAuthCode(create._id as string);
       nodeMailerServices.sendWelcomeUserNotification(create, authCode);
-      return new SendRespone({ message: 'sign up successfully, please check email or spam and active account.' }).send(res)
+      return new SendRespone({
+        message: 'sign up successfully, please check email or spam and active account.'
+      }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -78,12 +80,15 @@ export class UsersController {
       for (let [key, value] of checkCode.entries()) {
         if (key) {
           await this.userUseCase.updateStatusCreate(value.userId as string, StatusCreate.ACTIVE);
-          return new SendRespone({ message: 'active successfully, please login.' }).send(res)
+          return new SendRespone({ message: 'active successfully, please login.' }).send(res);
         }
         if (!key) {
           const findUser = await this.userUseCase.getUserByIdNoneStatus(value.userId as string);
           nodeMailerServices.sendWelcomeUserNotification(findUser, authCode);
-          return new SendRespone({ message: 'your code is expired, we have send code to email, please checked in email and activate.' }).send(res)
+          return new SendRespone({
+            message:
+              'your code is expired, we have send code to email, please checked in email and activate.'
+          }).send(res);
         }
       }
     } catch (error) {
@@ -93,7 +98,9 @@ export class UsersController {
 
   public async userSignUpWithFB(req: Request, res: Response) {
     try {
-      return new SendRespone({ data: `${this.URL_FB}?client_id=${process.env.FB_ID}&redirect_uri=${process.env.END_POINT_SERVER}/callback-fb` }).send(res)
+      return new SendRespone({
+        data: `${this.URL_FB}?client_id=${process.env.FB_ID}&redirect_uri=${process.env.END_POINT_SERVER}/callback-fb`
+      }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -101,7 +108,9 @@ export class UsersController {
 
   public async userSignUpWithGG(req: Request, res: Response) {
     try {
-      return new SendRespone({ data: `${this.URL_GG}&redirect_uri=${process.env.END_POINT_SERVER}/callback-gg&scope=profile email&client_id=${process.env.GG_ID}` }).send(res)
+      return new SendRespone({
+        data: `${this.URL_GG}&redirect_uri=${process.env.END_POINT_SERVER}/callback-gg&scope=profile email&client_id=${process.env.GG_ID}`
+      }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -112,7 +121,7 @@ export class UsersController {
       const { account, passWord } = req.body;
       const userSignIn = await this.userUseCase.userSignIn(account, passWord);
       if (!userSignIn) throw new RestError('login failed', 400);
-      return new SendRespone({ data: userSignIn, message: 'login successfuly' }).send(res)
+      return new SendRespone({ data: userSignIn, message: 'login successfuly' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -122,7 +131,7 @@ export class UsersController {
     try {
       const update = await this.userUseCase.changeStatus(req.body.id, true);
       if (!update) throw new RestError('Update status failed', 400);
-      return new SendRespone({ message: 'update status successfuly' }).send(res)
+      return new SendRespone({ message: 'update status successfuly' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -132,7 +141,7 @@ export class UsersController {
     try {
       const update = await this.userUseCase.changeStatus(req.body.id, false);
       if (!update) throw new RestError('Update status failed', 400);
-      return new SendRespone({ message: 'update status successfuly' }).send(res)
+      return new SendRespone({ message: 'update status successfuly' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -142,7 +151,7 @@ export class UsersController {
     try {
       const update = await this.userUseCase.updateInfo(req.body);
       if (!update) throw new RestError('Update status failed', 400);
-      return new SendRespone({ message: 'update successfuly' }).send(res)
+      return new SendRespone({ message: 'update successfuly' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -151,31 +160,34 @@ export class UsersController {
   public async profileFacebook(req: Request, res: Response) {
     try {
       if (!req.isAuthenticated() || !req.user) {
-        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res)
+        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res);
       }
       const create = await this.userUseCase.profileFacebook(req.user);
       if (!create) {
-        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res)
-
+        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res);
       }
-      return new SendRespone({ data: `${process.env.END_POINT_HOME}/?token=${create.toKen}?_id=${create._id}` }).redirect(res)
+      return new SendRespone({
+        data: `${process.env.END_POINT_HOME}/?token=${create.toKen}?_id=${create._id}`
+      }).redirect(res);
     } catch (error) {
-      return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res)
+      return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res);
     }
   }
 
   public async profileGoogle(req: Request, res: Response) {
     try {
       if (!req.isAuthenticated() || !req.user) {
-        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res)
+        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res);
       }
       const create = await this.userUseCase.profileGoogle(req.user);
       if (!create) {
-        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res)
+        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res);
       }
-      return new SendRespone({ data: `${process.env.END_POINT_HOME}/?token=${create.toKen}?_id=${create._id}` }).redirect(res)
+      return new SendRespone({
+        data: `${process.env.END_POINT_HOME}/?token=${create.toKen}?_id=${create._id}`
+      }).redirect(res);
     } catch (error) {
-      return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res)
+      return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res);
     }
   }
 
@@ -184,10 +196,13 @@ export class UsersController {
       const user = await this.checkUserByEmail(req);
       const findCode = await this.authenticatorUseCase.findByUserId(user._id as string);
       if (findCode)
-        return new SendRespone({ message: 'we have send authenticator code to email, please checked to email or resend order code.' }).send(res)
+        return new SendRespone({
+          message:
+            'we have send authenticator code to email, please checked to email or resend order code.'
+        }).send(res);
       const authCode = await this.authenticatorUseCase.createAuthCode(user._id as string);
       nodeMailerServices.sendAuthCodeResetPassWord(user, authCode);
-      return new SendRespone({ message: 'we have send authenticator code to email.' }).send(res)
+      return new SendRespone({ message: 'we have send authenticator code to email.' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -202,10 +217,13 @@ export class UsersController {
       }
       const checkTime = checkTimerAuthenticator(findCode.dateTimeCreate);
       if (!checkTime)
-        return new SendRespone({ message: 'we have send authenticator code to email, please checked to email or try again after 1 hour.' }).send(res)
+        return new SendRespone({
+          message:
+            'we have send authenticator code to email, please checked to email or try again after 1 hour.'
+        }).send(res);
       const authCode = await this.authenticatorUseCase.updateAuthCode(user._id as string);
       nodeMailerServices.sendAuthCodeResetPassWord(user, authCode);
-      return new SendRespone({ message: 'we have send authenticator code to email.' }).send(res)
+      return new SendRespone({ message: 'we have send authenticator code to email.' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -224,7 +242,7 @@ export class UsersController {
       await this.userUseCase.updatePassWord(user._id as string, newPassWord);
       await session.commitTransaction();
       session.endSession();
-      return new SendRespone({ message: 'upadte password successfully.' }).send(res)
+      return new SendRespone({ message: 'upadte password successfully.' }).send(res);
     } catch (error) {
       await session.abortTransaction();
       session.endSession();
@@ -237,10 +255,7 @@ export class UsersController {
     if (!email) throw new RestError('email not avalible.', 404);
     const user = await this.userUseCase.getUserByEmail(email);
     if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
-      throw new RestError(
-        'account have inactive, please activate code in email or spam.',
-        401
-      );
+      throw new RestError('account have inactive, please activate code in email or spam.', 401);
     }
     return user;
   }

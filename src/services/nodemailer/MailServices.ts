@@ -7,7 +7,7 @@ export class NodeMailerServices implements INodeMailerServices {
   private readonly BASE_URL: string | undefined = process.env.END_POINT_HOME;
 
   constructor() {
-    this.startNodeMailer()
+    this.startNodeMailer();
   }
 
   async startNodeMailer() {

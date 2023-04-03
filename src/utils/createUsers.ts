@@ -21,9 +21,10 @@ export const createUser = (socket: any, user: any): InfoUser[] => {
 
 export const getSocketById = (id: string): InfoUser => {
   return listUsers.find(({ socketId }) => socketId === id) as InfoUser;
-}
+};
 
-export const getUserById = (id: string): InfoUser => listUsers.find(({ _id }) => _id === id) as InfoUser;
+export const getUserById = (id: string): InfoUser =>
+  listUsers.find(({ _id }) => _id === id) as InfoUser;
 
 export const removeUserList = (id: string) => {
   const index = listUsers.findIndex(({ _id }) => _id !== id);

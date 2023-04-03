@@ -13,7 +13,7 @@ export class UploadAwsController {
     try {
       const s3 = this.aws3.configAWS();
       const upload = await this.aws3.uploadToAWSS3(s3, req.file as Express.Multer.File);
-      return new SendRespone({ data: upload.data, message: 'upload successfullly.' }).send(res)
+      return new SendRespone({ data: upload.data, message: 'upload successfullly.' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -24,7 +24,7 @@ export class UploadAwsController {
       const { idImage } = req.body;
       const s3 = this.aws3.configAWS();
       await this.aws3.removeImageBucketAWS(s3, idImage);
-      return new SendRespone({ message: 'remove successfullly.' }).send(res)
+      return new SendRespone({ message: 'remove successfullly.' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
