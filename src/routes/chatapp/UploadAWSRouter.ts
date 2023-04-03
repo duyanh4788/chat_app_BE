@@ -22,18 +22,14 @@ export class UploadAWSRouter {
   private verifyTokenMiddleware: VerifyTokenMiddleware = new VerifyTokenMiddleware();
   private multerMiddleware: MulterMiddleware = new MulterMiddleware();
   public routes(app: Router): void {
+    app.use(this.verifyTokenMiddleware.authenTicate, this.authMiddleware.checkAccountExits)
     app.post(
       BASE_ROUTE + Routes.UPLOAD_AWS3,
-      this.verifyTokenMiddleware.authenTicate,
-      this.authMiddleware.checkAccountExits,
       this.multerMiddleware.uploadMulter,
       this.uploadAwsController.uploadAWS
     );
-
     app.post(
       BASE_ROUTE + Routes.REMOVE_IMG_AWS3,
-      this.verifyTokenMiddleware.authenTicate,
-      this.authMiddleware.checkAccountExits,
       this.uploadAwsController.removeImageBucketAWS
     );
   }

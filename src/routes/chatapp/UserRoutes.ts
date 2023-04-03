@@ -50,16 +50,6 @@ export class UsersRoutes {
   private verifyTokenMiddleware: VerifyTokenMiddleware = new VerifyTokenMiddleware();
 
   public routes(app: Router): void {
-    app.get(
-      BASE_ROUTE + Routes.LIST_USERS,
-      this.verifyTokenMiddleware.authenTicate,
-      this.usersController.getListUser
-    );
-    app.get(
-      BASE_ROUTE + Routes.GET_USER_BY_ID,
-      this.verifyTokenMiddleware.authenTicate,
-      this.usersController.getUserById
-    );
     app.post(BASE_ROUTE + Routes.SIGN_IN, this.usersController.userSignIn);
     app.post(
       BASE_ROUTE + Routes.SIGN_UP,
@@ -67,29 +57,13 @@ export class UsersRoutes {
       this.usersController.userSignUp
     );
     app.get(BASE_ROUTE + Routes.ACTIVE_USER, this.usersController.activeUser);
-    app.post(
-      BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE,
-      this.verifyTokenMiddleware.authenTicate,
-      this.usersController.changeStatusOnline
-    );
-    app.post(
-      BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE,
-      this.verifyTokenMiddleware.authenTicate,
-      this.usersController.changeStatusOffline
-    );
-    app.put(
-      BASE_ROUTE + Routes.UPDATE_INFOR,
-      this.verifyTokenMiddleware.authenTicate,
-      this.usersController.updateInfo
-    );
     app.post(BASE_ROUTE + Routes.ORDER_RESET_PASSWORD, this.usersController.orderResetPassWord);
     app.post(
       BASE_ROUTE + Routes.RESEND_ORDER_RESET_PASSWORD,
       this.usersController.resendOrderResetPassWord
     );
     app.post(BASE_ROUTE + Routes.RESET_PASSWORD, this.usersController.resetPassWord);
-
-    // ** services //
+    // ** services FB//
     app.post(BASE_ROUTE + Routes.LOGIN_FB, this.usersController.userSignUpWithFB);
     app.get(BASE_ROUTE + Routes.LOGIN_FB, this.faceBookService.authenticate());
     app.get(BASE_ROUTE + Routes.CALL_BACK_FB, this.faceBookService.handleCallback());
@@ -98,10 +72,33 @@ export class UsersRoutes {
       passport.session(),
       this.usersController.profileFacebook
     );
-
+    // ** services GG//
     app.post(BASE_ROUTE + Routes.LOGIN_GG, this.usersController.userSignUpWithGG);
     app.get(BASE_ROUTE + Routes.LOGIN_GG, this.googleServices.authenticate());
     app.get(BASE_ROUTE + Routes.CALL_BACK_GG, this.googleServices.handleCallback());
     app.get(BASE_ROUTE + Routes.PROFILE_GG, passport.session(), this.usersController.profileGoogle);
+
+    // ** services Authentica//
+    app.use(this.verifyTokenMiddleware.authenTicate)
+    app.get(
+      BASE_ROUTE + Routes.LIST_USERS,
+      this.usersController.getListUser
+    );
+    app.get(
+      BASE_ROUTE + Routes.GET_USER_BY_ID,
+      this.usersController.getUserById
+    );
+    app.post(
+      BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE,
+      this.usersController.changeStatusOnline
+    );
+    app.post(
+      BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE,
+      this.usersController.changeStatusOffline
+    );
+    app.put(
+      BASE_ROUTE + Routes.UPDATE_INFOR,
+      this.usersController.updateInfo
+    );
   }
 }
