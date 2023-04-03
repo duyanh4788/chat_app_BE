@@ -62,7 +62,7 @@ export class AWS3Services {
   async uploadToAWSS3(s3: S3, fileData: Express.Multer.File): Promise<any> {
     const params = {
       Bucket: this.BUCKET,
-      Key: `img/${Date.now()}.${fileData.originalname.split('.')[1]}`,
+      Key: `img/${Date.now()}.${fileData.mimetype.split('/')[1]}`,
       Body: fileData.buffer,
       ContentType: fileData.mimetype
     };
