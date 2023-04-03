@@ -16,6 +16,7 @@ export class RestError extends Error {
     if (err instanceof RestError) {
       return res.status(err.code || 417).json({
         status: 'error',
+        code: err.code,
         message: err.message,
         success
       });

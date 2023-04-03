@@ -27,7 +27,7 @@ export class VerifyTokenMiddleware {
     } catch (error) {
       return new SendRespone({
         status: 'error',
-        code: 404,
+        code: 401,
         message: 'you have do not sign in.'
       }).send(res);
     }
@@ -42,7 +42,7 @@ export class VerifyTokenMiddleware {
     } else {
       return new SendRespone({
         status: 'error',
-        code: 404,
+        code: 401,
         message: 'you are does not permissions remove account.'
       }).send(res);
     }

@@ -14,22 +14,22 @@ export enum StatusCode {
 }
 
 interface Success {
-  code?: number;
   status?: string;
+  code?: number;
   data?: any;
   message?: string;
   option?: any;
 }
 
 class SuccessResponse {
-  public code: number;
   public status: string;
+  public code: number;
   public data: any;
   public message: string;
   public option: any;
 
   constructor({
-    status = TypeResponse.SUCCESS,
+    status = TypeResponse.SUCCESS as string,
     code = StatusCode.SUCCESS,
     data = null,
     message = '',
@@ -52,7 +52,7 @@ class SuccessResponse {
 }
 
 export class SendRespone extends SuccessResponse {
-  constructor({ data, message }: Success) {
-    super({ data, message });
+  constructor({ status, code, data, message, option }: Success) {
+    super({ status, code, data, message, option });
   }
 }
