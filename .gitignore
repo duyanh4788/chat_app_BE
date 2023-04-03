@@ -5,6 +5,7 @@ build
 dist
 node_modules
 logger
+webconfig
 stats.json
 .pnp
 .pnp.js
