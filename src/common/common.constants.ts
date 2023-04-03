@@ -27,3 +27,10 @@ export const TEXT_BAD = ['con cặc', 'địt mẹ', 'đụ má', 'chó đẻ', 
 
 export const USER_TYPE_CODE = ['ADMIN', 'SUPER_ADMIN'];
 export const SECRETKEY = '1234@Abcd';
+
+export enum ModelRedis {
+  USERS_GETBYID = 'users_getbyid',
+  MESSAGES = 'messages',
+  CONVERTSTATIONS = 'converstations',
+  AUTHENTICATORS = 'authenticators'
+}

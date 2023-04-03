@@ -5,7 +5,7 @@ import { logger } from '../services/loggerservice/Logger';
 export class DataBase {
   private readonly MONGOOSE_URL: string | any = process.env.DATABASE;
   static instance: any;
-  constructor() {}
+  constructor() { }
 
   public async connectDB() {
     if (isDevelopment) {
@@ -14,6 +14,7 @@ export class DataBase {
     }
     mongoose.set('strictQuery', false);
     try {
+      mongoose.set("strictQuery", false);
       await mongoose.connect(this.MONGOOSE_URL);
       console.log(`MongoDB connect success. Number connect: ${mongoose.connections.length}`);
     } catch (error) {
