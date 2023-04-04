@@ -5,14 +5,10 @@ import * as bcrypt from 'bcryptjs';
 import * as JWT from 'jsonwebtoken';
 import { SECRETKEY } from '../common/common.constants';
 export class UserUseCase {
-  constructor(private userDriversController: IUserDriversRepository) {}
+  constructor(private userDriversController: IUserDriversRepository) { }
 
   async getListUser(): Promise<UserSchemaProps[]> {
-    const listUsers = await this.userDriversController.findAllLists();
-    if (listUsers && !listUsers.length) {
-      throw new RestError('DATA NOT FOUND!', 400);
-    }
-    return listUsers;
+    return await this.userDriversController.findAllLists();
   }
 
   async userSignInWithToken(userId: string): Promise<UserSchemaProps> {

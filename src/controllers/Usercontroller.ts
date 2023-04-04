@@ -39,9 +39,6 @@ export class UsersController {
   public async getListUser(req: Request, res: Response) {
     try {
       const listUsers = await this.userUseCase.getListUser();
-      if (listUsers && !listUsers.length) {
-        throw new RestError('DATA NOT FOUND!', 400);
-      }
       return new SendRespone({ data: listUsers }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);

@@ -3,7 +3,7 @@ import { UserSchemaProps, UserTypeCreate } from '../models/userModel';
 export interface IUserDriversRepository {
   findAllLists(): Promise<UserSchemaProps[]>;
 
-  findById(id: string): Promise<UserSchemaProps | undefined>;
+  findById(id: string): Promise<UserSchemaProps>;
 
   getUserByIdNoneStatus(id: string): Promise<UserSchemaProps | undefined>;
 

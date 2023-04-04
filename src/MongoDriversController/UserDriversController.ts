@@ -24,12 +24,8 @@ export class UserDriversController implements IUserDriversRepository {
     return listUsers.map((item) => this.transFromData(item));
   }
 
-  async findById(id: string): Promise<UserSchemaProps | undefined> {
+  async findById(id: string): Promise<UserSchemaProps> {
     const user = await this.Users.findById(id).select(this.selectUser);
-    if (!user) return;
-    if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
-      throw new RestError('account have inactive, please activate code in email or spam.', 401);
-    }
     return this.transFromData(user);
   }
 
