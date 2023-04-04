@@ -30,9 +30,9 @@ export class ConverStationRoutes {
   );
 
   public routes(app: Router): void {
-    app.use(this.verifyTokenMiddleware.authenTicate)
     app.post(
       BASE_ROUTE + Routes.SAVE_CONVERSTATION,
+      this.verifyTokenMiddleware.authenTicate,
       this.converStationMiddleware.checkEmptyId,
       this.converStationMiddleware.getConverStationByUserId,
       this.converStationController.saveConverStation

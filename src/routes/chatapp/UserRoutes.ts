@@ -79,25 +79,29 @@ export class UsersRoutes {
     app.get(BASE_ROUTE + Routes.PROFILE_GG, passport.session(), this.usersController.profileGoogle);
 
     // ** services Authentica//
-    app.use(this.verifyTokenMiddleware.authenTicate)
     app.get(
       BASE_ROUTE + Routes.LIST_USERS,
+      this.verifyTokenMiddleware.authenTicate,
       this.usersController.getListUser
     );
     app.get(
       BASE_ROUTE + Routes.GET_USER_BY_ID,
+      this.verifyTokenMiddleware.authenTicate,
       this.usersController.getUserById
     );
     app.post(
       BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE,
+      this.verifyTokenMiddleware.authenTicate,
       this.usersController.changeStatusOnline
     );
     app.post(
       BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE,
+      this.verifyTokenMiddleware.authenTicate,
       this.usersController.changeStatusOffline
     );
     app.put(
       BASE_ROUTE + Routes.UPDATE_INFOR,
+      this.verifyTokenMiddleware.authenTicate,
       this.usersController.updateInfo
     );
   }

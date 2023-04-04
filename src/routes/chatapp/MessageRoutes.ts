@@ -20,14 +20,15 @@ export class MessagesRoutes {
   private messagesMiddleware: MessagesMiddleware = new MessagesMiddleware();
 
   public routes(app: Router): void {
-    app.use(this.verifyTokenMiddleware.authenTicate);
     app.post(
       BASE_ROUTE + Routes.GET_LIST_MESSAGES,
+      this.verifyTokenMiddleware.authenTicate,
       this.messagesMiddleware.checkConvertStationId,
       this.messagesControler.getListMessages
     );
     app.post(
       BASE_ROUTE + Routes.NEW_MESSAGE,
+      this.verifyTokenMiddleware.authenTicate,
       this.messagesMiddleware.checkUserId,
       this.messagesControler.postNewMessages
     );
