@@ -1,10 +1,10 @@
+import * as JWT from 'jsonwebtoken';
 import Filter from 'bad-words';
 import { Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
-import { SOCKET_COMMIT, TEXT_BAD } from '../common/common.constants';
+import { SECRETKEY, SOCKET_COMMIT, TEXT_BAD } from '../common/common.constants';
 import { MessagesDriversController } from '../MongoDriversController/MessagesDriversController';
 import { UserDriversController } from '../MongoDriversController/UserDriversController';
-
 import { changeStatusIsNewMsg, changeStatusLogin, renderMessages } from '../utils/createMessages';
 import { createUser, getUserById, removeUserList } from '../utils/createUsers';
 interface InfoUser {
@@ -35,6 +35,15 @@ export class Websocket {
   }
 
   public socketIO(socket_io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>) {
+    socket_io.use((socket: Socket, next) => {
+      const { Authorization } = socket.handshake.auth;
+      const deCode: any = JWT.verify(Authorization, SECRETKEY);
+      const getTime = Math.round(new Date().getTime() / 1000);
+      if (deCode || deCode.exp > getTime) {
+        return next();
+      }
+      next(new Error('AUTHORIZATION_INVALID'))
+    });
     socket_io.on(SOCKET_COMMIT.CONNECT, (socket: Socket) => {
       /** Connect **/
       socket.on(SOCKET_COMMIT.JOIN_ROOM, (infoUser: InfoUser) => {
