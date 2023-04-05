@@ -1,4 +1,4 @@
-export {};
+export { };
 
 declare global {
   namespace Express {
@@ -6,4 +6,6 @@ declare global {
       user: any; // 👈️ turn off type checking
     }
   }
+
+  var _pathFile: string
 }

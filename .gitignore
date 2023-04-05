@@ -7,6 +7,7 @@ node_modules
 logger
 webconfig
 stats.json
+public/images
 .pnp
 .pnp.js
 .env

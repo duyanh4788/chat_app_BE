@@ -1,7 +1,9 @@
 import multer, { FileFilterCallback } from 'multer';
 import { Request, Response, NextFunction } from 'express';
 import sharp from 'sharp';
+import path from 'path';
 import { SendRespone } from '../../services/success/success';
+import { isDevelopment } from '../../server';
 export class MulterMiddleware {
   private fileFilter = (req: Request, file: Express.Multer.File, callback: FileFilterCallback) => {
     const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
@@ -37,18 +39,35 @@ export class MulterMiddleware {
         );
       }
 
-      const resize = await sharp(req.file.buffer)
-        .resize({
-          width: 800,
-          height: 800,
-          fit: sharp.fit.inside,
-          withoutEnlargement: true
-        })
-        .toBuffer();
+      if (!isDevelopment) {
+        const fileName = `${Date.now()}.${req.file.mimetype.split('/')[1]}`;
+        const filePath = this.filepath(`${_pathFile}/images/${fileName}`);
+        await sharp(req.file.buffer)
+          .resize({
+            width: 800,
+            height: 800,
+            fit: sharp.fit.inside,
+            withoutEnlargement: true
+          })
+          .toFile(filePath);
+        req.file.path = fileName;
+      } else {
+        const resize = await sharp(req.file.buffer)
+          .resize({
+            width: 800,
+            height: 800,
+            fit: sharp.fit.inside,
+            withoutEnlargement: true
+          })
+          .toBuffer();
 
-      req.file.buffer = resize;
-
+        req.file.buffer = resize;
+      }
       next();
     });
   };
+
+  private filepath(fileName: string) {
+    return path.resolve(fileName);
+  }
 }
