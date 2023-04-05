@@ -8,7 +8,7 @@ import { validateObjectReqBody } from '../utils/validate';
 import * as mongoDB from 'mongodb';
 import { nodeMailerServices } from '../services/nodemailer/MailServices';
 import { SendRespone } from '../services/success/success';
-import { redisController } from '../redis';
+import { redisController } from '../redis/RedisController';
 import { ModelRedis } from '../common/common.constants';
 
 export class UsersController {

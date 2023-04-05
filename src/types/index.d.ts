@@ -9,3 +9,11 @@ declare global {
 
   var _pathFile: string
 }
+
+declare module "mongoose" {
+  interface Query<ResultType, DocType, THelpers = {}, RawDocType = DocType> {
+    cache(): this;
+    useCache: boolean;
+    mongooseCollection: any;
+  }
+}

@@ -20,23 +20,22 @@ export class UserDriversController implements IUserDriversRepository {
   async findAllLists(): Promise<UserSchemaProps[]> {
     const listUsers = await this.Users.find({ statusCreate: StatusCreate.ACTIVE }).select(
       this.selectUser
-    );
+    ).lean(0);
     return listUsers.map((item) => this.transFromData(item));
   }
 
   async findById(id: string): Promise<UserSchemaProps> {
-    const user = await this.Users.findById(id).select(this.selectUser);
+    const user = await this.Users.findById(id).select(this.selectUser).lean(0);
     return this.transFromData(user);
   }
 
   async getUserByIdNoneStatus(id: string): Promise<UserSchemaProps | undefined> {
-    const user = await this.Users.findById(id).select(this.selectUser);
-    if (!user) return;
+    const user = await this.Users.findById(id).select(this.selectUser).lean(0);
     return this.transFromData(user);
   }
 
   async findByAccount(account: string): Promise<UserSchemaProps | undefined> {
-    const user: any = await this.Users.findOne({ account });
+    const user: any = await this.Users.findOne({ account }).lean(0);
     if (!user) return;
     if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
       throw new RestError('account have inactive, please activate code in email or spam.', 401);
@@ -45,8 +44,7 @@ export class UserDriversController implements IUserDriversRepository {
   }
 
   async findByEmail(email: string): Promise<UserSchemaProps | undefined> {
-    const user: any = await this.Users.findOne({ email });
-    if (!user) return;
+    const user: any = await this.Users.findOne({ email }).lean(0);
     if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
       throw new RestError('account have inactive, please activate code in email or spam.', 401);
     }
