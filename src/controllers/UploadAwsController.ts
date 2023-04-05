@@ -15,7 +15,7 @@ export class UploadAwsController {
         if (!req.file.path) {
           return new SendRespone({ status: 'error', code: 404, message: 'upload failed.' }).send(res);
         }
-        const url = process.env.END_POINT_SERVER?.split('/api/v1')[0] + '/public/images/' + req.file.path;
+        const url = process.env.END_POINT_SERVER?.split('/api/v1')[0] + ':50004/public/images/' + req.file.path;
         return new SendRespone({ data: url, message: 'upload successfullly.' }).send(res);
       }
       const s3 = this.aws3.configAWS();
