@@ -8,12 +8,17 @@ import { WebSocket } from './socket_io/WebSocket';
 import { RemoveImagesFromAWSJob } from './job/RemoveImagesFromAWSJob';
 import { Connections } from './monitor/Connecttions';
 import { OrdersSocket } from './socket_io/order/OrdersSocket';
+import { RemoveImagesLocalJob } from './job/RemoveImagesLocalJob';
 
 export const isDevelopment = process.env.NODE_ENV === 'development' ? true : false;
 
+// ********************* Init Static File Images *********************//
+global._pathFile = path.join(__dirname, '../public/images');
+App.use('/public/images', express.static(_pathFile));
+
 // ********************* BaseJob *********************//
-const removeImagesFromAWSJob = new RemoveImagesFromAWSJob();
-removeImagesFromAWSJob.runJob();
+new RemoveImagesFromAWSJob().runJob();
+new RemoveImagesLocalJob().runJob();
 
 // ********************* monitor *********************//
 new Connections().readMonitorServer();
@@ -21,9 +26,6 @@ new Connections().readMonitorServer();
 // ********************* Config Server *********************//
 const PORT: string | number = process.env.PORT || 50005;
 const httpServer: http.Server = http.createServer(App);
-console.log(path.join(__dirname, '../public'))
-global._pathFile = path.join(__dirname, '../public')
-App.use('/public', express.static(_pathFile));
 
 const _IO = WebSocket.getInstance(httpServer);
 _IO.initializeHandlers(new OrdersSocket());

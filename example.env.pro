@@ -1,7 +1,11 @@
 BROWSER=none
 EXTEND_ESLINT=true
-NODE_ENV=production
+NODE_ENV=development
+PORT=5002
 DATABASE=mongodb+srv://admin:admin123@cluster0.jyyss.mongodb.net/chatApp?retryWrites=true&w=majority
-END_POINT=https://chat-app-fe.vercel.app/chatApp
-END_POINT_HOME=https://chat-app-fe.vercel.app
+END_POINT=
+END_POINT_HOME=
+END_POINT_SERVER=
+END_POINT_PATH=
+
 
