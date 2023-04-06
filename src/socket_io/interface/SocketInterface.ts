@@ -19,5 +19,5 @@ export interface DataMessages {
 
 export interface SocketInterface {
     handleChatApp(socket: Socket): void;
-    middlewareAuthorization(soccket: Socket, next: any): void
+    middlewareAuthorization(soccket: Socket, next: any): void;
 }
