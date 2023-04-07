@@ -5,7 +5,7 @@ import { MessagesMiddleware } from '../../middlewares/messages/MessageMiddleware
 import { MessagesDriversController } from '../../MongoDriversController/MessagesDriversController';
 import { MessagesUseCase } from '../../usecase/MessagesUseCase';
 
-const BASE_ROUTE = '/api/v1';
+const BASE_ROUTE = '/messages';
 
 enum Routes {
   GET_LIST_MESSAGES = '/getListMessages',

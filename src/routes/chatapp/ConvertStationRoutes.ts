@@ -6,7 +6,7 @@ import { ConvertStationUseCase } from '../../usecase/ConvertStationUseCase';
 import { UserDriversController } from '../../MongoDriversController/UserDriversController';
 import { VerifyTokenMiddleware } from '../../middlewares/auth/VerifyTokenMiddleware';
 
-const BASE_ROUTE = '/api/v1';
+const BASE_ROUTE = '/convertStations';
 
 enum Routes {
   SAVE_CONVERSTATION = '/saveConvertStation'
@@ -14,20 +14,11 @@ enum Routes {
 
 export class ConverStationRoutes {
   private verifyTokenMiddleware: VerifyTokenMiddleware = new VerifyTokenMiddleware();
-  convertStationDriversController: ConvertStationDriversController =
-    new ConvertStationDriversController();
+  convertStationDriversController: ConvertStationDriversController = new ConvertStationDriversController();
   userDriversController: UserDriversController = new UserDriversController();
-  convertStationUseCase: ConvertStationUseCase = new ConvertStationUseCase(
-    this.convertStationDriversController
-  );
-  converStationController: ConverStationController = new ConverStationController(
-    this.convertStationUseCase,
-    this.userDriversController
-  );
-  converStationMiddleware: ConverStationMiddleware = new ConverStationMiddleware(
-    this.convertStationDriversController,
-    this.userDriversController
-  );
+  convertStationUseCase: ConvertStationUseCase = new ConvertStationUseCase(this.convertStationDriversController);
+  converStationController: ConverStationController = new ConverStationController(this.convertStationUseCase, this.userDriversController);
+  converStationMiddleware: ConverStationMiddleware = new ConverStationMiddleware(this.convertStationDriversController, this.userDriversController);
 
   public routes(app: Router): void {
     app.post(

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { RestError } from '../services/error/error';
 import { UserUseCase } from '../usecase/UserUseCase';
 import { AuthenticatorUseCase } from '../usecase/AuthenticatorUseCase';
-import { StatusCreate, UserSchemaProps } from '../models/userModel';
+import { StatusCreate, Type2FA, UserSchemaProps } from '../models/userModel';
 import { checkTimerAuthenticator } from '../utils/timer';
 import { validateObjectReqBody } from '../utils/validate';
 import * as mongoDB from 'mongodb';
@@ -21,6 +21,7 @@ export class UsersController {
     this.userSignUp = this.userSignUp.bind(this);
     this.activeUser = this.activeUser.bind(this);
     this.userSignIn = this.userSignIn.bind(this);
+    this.userSignInWithCode = this.userSignInWithCode.bind(this);
     this.changeStatusOnline = this.changeStatusOnline.bind(this);
     this.changeStatusOffline = this.changeStatusOffline.bind(this);
     this.updateInfo = this.updateInfo.bind(this);
@@ -86,8 +87,7 @@ export class UsersController {
           const findUser = await this.userUseCase.getUserByIdNoneStatus(value.userId as string);
           nodeMailerServices.sendWelcomeUserNotification(findUser, authCode);
           return new SendRespone({
-            message:
-              'your code is expired, we have send code to email, please checked in email and activate.'
+            message: 'your code is expired, we have send code to email, please checked in email and activate.'
           }).send(res);
         }
       }
@@ -121,7 +121,32 @@ export class UsersController {
       const { account, passWord } = req.body;
       const userSignIn = await this.userUseCase.userSignIn(account, passWord);
       if (!userSignIn) throw new RestError('login failed', 400);
+      if (userSignIn.twoFa) {
+        if (userSignIn.type2FA === Type2FA.AUTH_CODE) {
+          const authCode = await this.authenticatorUseCase.handleAuthentionByLogin(userSignIn._id as string);
+          if (!authCode) {
+            return new SendRespone({
+              code: 202,
+              message: 'we have send authenticator code to email, please checked to email or try again after 1 hour.'
+            }).send(res);
+          }
+          nodeMailerServices.sendAuthCodeForLogin(userSignIn, authCode as string);
+          return new SendRespone({ code: 201, message: 'authentica has send to email, please get code and login.' }).send(res);
+        }
+      }
       return new SendRespone({ data: userSignIn, message: 'login successfuly' }).send(res);
+    } catch (error) {
+      return RestError.manageServerError(res, error, false);
+    }
+  }
+
+  public async userSignInWithCode(req: Request, res: Response) {
+    try {
+      const { authCode } = req.body;
+      if (!authCode || authCode.length !== 6 || typeof authCode !== 'string') throw new RestError('code invalid.', 404);
+      const userId = await this.authenticatorUseCase.findAuthCodeAndRemove(authCode as string);
+      const userInfo = await this.userUseCase.userSignInWithCode(userId);
+      return new SendRespone({ code: 200, data: userInfo, message: 'login successfully.' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
@@ -197,8 +222,7 @@ export class UsersController {
       const findCode = await this.authenticatorUseCase.findByUserId(user._id as string);
       if (findCode)
         return new SendRespone({
-          message:
-            'we have send authenticator code to email, please checked to email or resend order code.'
+          message: 'we have send authenticator code to email, please checked to email or resend order code.'
         }).send(res);
       const authCode = await this.authenticatorUseCase.createAuthCode(user._id as string);
       nodeMailerServices.sendAuthCodeResetPassWord(user, authCode);
@@ -218,8 +242,7 @@ export class UsersController {
       const checkTime = checkTimerAuthenticator(findCode.dateTimeCreate);
       if (!checkTime)
         return new SendRespone({
-          message:
-            'we have send authenticator code to email, please checked to email or try again after 1 hour.'
+          message: 'we have send authenticator code to email, please checked to email or try again after 1 hour.'
         }).send(res);
       const authCode = await this.authenticatorUseCase.updateAuthCode(user._id as string);
       nodeMailerServices.sendAuthCodeResetPassWord(user, authCode);

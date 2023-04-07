@@ -5,8 +5,9 @@ import { AuthUserMiddleware } from '../../middlewares/auth/AuthUserMiddleware';
 import { VerifyTokenMiddleware } from '../../middlewares/auth/VerifyTokenMiddleware';
 import { MulterMiddleware } from '../../middlewares/multer/MulterMiddleware';
 import { UserDriversController } from '../../MongoDriversController/UserDriversController';
+import { UploadFilesUseCase } from '../../usecase/UploadFilesUseCase';
 
-const BASE_ROUTE = '/api/v1';
+const BASE_ROUTE = '/images';
 
 enum Routes {
   UPLOAD_AWS3 = '/upload-aws3',
@@ -15,7 +16,8 @@ enum Routes {
 
 export class UploadAWSRouter {
   aWS3Services: AWS3Services = new AWS3Services();
-  uploadAwsController: UploadAwsController = new UploadAwsController(this.aWS3Services);
+  uploadFilesUseCase: UploadFilesUseCase = new UploadFilesUseCase();
+  uploadAwsController: UploadAwsController = new UploadAwsController(this.aWS3Services, this.uploadFilesUseCase);
   userDriversController: UserDriversController = new UserDriversController();
   private authMiddleware: AuthUserMiddleware = new AuthUserMiddleware(this.userDriversController);
   private verifyTokenMiddleware: VerifyTokenMiddleware = new VerifyTokenMiddleware();

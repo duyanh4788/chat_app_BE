@@ -3,8 +3,10 @@ import { AWS3Services } from '../services/aws/AwsServices';
 import { RestError } from '../services/error/error';
 import { SendRespone } from '../services/success/success';
 import { isDevelopment } from '../server';
+import fs from 'fs';
+import { UploadFilesUseCase } from '../usecase/UploadFilesUseCase';
 export class UploadAwsController {
-  constructor(private aws3: AWS3Services) {
+  constructor(private aws3: AWS3Services, private uploadFilesUseCase: UploadFilesUseCase) {
     this.uploadAWS = this.uploadAWS.bind(this);
     this.removeImageBucketAWS = this.removeImageBucketAWS.bind(this);
   }
@@ -29,6 +31,11 @@ export class UploadAwsController {
   public async removeImageBucketAWS(req: Request, res: Response) {
     try {
       const { idImage } = req.body;
+      if (!idImage) throw new RestError('images not valid.', 404);
+      if (!isDevelopment) {
+        this.uploadFilesUseCase.removeImageBucketAWS(idImage);
+        return new SendRespone({ message: 'remove successfullly.' }).send(res);
+      }
       const s3 = this.aws3.configAWS();
       await this.aws3.removeImageBucketAWS(s3, idImage);
       return new SendRespone({ message: 'remove successfullly.' }).send(res);

@@ -1,10 +1,19 @@
 import { IAuthenticatorStationDriversRepository } from '../Repository/IAuthenticatorStationDriversRepository';
 import { AuthenticatorSchemaProps } from '../models/authenticatorModel';
+import { checkTimerAuthenticator } from '../utils/timer';
 
 export class AuthenticatorUseCase {
-  constructor(
-    private authenticatorStationDriversRepository: IAuthenticatorStationDriversRepository
-  ) {}
+  constructor(private authenticatorStationDriversRepository: IAuthenticatorStationDriversRepository) {}
+
+  async handleAuthentionByLogin(userId: string): Promise<string | boolean> {
+    const find = await this.findByUserId(userId);
+    if (!find) return this.createAuthCode(userId);
+    const checkTime = checkTimerAuthenticator(find.dateTimeCreate);
+    if (checkTime) {
+      return this.updateAuthCode(userId);
+    }
+    return false;
+  }
 
   async createAuthCode(userId: string): Promise<string> {
     const code = await this.authenticatorStationDriversRepository.createAuthCode(userId);
@@ -25,7 +34,7 @@ export class AuthenticatorUseCase {
     return await this.authenticatorStationDriversRepository.findAuthCode(authCode);
   }
 
-  async findAuthCodeAndRemove(authCode: string): Promise<void> {
+  async findAuthCodeAndRemove(authCode: string): Promise<string> {
     return await this.authenticatorStationDriversRepository.findAuthCodeAndRemove(authCode);
   }
 }

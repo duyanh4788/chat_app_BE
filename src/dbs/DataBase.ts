@@ -12,6 +12,7 @@ export class DataBase {
       mongoose.set('debug', true);
       mongoose.set('debug', { color: true });
     }
+    mongoose.set('strictQuery', false);
     try {
       await mongoose.connect(this.MONGOOSE_URL);
       console.log(`MongoDB connect success. Number connect: ${mongoose.connections.length}`);

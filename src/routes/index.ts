@@ -4,15 +4,17 @@ import { MessagesRoutes } from './chatapp/MessageRoutes';
 import { UploadAWSRouter } from './chatapp/UploadAWSRouter';
 import { UsersRoutes } from './chatapp/UserRoutes';
 
-export class Routes {
+export class MainRoutes {
   public usersRoutes: UsersRoutes = new UsersRoutes();
   public messagesRoutes: MessagesRoutes = new MessagesRoutes();
   public converStationRoutes: ConverStationRoutes = new ConverStationRoutes();
   public uploadAWSRouter: UploadAWSRouter = new UploadAWSRouter();
-  public routes(app: Router): void {
+
+  public routes(app: Router): Router {
     this.usersRoutes.routes(app);
     this.messagesRoutes.routes(app);
     this.converStationRoutes.routes(app);
     this.uploadAWSRouter.routes(app);
+    return Router();
   }
 }

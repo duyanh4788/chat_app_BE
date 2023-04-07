@@ -1,7 +1,7 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction, Router } from 'express';
 import seesion, { SessionOptions } from 'express-session';
 import cors from 'cors';
-import { Routes } from '../routes';
+import { MainRoutes } from '../routes';
 import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
@@ -22,14 +22,17 @@ const sessionOptions: SessionOptions = {
 
 class App {
   public App: express.Application;
-  private mainRoutes: Routes = new Routes();
+  public ApiRouter: Router;
+  private mainRoutes: MainRoutes = new MainRoutes();
 
   constructor() {
+    this.ApiRouter = Router();
     this.App = express();
     this.configCors();
     this.configJson();
     this.mongooSetup();
-    this.mainRoutes.routes(this.App);
+    this.App.use('/api/v1', this.ApiRouter);
+    this.mainRoutes.routes(this.ApiRouter);
   }
 
   private mongooSetup(): void {

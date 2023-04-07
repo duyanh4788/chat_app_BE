@@ -9,5 +9,5 @@ export interface IAuthenticatorStationDriversRepository {
 
   findAuthCode(authCode: string): Promise<Map<boolean, AuthenticatorSchemaProps>>;
 
-  findAuthCodeAndRemove(authCode: string): Promise<void>;
+  findAuthCodeAndRemove(authCode: string): Promise<string>;
 }

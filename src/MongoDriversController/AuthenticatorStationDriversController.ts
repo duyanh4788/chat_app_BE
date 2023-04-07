@@ -6,9 +6,7 @@ import { RestError } from '../services/error/error';
 import { ramdomAuthCode } from '../utils/ramdomAuthCode';
 import { checkTimerAuthenticator } from '../utils/timer';
 
-export class AuthenticatorStationDriversController
-  implements IAuthenticatorStationDriversRepository
-{
+export class AuthenticatorStationDriversController implements IAuthenticatorStationDriversRepository {
   private Authenticators = mongoose.model(TitleModel.AUTHENTICATOR, AuthenticatorSchema);
 
   async createAuthCode(userId: string): Promise<string> {
@@ -29,11 +27,7 @@ export class AuthenticatorStationDriversController
 
   async updateAuthCode(userId: string): Promise<string> {
     const authCode = ramdomAuthCode(6);
-    await this.Authenticators.findOneAndUpdate(
-      { userId: userId },
-      { authCode: authCode },
-      { new: true }
-    );
+    await this.Authenticators.findOneAndUpdate({ userId: userId }, { authCode: authCode }, { new: true });
     return authCode;
   }
 
@@ -55,11 +49,11 @@ export class AuthenticatorStationDriversController
     return mapAuthCode;
   }
 
-  async findAuthCodeAndRemove(authCode: string): Promise<void> {
+  async findAuthCodeAndRemove(authCode: string): Promise<string> {
     let findCode = await this.Authenticators.findOne({ authCode });
     if (!findCode) throw new RestError('code invalid.', 401);
     await findCode.delete();
-    return;
+    return findCode.userId as string;
   }
 
   private transFromData(data: any) {
