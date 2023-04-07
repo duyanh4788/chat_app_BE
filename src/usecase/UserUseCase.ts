@@ -15,7 +15,7 @@ export class UserUseCase {
     return listUsers;
   }
 
-  async userSignInWithCode(userId: string): Promise<UserSchemaProps> {
+  async userSignInWithToken(userId: string): Promise<UserSchemaProps> {
     const user = await this.getUserById(userId);
     return this.configHashPass(user);
   }

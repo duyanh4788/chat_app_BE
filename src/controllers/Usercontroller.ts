@@ -145,7 +145,20 @@ export class UsersController {
       const { authCode } = req.body;
       if (!authCode || authCode.length !== 6 || typeof authCode !== 'string') throw new RestError('code invalid.', 404);
       const userId = await this.authenticatorUseCase.findAuthCodeAndRemove(authCode as string);
-      const userInfo = await this.userUseCase.userSignInWithCode(userId);
+      const userInfo = await this.userUseCase.userSignInWithToken(userId);
+      return new SendRespone({ code: 200, data: userInfo, message: 'login successfully.' }).send(res);
+    } catch (error) {
+      return RestError.manageServerError(res, error, false);
+    }
+  }
+
+  public async userSignInWithApp(req: Request, res: Response) {
+    try {
+      const { otp } = req.body;
+      if (!otp || otp.length !== 6 || typeof otp !== 'string') throw new RestError('otp invalid.', 404);
+      const user = await this.checkUserByEmail(req);
+      await this.authenticatorUseCase.pairAuth(user._id as string, otp);
+      const userInfo = await this.userUseCase.userSignInWithToken(user._id as string);
       return new SendRespone({ code: 200, data: userInfo, message: 'login successfully.' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
@@ -269,6 +282,33 @@ export class UsersController {
     } catch (error) {
       await session.abortTransaction();
       session.endSession();
+      return RestError.manageServerError(res, error, false);
+    }
+  }
+
+  public async getAuthPair(req: Request, res: Response) {
+    try {
+      if (!req.isAuthenticated() || !req.user) {
+        throw new RestError('please login.');
+      }
+      const user: UserSchemaProps = req.user;
+      const authpair = await this.authenticatorUseCase.createAuthPair(user._id as string);
+      return new SendRespone({ data: authpair, message: 'create authpair successfully.' }).send(res);
+    } catch (error) {
+      return RestError.manageServerError(res, error, false);
+    }
+  }
+
+  public async pairAuth(req: Request, res: Response) {
+    try {
+      if (!req.isAuthenticated() || !req.user) {
+        throw new RestError('please login.');
+      }
+      const user: UserSchemaProps = req.user;
+      const { token } = req.body;
+      await this.authenticatorUseCase.pairAuth(user._id as string, token);
+      return new SendRespone({ message: 'update otp authpair successfully.' }).send(res);
+    } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
   }

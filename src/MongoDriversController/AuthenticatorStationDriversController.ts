@@ -5,7 +5,6 @@ import { IAuthenticatorStationDriversRepository } from '../Repository/IAuthentic
 import { RestError } from '../services/error/error';
 import { ramdomAuthCode } from '../utils/ramdomAuthCode';
 import { checkTimerAuthenticator } from '../utils/timer';
-
 export class AuthenticatorStationDriversController implements IAuthenticatorStationDriversRepository {
   private Authenticators = mongoose.model(TitleModel.AUTHENTICATOR, AuthenticatorSchema);
 

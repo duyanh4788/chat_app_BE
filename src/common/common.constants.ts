@@ -4,7 +4,8 @@ export const TitleModel = {
   USERS: 'Users',
   ROOM: 'Room',
   CONVERTSTATIONS: 'Convertstations',
-  AUTHENTICATOR: 'Authenticators'
+  AUTHENTICATOR: 'Authenticators',
+  AUTHENTICATOR_APP: 'AuthenticatorsApp'
 };
 
 export const SOCKET_COMMIT = {
