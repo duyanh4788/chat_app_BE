@@ -27,18 +27,14 @@ export class FaceBookService {
         {
           clientID: this.FB_ID,
           clientSecret: this.FB_KEY,
-          callbackURL: `${this.END_POINT_SERVER}/callback-fb`,
+          callbackURL: `${this.END_POINT_SERVER}/users/callback-fb`,
           profileFields: ['id', 'displayName', 'email', 'picture.type(large)']
         },
         async (accessToken: string, refreshToken: string, profile: Profile, cb: Function) => {
           const { _json } = profile;
           const name = removeAccentsVN(_json.name);
-          const email = _json.email
-            ? _json.email
-            : name.split(' ').join('') + '_' + _json.id + '@facebook.com';
-          const account = _json.email
-            ? _json.email.split('@')[0] + '_' + _json.id
-            : name.split(' ').join('') + '_' + _json.id;
+          const email = _json.email ? _json.email : name.split(' ').join('') + '_' + _json.id + '@facebook.com';
+          const account = _json.email ? _json.email.split('@')[0] + '_' + _json.id : name.split(' ').join('') + '_' + _json.id;
           const checkEmail = await this.userDriverRepository.findByEmail(email);
           if (checkEmail) {
             return cb(null, checkEmail);
@@ -66,7 +62,7 @@ export class FaceBookService {
 
   public handleCallback() {
     return passport.authenticate('facebook', {
-      successRedirect: this.END_POINT_SERVER + '/profile-fb',
+      successRedirect: this.END_POINT_SERVER + '/users/profile-fb',
       failureRedirect: process.env.END_POINT_HOME
     });
   }

@@ -99,7 +99,7 @@ export class UsersController {
   public async userSignUpWithFB(req: Request, res: Response) {
     try {
       return new SendRespone({
-        data: `${this.URL_FB}?client_id=${process.env.FB_ID}&redirect_uri=${process.env.END_POINT_SERVER}/callback-fb`
+        data: `${this.URL_FB}?client_id=${process.env.FB_ID}&redirect_uri=${process.env.END_POINT_SERVER}/users/callback-fb`
       }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
@@ -109,7 +109,7 @@ export class UsersController {
   public async userSignUpWithGG(req: Request, res: Response) {
     try {
       return new SendRespone({
-        data: `${this.URL_GG}&redirect_uri=${process.env.END_POINT_SERVER}/callback-gg&scope=profile email&client_id=${process.env.GG_ID}`
+        data: `${this.URL_GG}&redirect_uri=${process.env.END_POINT_SERVER}/users/callback-gg&scope=profile email&client_id=${process.env.GG_ID}`
       }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);

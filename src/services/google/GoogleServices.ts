@@ -26,7 +26,7 @@ export class GoogleServices {
         {
           clientID: this.GG_ID,
           clientSecret: this.GG_KEY,
-          callbackURL: `${this.END_POINT_SERVER}/callback-gg`
+          callbackURL: `${this.END_POINT_SERVER}/users/callback-gg`
         },
         async (accessToken: string, refreshToken: string, profile: Profile, cb: Function) => {
           const { picture } = profile._json;
@@ -59,7 +59,7 @@ export class GoogleServices {
 
   public handleCallback() {
     return passport.authenticate('google', {
-      successRedirect: this.END_POINT_SERVER + '/profile-gg',
+      successRedirect: this.END_POINT_SERVER + '/users/profile-gg',
       failureRedirect: process.env.END_POINT_HOME
     });
   }
