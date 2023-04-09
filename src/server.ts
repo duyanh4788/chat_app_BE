@@ -7,8 +7,8 @@ import * as http from 'http';
 import { WebSocket } from './socket_io/WebSocket';
 import { RemoveImagesFromAWSJob } from './job/RemoveImagesFromAWSJob';
 import { Connections } from './monitor/Connecttions';
-import { OrdersSocket } from './socket_io/order/OrdersSocket';
 import { RemoveImagesLocalJob } from './job/RemoveImagesLocalJob';
+import { Server } from 'socket.io';
 
 export const isDevelopment = process.env.NODE_ENV === 'development' ? true : false;
 
@@ -27,8 +27,15 @@ new Connections().readMonitorServer();
 const PORT: string | number = process.env.PORT || 50005;
 const httpServer: http.Server = http.createServer(App);
 
-const _IO = WebSocket.getInstance(httpServer);
-_IO.initializeHandlers(new OrdersSocket());
+const configIo = new Server(httpServer, {
+  cors: {
+    origin: process.env.END_POINT,
+    credentials: true
+  }
+});
+
+const socket = new WebSocket();
+socket.socketIO(configIo);
 
 if (isDevelopment) {
   App.get('/', (req: Request, res: Response) => {
