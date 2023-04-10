@@ -62,9 +62,9 @@ export class WebSocket {
           if (isUser._id !== currentUserSocketId) {
             this.userDriversController.updateStatusSocket(isUser._id, true);
             /** send notify **/
-            socket.emit(SOCKET_COMMIT.SEND_MESSAGE_NOTIFY, `Hello ${isUser.fullName}`);
+            // socket.emit(SOCKET_COMMIT.SEND_MESSAGE_NOTIFY, `Hello ${isUser.fullName}`);
+            // socket.broadcast.emit(SOCKET_COMMIT.SEND_MESSAGE_NOTIFY, `${isUser.fullName} Online`);
             socket.broadcast.emit(SOCKET_COMMIT.CHANGE_STATUS_ONLINE, changeStatusLogin(isUser, true));
-            socket.broadcast.emit(SOCKET_COMMIT.SEND_MESSAGE_NOTIFY, `${isUser.fullName} Online`);
           }
         }
       });
@@ -90,7 +90,6 @@ export class WebSocket {
       /** disconnect **/
       socket.on(SOCKET_COMMIT.DISCONNECTED, (infoUser: InfoUser) => {
         const userBySocketId = getUserById(infoUser._id);
-        userSockets.delete(infoUser._id);
         if (userBySocketId) {
           socket.broadcast.emit(SOCKET_COMMIT.CHANGE_STATUS_OFFLINE, changeStatusLogin(userBySocketId, false));
         }
