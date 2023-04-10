@@ -1,4 +1,4 @@
-export { };
+export {};
 
 declare global {
   namespace Express {
@@ -7,13 +7,14 @@ declare global {
     }
   }
 
-  var _pathFile: string
+  var _pathFile: string;
 }
 
-declare module "mongoose" {
+declare module 'mongoose' {
   interface Query<ResultType, DocType, THelpers = {}, RawDocType = DocType> {
     cache(): this;
     useCache: boolean;
     mongooseCollection: any;
+    hashKey: any;
   }
 }

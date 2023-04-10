@@ -28,19 +28,30 @@ export class DataBase {
   public QueryExec() {
     const exec = mongoose.Query.prototype.exec;
 
+    mongoose.Query.prototype.cache = function (options = {} as any) {
+      this.useCache = true;
+      this.hashKey = JSON.stringify(options.key || '');
+
+      return this;
+    };
+
     mongoose.Query.prototype.exec = async function () {
-      const keyQuery = this.getQuery().toString();
-      const collection = this.mongooseCollection.name.toString();
-      const cacheValue = await redisController.getRedis({
-        keyModel: collection,
-        keyValue: keyQuery
-      });
+      // if (!this.useCache) {
+      //   return exec.apply(this, arguments as any);
+      // }
+      console.log(this.hashKey);
+      const key = JSON.stringify(
+        Object.assign({}, this.getQuery(), {
+          collection: this.mongooseCollection.name
+        })
+      );
+      const cacheValue = await redisController.getRedis(key);
       if (cacheValue) {
         console.log(cacheValue);
-        return cacheValue;
+        return Array.isArray(cacheValue) ? cacheValue.map((item) => new this.model(item)) : new this.model(cacheValue);
       }
       const result = await exec.apply(this as any, arguments as any);
-      await redisController.setRedis({ keyModel: collection, keyValue: keyQuery, value: result });
+      await redisController.setRedis(key, result);
       return result;
     };
   }

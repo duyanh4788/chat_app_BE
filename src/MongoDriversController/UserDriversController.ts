@@ -6,27 +6,16 @@ import { RestError } from '../services/error/error';
 
 export class UserDriversController implements IUserDriversRepository {
   private Users = mongoose.model(TitleModel.USERS, UsersSchema);
-  private selectUser = [
-    'account',
-    'fullName',
-    'email',
-    'avatar',
-    'isOnline',
-    'statusCreate',
-    'twoFA',
-    'type2FA'
-  ];
-
-  async findAllLists(): Promise<UserSchemaProps[]> {
-    const listUsers = await this.Users.find({ statusCreate: StatusCreate.ACTIVE }).select(
-      this.selectUser
-    ).lean(0);
-    return listUsers.map((item) => this.transFromData(item));
-  }
+  private selectUser = ['account', 'fullName', 'email', 'avatar', 'isOnline', 'statusCreate', 'twoFA', 'type2FA'];
 
   async findById(id: string): Promise<UserSchemaProps> {
-    const user = await this.Users.findById(id).select(this.selectUser).lean(0);
+    const user = await this.Users.findById(id).select(this.selectUser).lean(0).cache();
     return this.transFromData(user);
+  }
+
+  async findAllLists(): Promise<UserSchemaProps[]> {
+    const listUsers = await this.Users.find({ statusCreate: StatusCreate.ACTIVE }).select(this.selectUser).lean(0).cache();
+    return listUsers.map((item) => this.transFromData(item));
   }
 
   async getUserByIdNoneStatus(id: string): Promise<UserSchemaProps | undefined> {

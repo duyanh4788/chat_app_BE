@@ -47,15 +47,15 @@ export class UsersController {
 
   public async getUserById(req: Request, res: Response) {
     try {
-      const userRedis = await redisController.getRedis({ keyModel: ModelRedis.USERS_GETBYID, keyValue: req.params.id });
-      if (userRedis) {
-        return new SendRespone({ data: userRedis }).send(res);
-      }
+      // const userRedis = await redisController.getRedis({ keyModel: ModelRedis.USERS_GETBYID, keyValue: req.params.id });
+      // if (userRedis) {
+      //   return new SendRespone({ data: userRedis }).send(res);
+      // }
       const user = await this.userUseCase.getUserById(req.params.id);
       if (!user) {
         throw new RestError('USER NOT FOUND!', 400);
       }
-      await redisController.setRedis({ keyModel: ModelRedis.USERS_GETBYID, keyValue: req.params.id, value: user });
+      // await redisController.setRedis({ keyModel: ModelRedis.USERS_GETBYID, keyValue: req.params.id, value: user });
       return new SendRespone({ data: user }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
