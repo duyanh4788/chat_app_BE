@@ -15,6 +15,7 @@ declare module 'mongoose' {
     cache(): this;
     useCache: boolean;
     mongooseCollection: any;
-    hashKey: any;
+    cacheTime: number;
+    op: any;
   }
 }

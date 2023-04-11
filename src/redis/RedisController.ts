@@ -1,14 +1,16 @@
 import * as redis from 'redis';
 import * as util from 'util';
 
-interface KeyRedis {
-  keyModel: string;
-  keyValue: string;
+interface RedisCache {
+  collectionName: string;
+  key: string;
+  values?: any;
 }
 
 interface RedisModel {
-  key: KeyRedis;
-  value?: Object;
+  keyModel: string;
+  keyValue: string;
+  value?: Record<string, any>;
   timer?: number;
 }
 
@@ -31,15 +33,28 @@ class RedisController {
     await this.client.quit();
   }
 
-  async getRedis(key: any) {
-    // const keys = `${key.keyModel}:${key.keyValue}`;
-    const result = await this.client.get(key);
+  async getRedis({ keyModel, keyValue }: RedisModel) {
+    const keys = `${keyModel}:${keyValue}`;
+    const result = await this.client.get(keys);
     return JSON.parse(result as any);
   }
 
-  async setRedis(key: any, value: any) {
-    // const keys = `${key?.keyModel}:${key?.keyValue}`;
-    return await this.client.set(key, JSON.stringify(value));
+  async setRedis({ keyModel, keyValue, value }: RedisModel) {
+    const keys = `${keyModel}:${keyValue}`;
+    return await this.client.set(keys, JSON.stringify(value));
+  }
+
+  async getHasRedis({ collectionName, key }: RedisCache) {
+    const result = await this.client.hGet(collectionName, key);
+    return JSON.parse(result as any);
+  }
+
+  async setHasRedis({ collectionName, key, values }: RedisCache) {
+    return await this.client.hSet(collectionName, key, JSON.stringify(values));
+  }
+
+  async clearHashRedis(key: any) {
+    return await this.client.hDel(key.collectionName, JSON.stringify(key));
   }
 }
 

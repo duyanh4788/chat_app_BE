@@ -3,6 +3,7 @@ import { TitleModel } from '../common/common.constants';
 import { MessagesSchema, MessagesSchemaProps, ResponseListMessages } from '../models/messageModel';
 import { IMessagesDriversRepository } from '../Repository/IMessagesDriversRepository';
 import { RestError } from '../services/error/error';
+import { redisController } from '../redis/RedisController';
 
 export class MessagesDriversController implements IMessagesDriversRepository {
   private Messages = mongoose.model(TitleModel.MESSAGES, MessagesSchema);
@@ -15,8 +16,9 @@ export class MessagesDriversController implements IMessagesDriversRepository {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(10)
-      .select(this.selectMsg);
-    const totalPage = await this.Messages.count();
+      .select(this.selectMsg)
+      .cache();
+    const totalPage = await this.Messages.find({ conversationId }).count();
     if (!listMessages || (listMessages && !listMessages.length)) {
       return { listMessages: [], totalPage, skip: 0 };
     }
@@ -30,12 +32,14 @@ export class MessagesDriversController implements IMessagesDriversRepository {
   async createNewMessages(body: MessagesSchemaProps): Promise<MessagesSchemaProps> {
     const newMessage = new this.Messages(body);
     await newMessage.save();
+    await redisController.clearHashRedis({ conversationId: body.conversationId, collectionName: TitleModel.MESSAGES.toLowerCase() });
     return this.transFromData(newMessage);
   }
 
   async createNewMessagesSocket(body: MessagesSchemaProps): Promise<void> {
     const newMessage = new this.Messages(body);
     await newMessage.save();
+    await redisController.clearHashRedis({ conversationId: body.conversationId, collectionName: TitleModel.MESSAGES.toLowerCase() });
     return;
   }
 

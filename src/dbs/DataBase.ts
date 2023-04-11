@@ -15,7 +15,6 @@ export class DataBase {
       mongoose.set('debug', true);
       mongoose.set('debug', { color: true });
     }
-    mongoose.set('strictQuery', false);
     try {
       mongoose.set('strictQuery', false);
       await mongoose.connect(this.MONGOOSE_URL);
@@ -28,30 +27,30 @@ export class DataBase {
   public QueryExec() {
     const exec = mongoose.Query.prototype.exec;
 
-    mongoose.Query.prototype.cache = function (options = {} as any) {
+    mongoose.Query.prototype.cache = function (time = (60 * 60) as number) {
       this.useCache = true;
-      this.hashKey = JSON.stringify(options.key || '');
-
+      this.cacheTime = time;
       return this;
     };
 
     mongoose.Query.prototype.exec = async function () {
-      // if (!this.useCache) {
-      //   return exec.apply(this, arguments as any);
-      // }
-      console.log(this.hashKey);
+      if (!this.useCache) {
+        return exec.apply(this, arguments as any);
+      }
+      const collectionName = this.mongooseCollection.name;
       const key = JSON.stringify(
-        Object.assign({}, this.getQuery(), {
-          collection: this.mongooseCollection.name
+        Object.assign({
+          ...this.getQuery(),
+          collectionName
         })
       );
-      const cacheValue = await redisController.getRedis(key);
+      console.log(key);
+      const cacheValue = await redisController.getHasRedis({ collectionName, key });
       if (cacheValue) {
-        console.log(cacheValue);
         return Array.isArray(cacheValue) ? cacheValue.map((item) => new this.model(item)) : new this.model(cacheValue);
       }
       const result = await exec.apply(this as any, arguments as any);
-      await redisController.setRedis(key, result);
+      await redisController.setHasRedis({ collectionName, key, values: result });
       return result;
     };
   }

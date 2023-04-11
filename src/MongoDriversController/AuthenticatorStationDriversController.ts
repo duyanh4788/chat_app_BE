@@ -20,7 +20,7 @@ export class AuthenticatorStationDriversController implements IAuthenticatorStat
   }
 
   async findByUserId(userId: string): Promise<AuthenticatorSchemaProps> {
-    const code = await this.Authenticators.findOne({ userId });
+    const code = await this.Authenticators.findOne({ userId }).cache();
     return this.transFromData(code);
   }
 
