@@ -5,6 +5,7 @@ import { IAuthenticatorStationDriversRepository } from '../Repository/IAuthentic
 import { RestError } from '../services/error/error';
 import { ramdomAuthCode } from '../utils/ramdomAuthCode';
 import { checkTimerAuthenticator } from '../utils/timer';
+import { redisController } from '../redis/RedisController';
 export class AuthenticatorStationDriversController implements IAuthenticatorStationDriversRepository {
   private Authenticators = mongoose.model(TitleModel.AUTHENTICATOR, AuthenticatorSchema);
 
@@ -20,13 +21,14 @@ export class AuthenticatorStationDriversController implements IAuthenticatorStat
   }
 
   async findByUserId(userId: string): Promise<AuthenticatorSchemaProps> {
-    const code = await this.Authenticators.findOne({ userId }).cache();
+    const code = await this.Authenticators.findOne({ userId }).cache({ key: userId });
     return this.transFromData(code);
   }
 
   async updateAuthCode(userId: string): Promise<string> {
     const authCode = ramdomAuthCode(6);
     await this.Authenticators.findOneAndUpdate({ userId: userId }, { authCode: authCode }, { new: true });
+    await redisController.clearHashRedis(userId);
     return authCode;
   }
 
@@ -35,6 +37,7 @@ export class AuthenticatorStationDriversController implements IAuthenticatorStat
     if (!findCode) throw new RestError('code invalid.', 401);
     let mapAuthCode: Map<boolean, AuthenticatorSchemaProps> = new Map();
     const checkTime = checkTimerAuthenticator(findCode.dateTimeCreate);
+    await redisController.clearHashRedis(findCode.userId as string);
     if (checkTime) {
       const authCode = ramdomAuthCode(6);
       findCode.authCode = authCode;
@@ -52,6 +55,7 @@ export class AuthenticatorStationDriversController implements IAuthenticatorStat
     let findCode = await this.Authenticators.findOne({ authCode });
     if (!findCode) throw new RestError('code invalid.', 401);
     await findCode.delete();
+    await redisController.clearHashRedis(findCode.userId as string);
     return findCode.userId as string;
   }
 

@@ -2,7 +2,7 @@ import * as redis from 'redis';
 import * as util from 'util';
 
 interface RedisCache {
-  collectionName: string;
+  hasKey: string;
   key: string;
   values?: any;
 }
@@ -44,17 +44,17 @@ class RedisController {
     return await this.client.set(keys, JSON.stringify(value));
   }
 
-  async getHasRedis({ collectionName, key }: RedisCache) {
-    const result = await this.client.hGet(collectionName, key);
+  async getHasRedis({ hasKey, key }: RedisCache) {
+    const result = await this.client.hGet(hasKey, key);
     return JSON.parse(result as any);
   }
 
-  async setHasRedis({ collectionName, key, values }: RedisCache) {
-    return await this.client.hSet(collectionName, key, JSON.stringify(values));
+  async setHasRedis({ hasKey, key, values }: RedisCache) {
+    return await this.client.hSet(hasKey, key, JSON.stringify(values));
   }
 
-  async clearHashRedis(key: any) {
-    return await this.client.hDel(key.collectionName, JSON.stringify(key));
+  async clearHashRedis(key: string) {
+    return await this.client.del(JSON.stringify(key));
   }
 }
 

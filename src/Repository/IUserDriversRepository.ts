@@ -1,7 +1,7 @@
 import { UserSchemaProps, UserTypeCreate } from '../models/userModel';
 
 export interface IUserDriversRepository {
-  findAllLists(): Promise<UserSchemaProps[]>;
+  findAllLists(userId: string): Promise<UserSchemaProps[]>;
 
   findById(id: string): Promise<UserSchemaProps>;
 

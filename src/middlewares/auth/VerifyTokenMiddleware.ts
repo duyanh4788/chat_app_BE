@@ -21,7 +21,7 @@ export class VerifyTokenMiddleware {
         }).send(res);
       }
       if (deCode) {
-        req.account = deCode;
+        req.user = deCode;
         next();
       }
     } catch (error) {
@@ -34,10 +34,7 @@ export class VerifyTokenMiddleware {
   }
 
   public permissions(req: TokenPayload, res: Response, next: NextFunction) {
-    if (
-      USER_TYPE_CODE.includes(req.account.userTypeCode) &&
-      req.account !== parseInt(req.params.account)
-    ) {
+    if (USER_TYPE_CODE.includes(req.user.userTypeCode) && req.user !== parseInt(req.params.account)) {
       next();
     } else {
       return new SendRespone({

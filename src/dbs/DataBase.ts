@@ -25,32 +25,28 @@ export class DataBase {
   }
 
   public QueryExec() {
-    const exec = mongoose.Query.prototype.exec;
-
-    mongoose.Query.prototype.cache = function (time = (60 * 60) as number) {
+    mongoose.Query.prototype.cache = function (options: any) {
       this.useCache = true;
-      this.cacheTime = time;
+      this.hashKey = JSON.stringify(options.key || '');
       return this;
     };
 
+    const exec = mongoose.Query.prototype.exec;
     mongoose.Query.prototype.exec = async function () {
       if (!this.useCache) {
         return exec.apply(this, arguments as any);
       }
-      const collectionName = this.mongooseCollection.name;
       const key = JSON.stringify(
-        Object.assign({
-          ...this.getQuery(),
-          collectionName
+        Object.assign({}, this.getQuery(), {
+          collection: this.mongooseCollection.name
         })
       );
-      console.log(key);
-      const cacheValue = await redisController.getHasRedis({ collectionName, key });
-      if (cacheValue) {
+      const cacheValue = await redisController.getHasRedis({ hasKey: this.hashKey, key });
+      if ((cacheValue && !Array.isArray(cacheValue)) || (Array.isArray(cacheValue) && cacheValue.length)) {
         return Array.isArray(cacheValue) ? cacheValue.map((item) => new this.model(item)) : new this.model(cacheValue);
       }
       const result = await exec.apply(this as any, arguments as any);
-      await redisController.setHasRedis({ collectionName, key, values: result });
+      await redisController.setHasRedis({ hasKey: this.hashKey, key, values: result });
       return result;
     };
   }

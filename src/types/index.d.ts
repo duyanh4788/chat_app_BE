@@ -12,10 +12,9 @@ declare global {
 
 declare module 'mongoose' {
   interface Query<ResultType, DocType, THelpers = {}, RawDocType = DocType> {
-    cache(): this;
+    cache: (key: any) => any;
+    hashKey: any;
     useCache: boolean;
     mongooseCollection: any;
-    cacheTime: number;
-    op: any;
   }
 }

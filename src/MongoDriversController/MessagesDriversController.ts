@@ -16,14 +16,13 @@ export class MessagesDriversController implements IMessagesDriversRepository {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(10)
-      .select(this.selectMsg)
-      .cache();
+      .select(this.selectMsg);
     const totalPage = await this.Messages.find({ conversationId }).count();
     if (!listMessages || (listMessages && !listMessages.length)) {
       return { listMessages: [], totalPage, skip: 0 };
     }
     return {
-      listMessages: listMessages.map((item) => this.transFromData(item)).reverse(),
+      listMessages: listMessages.map((item: MessagesSchemaProps) => this.transFromData(item)).reverse(),
       totalPage,
       skip: totalPage <= skip ? 0 : skip + 10
     };
@@ -32,14 +31,12 @@ export class MessagesDriversController implements IMessagesDriversRepository {
   async createNewMessages(body: MessagesSchemaProps): Promise<MessagesSchemaProps> {
     const newMessage = new this.Messages(body);
     await newMessage.save();
-    await redisController.clearHashRedis({ conversationId: body.conversationId, collectionName: TitleModel.MESSAGES.toLowerCase() });
     return this.transFromData(newMessage);
   }
 
   async createNewMessagesSocket(body: MessagesSchemaProps): Promise<void> {
     const newMessage = new this.Messages(body);
     await newMessage.save();
-    await redisController.clearHashRedis({ conversationId: body.conversationId, collectionName: TitleModel.MESSAGES.toLowerCase() });
     return;
   }
 

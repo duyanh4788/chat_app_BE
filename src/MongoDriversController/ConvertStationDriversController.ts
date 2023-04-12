@@ -17,7 +17,7 @@ export class ConvertStationDriversController implements IConvertStationDriversRe
   async findConverStation(senderId: string, reciverId: string): Promise<any> {
     let newConverStation = await this.ConvertStation.findOne({
       members: { $all: [senderId, reciverId] }
-    }).cache();
+    }).cache({ key: [senderId, reciverId] });
     return this.transFromData(newConverStation);
   }
 

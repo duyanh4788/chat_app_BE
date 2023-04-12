@@ -3,28 +3,29 @@ import { TitleModel } from '../common/common.constants';
 import { StatusCreate, UserSchemaProps, UsersSchema, UserTypeCreate } from '../models/userModel';
 import { IUserDriversRepository } from '../Repository/IUserDriversRepository';
 import { RestError } from '../services/error/error';
+import { redisController } from '../redis/RedisController';
 
 export class UserDriversController implements IUserDriversRepository {
   private Users = mongoose.model(TitleModel.USERS, UsersSchema);
   private selectUser = ['account', 'fullName', 'email', 'avatar', 'isOnline', 'statusCreate', 'twoFA', 'type2FA'];
 
   async findById(id: string): Promise<UserSchemaProps> {
-    const user = await this.Users.findById(id).select(this.selectUser).lean(0).cache();
+    const user = await this.Users.findById(id).select(this.selectUser).lean(0).cache({ key: id });
     return this.transFromData(user);
   }
 
-  async findAllLists(): Promise<UserSchemaProps[]> {
-    const listUsers = await this.Users.find({ statusCreate: StatusCreate.ACTIVE }).select(this.selectUser).lean(0).cache();
-    return listUsers.map((item) => this.transFromData(item));
+  async findAllLists(userId: string): Promise<UserSchemaProps[]> {
+    const listUsers = await this.Users.find({ statusCreate: StatusCreate.ACTIVE }).select(this.selectUser).lean(0).cache({ key: userId });
+    return listUsers.map((item: UserSchemaProps) => this.transFromData(item));
   }
 
   async getUserByIdNoneStatus(id: string): Promise<UserSchemaProps | undefined> {
-    const user = await this.Users.findById(id).select(this.selectUser).lean(0);
+    const user = await this.Users.findById(id).select(this.selectUser).lean(0).cache({ key: id });
     return this.transFromData(user);
   }
 
   async findByAccount(account: string): Promise<UserSchemaProps | undefined> {
-    const user: any = await this.Users.findOne({ account }).lean(0);
+    const user: any = await this.Users.findOne({ account }).lean(0).cache({ key: account });
     if (!user) return;
     if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
       throw new RestError('account have inactive, please activate code in email or spam.', 401);
@@ -33,7 +34,7 @@ export class UserDriversController implements IUserDriversRepository {
   }
 
   async findByEmail(email: string): Promise<UserSchemaProps | undefined> {
-    const user: any = await this.Users.findOne({ email }).lean(0);
+    const user: any = await this.Users.findOne({ email }).lean(0).cache({ key: email });
     if (user && user.statusCreate === StatusCreate.IN_ACTIVE) {
       throw new RestError('account have inactive, please activate code in email or spam.', 401);
     }
@@ -86,6 +87,7 @@ export class UserDriversController implements IUserDriversRepository {
       twoFA: !!twoFA,
       type2FA
     });
+    await redisController.clearHashRedis(_id as string);
     return true;
   }
 
@@ -93,6 +95,7 @@ export class UserDriversController implements IUserDriversRepository {
     await this.Users.findByIdAndUpdate(userId, {
       statusCreate
     });
+    await redisController.clearHashRedis(userId);
     return;
   }
 
@@ -100,6 +103,7 @@ export class UserDriversController implements IUserDriversRepository {
     await this.Users.findByIdAndUpdate(userId, {
       passWord: newPassWord
     });
+    await redisController.clearHashRedis(userId);
     return;
   }
 

@@ -36,7 +36,8 @@ export class UsersController {
 
   public async getListUser(req: Request, res: Response) {
     try {
-      const listUsers = await this.userUseCase.getListUser();
+      const { _id }: any = req.user;
+      const listUsers = await this.userUseCase.getListUser(_id);
       return new SendRespone({ data: listUsers }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
