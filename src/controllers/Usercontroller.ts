@@ -2,12 +2,13 @@ import { Request, Response } from 'express';
 import { RestError } from '../services/error/error';
 import { UserUseCase } from '../usecase/UserUseCase';
 import { AuthenticatorUseCase } from '../usecase/AuthenticatorUseCase';
-import { StatusCreate, Type2FA, UserSchemaProps } from '../models/userModel';
 import { checkTimerAuthenticator } from '../utils/timer';
 import { validateObjectReqBody } from '../utils/validate';
 import * as mongoDB from 'mongodb';
 import { nodeMailerServices } from '../services/nodemailer/MailServices';
 import { SendRespone } from '../services/success/success';
+import { StatusCreate, Type2FA } from '../common/common.enum';
+import { UserRequest, UserSchemaProps } from '../common/common.interface';
 
 export class UsersController {
   constructor(
@@ -302,7 +303,7 @@ export class UsersController {
       if (!req.isAuthenticated() || !req.user) {
         throw new RestError('please login.');
       }
-      const user: UserSchemaProps = req.user;
+      const user: UserRequest | any = req.user;
       const { token } = req.body;
       await this.authenticatorUseCase.pairAuth(user._id as string, token);
       return new SendRespone({ message: 'update otp authpair successfully.' }).send(res);

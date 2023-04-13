@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import { INodeMailerServices } from '../../Repository/INodeMailerServices';
-import { UserSchemaProps } from '../../models/userModel';
 import { isDevelopment } from '../../server';
+import { UserSchemaProps } from '../../common/common.interface';
 
 export class NodeMailerServices implements INodeMailerServices {
   private nodemailerTransport!: nodemailer.Transporter;

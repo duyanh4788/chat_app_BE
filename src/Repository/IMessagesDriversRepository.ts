@@ -1,4 +1,4 @@
-import { MessagesSchemaProps, ResponseListMessages } from '../models/messageModel';
+import { MessagesSchemaProps, ResponseListMessages } from '../common/common.interface';
 
 export interface IMessagesDriversRepository {
   getListMessages(conversationId: string, skip: number): Promise<ResponseListMessages>;

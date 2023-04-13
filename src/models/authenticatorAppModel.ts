@@ -1,10 +1,5 @@
 import * as mongoose from 'mongoose';
-
-export interface AuthenticatorAppSchemaProps {
-  userId: String;
-  authKey: String;
-  dateTimeCreate: Date;
-}
+import { AuthenticatorAppSchemaProps } from '../common/common.interface';
 
 const Schema = mongoose.Schema;
 

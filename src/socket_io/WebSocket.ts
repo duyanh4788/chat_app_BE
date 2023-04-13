@@ -7,22 +7,8 @@ import { MessagesDriversController } from '../MongoDriversController/MessagesDri
 import { UserDriversController } from '../MongoDriversController/UserDriversController';
 import { changeStatusIsNewMsg, changeStatusLogin, renderMessages } from '../utils/createMessages';
 import { createUser, getUserById, removeUserList } from '../utils/createUsers';
-interface InfoUser {
-  socketId: string;
-  _id: string;
-  account: string;
-  fullName: string;
-  email: string;
-  avatar: string;
-  isOnline: boolean;
-}
+import { DataMessages, InfoUser } from '../common/common.interface';
 
-interface DataMessages {
-  conversationId: string;
-  senderId: string;
-  reciverId: string;
-  text: string;
-}
 const userSockets = new Map();
 export class WebSocket {
   private messagesDriversController: MessagesDriversController = new MessagesDriversController();
@@ -89,12 +75,14 @@ export class WebSocket {
       });
       /** disconnect **/
       socket.on(SOCKET_COMMIT.DISCONNECTED, (infoUser: InfoUser) => {
-        const userBySocketId = getUserById(infoUser._id);
-        if (userBySocketId) {
-          socket.broadcast.emit(SOCKET_COMMIT.CHANGE_STATUS_OFFLINE, changeStatusLogin(userBySocketId, false));
+        if (infoUser && infoUser._id) {
+          const userBySocketId = getUserById(infoUser._id);
+          if (userBySocketId) {
+            socket.broadcast.emit(SOCKET_COMMIT.CHANGE_STATUS_OFFLINE, changeStatusLogin(userBySocketId, false));
+          }
+          removeUserList(infoUser._id);
+          this.userDriversController.updateStatusSocket(infoUser._id, false);
         }
-        removeUserList(infoUser._id);
-        this.userDriversController.updateStatusSocket(infoUser._id, false);
       });
     });
   }

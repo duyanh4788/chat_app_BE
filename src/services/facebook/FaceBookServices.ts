@@ -1,8 +1,9 @@
 import passport from 'passport';
 import { Profile, Strategy as FacebookStrategy } from 'passport-facebook';
-import { StatusCreate, UserSchemaProps, UserTypeCreate } from '../../models/userModel';
 import { IUserDriversRepository } from '../../Repository/IUserDriversRepository';
 import { removeAccentsVN } from '../../utils/accents';
+import { UserSchemaProps } from '../../common/common.interface';
+import { StatusCreate, UserTypeCreate } from '../../common/common.enum';
 
 export class FaceBookService {
   private readonly FB_ID: string | any = process.env.FB_ID;

@@ -4,7 +4,7 @@ import { logger } from '../services/loggerservice/Logger';
 import { redisController } from '../redis/RedisController';
 
 export class DataBase {
-  private readonly MONGOOSE_URL: string | any = process.env.DATABASE;
+  private readonly MONGOOSE_URL: string = process.env.DATABASE as string;
   static instance: any;
   constructor() {
     this.QueryExec();

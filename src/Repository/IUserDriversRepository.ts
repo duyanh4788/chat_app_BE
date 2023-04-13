@@ -1,4 +1,5 @@
-import { UserSchemaProps, UserTypeCreate } from '../models/userModel';
+import { UserTypeCreate } from '../common/common.enum';
+import { UserSchemaProps } from '../common/common.interface';
 
 export interface IUserDriversRepository {
   findAllLists(userId: string): Promise<UserSchemaProps[]>;

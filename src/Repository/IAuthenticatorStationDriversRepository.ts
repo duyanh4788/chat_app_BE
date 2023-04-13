@@ -1,4 +1,4 @@
-import { AuthenticatorSchemaProps } from '../models/authenticatorModel';
+import { AuthenticatorSchemaProps } from '../common/common.interface';
 
 export interface IAuthenticatorStationDriversRepository {
   createAuthCode(userId: string): Promise<string>;

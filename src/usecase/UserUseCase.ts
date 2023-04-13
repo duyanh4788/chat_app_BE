@@ -1,9 +1,10 @@
-import { StatusCreate, UserSchemaProps, UserTypeCreate } from '../models/userModel';
 import { IUserDriversRepository } from '../Repository/IUserDriversRepository';
 import { RestError } from '../services/error/error';
 import * as bcrypt from 'bcryptjs';
 import * as JWT from 'jsonwebtoken';
 import { SECRETKEY } from '../common/common.constants';
+import { UserSchemaProps } from '../common/common.interface';
+import { StatusCreate, UserTypeCreate } from '../common/common.enum';
 export class UserUseCase {
   constructor(private userDriversController: IUserDriversRepository) {}
 

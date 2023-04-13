@@ -1,11 +1,12 @@
 import mongoose from 'mongoose';
 import { TitleModel } from '../common/common.constants';
-import { AuthenticatorSchema, AuthenticatorSchemaProps } from '../models/authenticatorModel';
+import { AuthenticatorSchema } from '../models/authenticatorModel';
 import { IAuthenticatorStationDriversRepository } from '../Repository/IAuthenticatorStationDriversRepository';
 import { RestError } from '../services/error/error';
 import { ramdomAuthCode } from '../utils/ramdomAuthCode';
 import { checkTimerAuthenticator } from '../utils/timer';
 import { redisController } from '../redis/RedisController';
+import { AuthenticatorSchemaProps } from '../common/common.interface';
 export class AuthenticatorStationDriversController implements IAuthenticatorStationDriversRepository {
   private Authenticators = mongoose.model(TitleModel.AUTHENTICATOR, AuthenticatorSchema);
 

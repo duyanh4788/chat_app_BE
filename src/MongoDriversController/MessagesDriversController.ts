@@ -1,9 +1,8 @@
 import mongoose from 'mongoose';
 import { TitleModel } from '../common/common.constants';
-import { MessagesSchema, MessagesSchemaProps, ResponseListMessages } from '../models/messageModel';
+import { MessagesSchema } from '../models/messageModel';
 import { IMessagesDriversRepository } from '../Repository/IMessagesDriversRepository';
-import { RestError } from '../services/error/error';
-import { redisController } from '../redis/RedisController';
+import { MessagesSchemaProps, ResponseListMessages } from '../common/common.interface';
 
 export class MessagesDriversController implements IMessagesDriversRepository {
   private Messages = mongoose.model(TitleModel.MESSAGES, MessagesSchema);

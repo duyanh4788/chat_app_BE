@@ -1,6 +1,6 @@
 import { IAuthenticatorAppStationDriversRepository } from '../Repository/IAuthenticatorAppStationDriversRepository';
 import { IAuthenticatorStationDriversRepository } from '../Repository/IAuthenticatorStationDriversRepository';
-import { AuthenticatorSchemaProps } from '../models/authenticatorModel';
+import { AuthenticatorSchemaProps } from '../common/common.interface';
 import { checkTimerAuthenticator } from '../utils/timer';
 
 export class AuthenticatorUseCase {

@@ -1,36 +1,5 @@
 import * as mongoose from 'mongoose';
-
-export enum UserTypeCreate {
-  FACEBOOK = 'FACEBOOK',
-  GOOGLE = 'GOOGLE',
-  CHATAPP = 'CHATAPP'
-}
-
-export enum StatusCreate {
-  IN_ACTIVE = 'IN_ACTIVE',
-  ACTIVE = 'ACTIVE'
-}
-
-export enum Type2FA {
-  AUTH_CODE = 'AUTH_CODE',
-  PASSPORT = 'PASSPORT'
-}
-
-export interface UserSchemaProps {
-  _id?: String;
-  account?: String;
-  passWord?: String;
-  fullName?: String;
-  email?: String;
-  avatar?: String;
-  isOnline?: Boolean;
-  statusCreate?: StatusCreate;
-  twoFA?: boolean;
-  type2FA?: Type2FA;
-  userTypeCode?: String;
-  userTypeCreate?: UserTypeCreate;
-  userTypeCreateId?: String;
-}
+import { UserSchemaProps } from '../common/common.interface';
 
 const Schema = mongoose.Schema;
 

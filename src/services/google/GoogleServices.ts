@@ -1,7 +1,8 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy, Profile } from 'passport-google-oauth20';
-import { StatusCreate, UserSchemaProps, UserTypeCreate } from '../../models/userModel';
 import { IUserDriversRepository } from '../../Repository/IUserDriversRepository';
+import { UserSchemaProps } from '../../common/common.interface';
+import { StatusCreate, UserTypeCreate } from '../../common/common.enum';
 
 export class GoogleServices {
   private readonly GG_ID: string | any = process.env.GG_ID;

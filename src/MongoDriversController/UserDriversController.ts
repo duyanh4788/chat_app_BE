@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
 import { TitleModel } from '../common/common.constants';
-import { StatusCreate, UserSchemaProps, UsersSchema, UserTypeCreate } from '../models/userModel';
+import { UsersSchema } from '../models/userModel';
 import { IUserDriversRepository } from '../Repository/IUserDriversRepository';
 import { RestError } from '../services/error/error';
 import { redisController } from '../redis/RedisController';
+import { UserSchemaProps } from '../common/common.interface';
+import { StatusCreate, UserTypeCreate } from '../common/common.enum';
 
 export class UserDriversController implements IUserDriversRepository {
   private Users = mongoose.model(TitleModel.USERS, UsersSchema);
@@ -69,6 +71,7 @@ export class UserDriversController implements IUserDriversRepository {
     await this.Users.findByIdAndUpdate(id, {
       isOnline
     });
+    await redisController.clearHashRedis(id as string);
     return true;
   }
 
@@ -76,6 +79,7 @@ export class UserDriversController implements IUserDriversRepository {
     await this.Users.findByIdAndUpdate(id, {
       isOnline
     });
+    await redisController.clearHashRedis(id as string);
     return;
   }
 

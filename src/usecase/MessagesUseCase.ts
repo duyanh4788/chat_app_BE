@@ -1,5 +1,5 @@
-import { MessagesSchemaProps } from '../models/messageModel';
 import { IMessagesDriversRepository } from '../Repository/IMessagesDriversRepository';
+import { MessagesSchemaProps } from '../common/common.interface';
 
 export class MessagesUseCase {
   constructor(private messagesDriversRepository: IMessagesDriversRepository) {}
