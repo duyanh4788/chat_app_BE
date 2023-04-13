@@ -9,13 +9,15 @@ export class AuthenticatorAppStationDriversController implements IAuthenticatorA
   private Authenticators = mongoose.model(TitleModel.AUTHENTICATOR_APP, AuthenticatorAppSchema);
 
   async createAuthPair(userId: string): Promise<string> {
+    const auth = await this.Authenticators.findOne({ userId });
+    if (auth) return this.generateAuthKey(auth.authKey as string);
     const authModel = new this.Authenticators({
       userId,
       authKey: authenticator.generateKey(),
       dateTimeCreate: new Date()
     });
     await authModel.save();
-    return authModel.authKey as string;
+    return this.generateAuthKey(authModel.authKey as string);
   }
 
   async pairAuth(userId: string, token: string): Promise<void> {
@@ -29,5 +31,10 @@ export class AuthenticatorAppStationDriversController implements IAuthenticatorA
   private transFromData(data: any) {
     if (!data) return;
     return data._doc;
+
+  }
+
+  private generateAuthKey(authKey: string): string {
+    return authenticator.generateTotpUri(authKey, '', 'ChatApp', 'SHA1', 6, 30);
   }
 }

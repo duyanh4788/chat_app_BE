@@ -27,6 +27,8 @@ export interface IUserDriversRepository {
 
   updateInfo(body: UserSchemaProps): Promise<boolean>;
 
+  updateTwoFAByApp(userId: string): Promise<void>;
+
   updateStatusCreate(userId: string, statusCreate: string): Promise<void>;
 
   updatePassWord(userId: string, newPassWord: string): Promise<void>;

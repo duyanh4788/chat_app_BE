@@ -6,7 +6,7 @@ import { SECRETKEY } from '../common/common.constants';
 import { UserSchemaProps } from '../common/common.interface';
 import { StatusCreate, UserTypeCreate } from '../common/common.enum';
 export class UserUseCase {
-  constructor(private userDriversController: IUserDriversRepository) {}
+  constructor(private userDriversController: IUserDriversRepository) { }
 
   async getListUser(userId: string): Promise<UserSchemaProps[]> {
     return await this.userDriversController.findAllLists(userId);
@@ -79,6 +79,10 @@ export class UserUseCase {
   async updateInfo(body: UserSchemaProps): Promise<boolean> {
     const update = await this.userDriversController.updateInfo(body);
     return update;
+  }
+
+  async updateTwoFAByApp(userId: string): Promise<void> {
+    return await this.userDriversController.updateTwoFAByApp(userId);
   }
 
   async updatePassWord(userId: string, newPassWord: string): Promise<void> {

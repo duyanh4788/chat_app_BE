@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
 import { TitleModel } from '../common/common.constants';
+<<<<<<< Updated upstream
 import { UsersSchema } from '../models/userModel';
+=======
+import { StatusCreate, Type2FA, UserSchemaProps, UsersSchema, UserTypeCreate } from '../models/userModel';
+>>>>>>> Stashed changes
 import { IUserDriversRepository } from '../Repository/IUserDriversRepository';
 import { RestError } from '../services/error/error';
 import { redisController } from '../redis/RedisController';
@@ -93,6 +97,15 @@ export class UserDriversController implements IUserDriversRepository {
     });
     await redisController.clearHashRedis(_id as string);
     return true;
+  }
+
+  async updateTwoFAByApp(userId: string): Promise<void> {
+    await this.Users.findByIdAndUpdate(userId, {
+      twoFA: true,
+      type2FA: Type2FA.PASSPORT
+    });
+    await redisController.clearHashRedis(userId as string);
+    return;
   }
 
   async updateStatusCreate(userId: string, statusCreate: string): Promise<void> {

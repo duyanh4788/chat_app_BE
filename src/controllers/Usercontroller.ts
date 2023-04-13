@@ -33,6 +33,8 @@ export class UsersController {
     this.orderResetPassWord = this.orderResetPassWord.bind(this);
     this.resendOrderResetPassWord = this.resendOrderResetPassWord.bind(this);
     this.resetPassWord = this.resetPassWord.bind(this);
+    this.getAuthPair = this.getAuthPair.bind(this);
+    this.pairAuth = this.pairAuth.bind(this);
   }
 
   public async getListUser(req: Request, res: Response) {
@@ -132,6 +134,12 @@ export class UsersController {
           nodeMailerServices.sendAuthCodeForLogin(userSignIn, authCode as string);
           return new SendRespone({ code: 201, message: 'authentica has send to email, please get code and login.' }).send(res);
         }
+        if (userSignIn.type2FA === Type2FA.PASSPORT) {
+          return new SendRespone({
+            code: 203,
+            message: 'Please open app authenticar and input code.'
+          }).send(res);
+        }
       }
       return new SendRespone({ data: userSignIn, message: 'login successfuly' }).send(res);
     } catch (error) {
@@ -196,7 +204,7 @@ export class UsersController {
 
   public async profileFacebook(req: Request, res: Response) {
     try {
-      if (!req.isAuthenticated() || !req.user) {
+      if (!req.user) {
         return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res);
       }
       const create = await this.userUseCase.profileFacebook(req.user);
@@ -213,7 +221,7 @@ export class UsersController {
 
   public async profileGoogle(req: Request, res: Response) {
     try {
-      if (!req.isAuthenticated() || !req.user) {
+      if (!req.user) {
         return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res);
       }
       const create = await this.userUseCase.profileGoogle(req.user);
@@ -287,8 +295,8 @@ export class UsersController {
 
   public async getAuthPair(req: Request, res: Response) {
     try {
-      if (!req.isAuthenticated() || !req.user) {
-        throw new RestError('please login.');
+      if (!req.user) {
+        throw new RestError('please login.', 401);
       }
       const user: UserSchemaProps = req.user;
       const authpair = await this.authenticatorUseCase.createAuthPair(user._id as string);
@@ -300,12 +308,13 @@ export class UsersController {
 
   public async pairAuth(req: Request, res: Response) {
     try {
-      if (!req.isAuthenticated() || !req.user) {
-        throw new RestError('please login.');
+      if (!req.user) {
+        throw new RestError('please login.', 401);
       }
       const user: UserRequest | any = req.user;
       const { token } = req.body;
       await this.authenticatorUseCase.pairAuth(user._id as string, token);
+      await this.userUseCase.updateTwoFAByApp(user._id as string);
       return new SendRespone({ message: 'update otp authpair successfully.' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
