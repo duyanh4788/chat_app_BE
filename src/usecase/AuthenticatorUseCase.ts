@@ -7,7 +7,7 @@ export class AuthenticatorUseCase {
   constructor(
     private authenticatorStationDriversRepository: IAuthenticatorStationDriversRepository,
     private authenticatorAppStationDriversRepository: IAuthenticatorAppStationDriversRepository
-  ) {}
+  ) { }
 
   async handleAuthentionByLogin(userId: string): Promise<string | boolean> {
     const find = await this.findByUserId(userId);

@@ -1,15 +1,11 @@
 import mongoose from 'mongoose';
 import { TitleModel } from '../common/common.constants';
-<<<<<<< Updated upstream
 import { UsersSchema } from '../models/userModel';
-=======
-import { StatusCreate, Type2FA, UserSchemaProps, UsersSchema, UserTypeCreate } from '../models/userModel';
->>>>>>> Stashed changes
 import { IUserDriversRepository } from '../Repository/IUserDriversRepository';
 import { RestError } from '../services/error/error';
 import { redisController } from '../redis/RedisController';
 import { UserSchemaProps } from '../common/common.interface';
-import { StatusCreate, UserTypeCreate } from '../common/common.enum';
+import { StatusCreate, Type2FA, UserTypeCreate } from '../common/common.enum';
 
 export class UserDriversController implements IUserDriversRepository {
   private Users = mongoose.model(TitleModel.USERS, UsersSchema);
@@ -89,13 +85,15 @@ export class UserDriversController implements IUserDriversRepository {
 
   async updateInfo(body: UserSchemaProps): Promise<boolean> {
     const { _id, fullName, avatar, twoFA, type2FA } = body;
-    await this.Users.findByIdAndUpdate(_id, {
+    const user = await this.Users.findByIdAndUpdate(_id, {
       fullName,
       avatar,
       twoFA: !!twoFA,
       type2FA
     });
     await redisController.clearHashRedis(_id as string);
+    await redisController.clearHashRedis(user?.account as string);
+    await redisController.clearHashRedis(user?.email as string);
     return true;
   }
 

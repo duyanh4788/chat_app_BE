@@ -161,8 +161,9 @@ export class UsersController {
 
   public async userSignInWithApp(req: Request, res: Response) {
     try {
-      const { otp } = req.body;
+      const { email, otp } = req.body;
       if (!otp || otp.length !== 6 || typeof otp !== 'string') throw new RestError('otp invalid.', 404);
+      req.body = { email }
       const user = await this.checkUserByEmail(req);
       await this.authenticatorUseCase.pairAuth(user._id as string, otp);
       const userInfo = await this.userUseCase.userSignInWithToken(user._id as string);
