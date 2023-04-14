@@ -111,7 +111,7 @@ export class UserUseCase {
       account: user.account,
       userTypeCode: user.userTypeCode
     };
-    const toKen = JWT.sign(header, SECRETKEY, { expiresIn: 86400000 });
+    const toKen = JWT.sign(header, SECRETKEY, { expiresIn: 86400 }); // 1 day
     const infoUser = {
       _id: user._id,
       account: user.account,

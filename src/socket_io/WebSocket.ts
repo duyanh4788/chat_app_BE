@@ -21,22 +21,26 @@ export class WebSocket {
 
   public socketIO(socket_io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>) {
     socket_io.use((socket: Socket, next) => {
-      const { Authorization } = socket.handshake.auth;
-      const deCode: any = JWT.verify(Authorization, SECRETKEY);
-      const getTime = Math.round(new Date().getTime() / 1000);
-      if (deCode || deCode.exp > getTime) {
-        const previousSocket = userSockets.get(deCode._id);
-        if (previousSocket) {
-          socket.join(previousSocket);
-          socket.to(previousSocket).emit(SOCKET_COMMIT.DISCONNECTED, { reason: 'Another tab connected' });
-        } else {
-          const newRoom = `room-${deCode._id}`;
-          userSockets.set(deCode._id, newRoom);
-          socket.join(newRoom);
+      try {
+        const { Authorization } = socket.handshake.auth;
+        const deCode: any = JWT.verify(Authorization, SECRETKEY);
+        const getTime = Math.round(new Date().getTime() / 1000);
+        if (deCode || deCode.exp > getTime) {
+          const previousSocket = userSockets.get(deCode._id);
+          if (previousSocket) {
+            socket.join(previousSocket);
+            socket.to(previousSocket).emit(SOCKET_COMMIT.DISCONNECTED, { reason: 'Another tab connected' });
+          } else {
+            const newRoom = `room-${deCode._id}`;
+            userSockets.set(deCode._id, newRoom);
+            socket.join(newRoom);
+          }
+          return next();
         }
-        return next();
+        next(new Error('AUTHORIZATION_INVALID'));
+      } catch (error) {
+        next(new Error('AUTHORIZATION_INVALID'));
       }
-      next(new Error('AUTHORIZATION_INVALID'));
     });
     socket_io.on(SOCKET_COMMIT.CONNECT, (socket: Socket) => {
       /** Connect **/
