@@ -45,7 +45,7 @@ export const UsersSchema = new Schema<UserSchemaProps>(
       type: Schema.Types.Mixed,
       default: ''
     },
-    twoFA: {
+    twofa: {
       type: Boolean,
       default: false
     },

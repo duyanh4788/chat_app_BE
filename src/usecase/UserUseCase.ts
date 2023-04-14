@@ -6,7 +6,7 @@ import { SECRETKEY } from '../common/common.constants';
 import { UserSchemaProps } from '../common/common.interface';
 import { StatusCreate, UserTypeCreate } from '../common/common.enum';
 export class UserUseCase {
-  constructor(private userDriversController: IUserDriversRepository) { }
+  constructor(private userDriversController: IUserDriversRepository) {}
 
   async getListUser(userId: string): Promise<UserSchemaProps[]> {
     return await this.userDriversController.findAllLists(userId);
@@ -119,7 +119,7 @@ export class UserUseCase {
       email: user.email,
       avatar: user.avatar,
       isOnline: user.isOnline,
-      twoFa: user.twoFA,
+      twofa: user.twofa,
       type2FA: user.type2FA,
       userTypeCode: user.userTypeCode,
       toKen

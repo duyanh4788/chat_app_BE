@@ -23,6 +23,7 @@ export class UsersController {
     this.activeUser = this.activeUser.bind(this);
     this.userSignIn = this.userSignIn.bind(this);
     this.userSignInWithCode = this.userSignInWithCode.bind(this);
+    this.userSignInWithApp = this.userSignInWithApp.bind(this);
     this.changeStatusOnline = this.changeStatusOnline.bind(this);
     this.changeStatusOffline = this.changeStatusOffline.bind(this);
     this.updateInfo = this.updateInfo.bind(this);
@@ -122,12 +123,16 @@ export class UsersController {
       const { account, passWord } = req.body;
       const userSignIn = await this.userUseCase.userSignIn(account, passWord);
       if (!userSignIn) throw new RestError('login failed', 400);
-      if (userSignIn.twoFa) {
+      if (userSignIn.twofa) {
+        const data = {
+          _id: userSignIn._id
+        };
         if (userSignIn.type2FA === Type2FA.AUTH_CODE) {
           const authCode = await this.authenticatorUseCase.handleAuthentionByLogin(userSignIn._id as string);
           if (!authCode) {
             return new SendRespone({
               code: 202,
+              data,
               message: 'we have send authenticator code to email, please checked to email or try again after 1 hour.'
             }).send(res);
           }
@@ -137,6 +142,7 @@ export class UsersController {
         if (userSignIn.type2FA === Type2FA.PASSPORT) {
           return new SendRespone({
             code: 203,
+            data,
             message: 'Please open app authenticar and input code.'
           }).send(res);
         }
@@ -161,12 +167,10 @@ export class UsersController {
 
   public async userSignInWithApp(req: Request, res: Response) {
     try {
-      const { email, otp } = req.body;
-      if (!otp || otp.length !== 6 || typeof otp !== 'string') throw new RestError('otp invalid.', 404);
-      req.body = { email }
-      const user = await this.checkUserByEmail(req);
-      await this.authenticatorUseCase.pairAuth(user._id as string, otp);
-      const userInfo = await this.userUseCase.userSignInWithToken(user._id as string);
+      const { userId, otp } = req.body;
+      if (!otp || otp.length !== 6 || typeof otp !== 'string' || !userId) throw new RestError('otp invalid.', 404);
+      await this.authenticatorUseCase.pairAuth(userId, otp);
+      const userInfo = await this.userUseCase.userSignInWithToken(userId);
       return new SendRespone({ code: 200, data: userInfo, message: 'login successfully.' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
@@ -315,7 +319,6 @@ export class UsersController {
       const user: UserRequest | any = req.user;
       const { token } = req.body;
       await this.authenticatorUseCase.pairAuth(user._id as string, token);
-      await this.userUseCase.updateTwoFAByApp(user._id as string);
       return new SendRespone({ message: 'update otp authpair successfully.' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);

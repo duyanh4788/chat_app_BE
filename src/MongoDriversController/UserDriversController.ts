@@ -9,7 +9,7 @@ import { StatusCreate, Type2FA, UserTypeCreate } from '../common/common.enum';
 
 export class UserDriversController implements IUserDriversRepository {
   private Users = mongoose.model(TitleModel.USERS, UsersSchema);
-  private selectUser = ['account', 'fullName', 'email', 'avatar', 'isOnline', 'statusCreate', 'twoFA', 'type2FA'];
+  private selectUser = ['account', 'fullName', 'email', 'avatar', 'isOnline', 'statusCreate', 'twofa', 'type2FA'];
 
   async findById(id: string): Promise<UserSchemaProps> {
     const user = await this.Users.findById(id).select(this.selectUser).lean(0).cache({ key: id });
@@ -84,11 +84,11 @@ export class UserDriversController implements IUserDriversRepository {
   }
 
   async updateInfo(body: UserSchemaProps): Promise<boolean> {
-    const { _id, fullName, avatar, twoFA, type2FA } = body;
+    const { _id, fullName, avatar, twofa, type2FA } = body;
     const user = await this.Users.findByIdAndUpdate(_id, {
       fullName,
       avatar,
-      twoFA: !!twoFA,
+      twofa: !!twofa,
       type2FA
     });
     await redisController.clearHashRedis(_id as string);
@@ -99,7 +99,7 @@ export class UserDriversController implements IUserDriversRepository {
 
   async updateTwoFAByApp(userId: string): Promise<void> {
     await this.Users.findByIdAndUpdate(userId, {
-      twoFA: true,
+      twofa: true,
       type2FA: Type2FA.PASSPORT
     });
     await redisController.clearHashRedis(userId as string);

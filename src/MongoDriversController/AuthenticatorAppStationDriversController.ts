@@ -24,14 +24,13 @@ export class AuthenticatorAppStationDriversController implements IAuthenticatorA
     const auth = await this.Authenticators.findOne({ userId });
     if (!auth) throw new RestError('token invalid.', 401);
     const veryfi = authenticator.verifyToken(auth.authKey as string, token);
-    if (!veryfi) throw new RestError('OTP token invalid.', 401);
+    if (!veryfi) throw new RestError('OTP token invalid.', 404);
     return;
   }
 
   private transFromData(data: any) {
     if (!data) return;
     return data._doc;
-
   }
 
   private generateAuthKey(authKey: string): string {
