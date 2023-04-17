@@ -18,4 +18,8 @@ Run npm start & yarn start in order to install dependencies. At this point you c
 **\*\*\*\*** Setup MongoDB **\*\*\*\***
 Create: mongodb://localhost:27017/chatApp
 
+**\*\*\*\*** Setup Docker compore **\*\*\*\***
+Copy file example.env.docker to .env
+run docker compose or docker-compose build => docker-compose up
+
 Now you're ready to rumble!
