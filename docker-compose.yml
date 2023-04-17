@@ -1,0 +1,46 @@
+version: '3.4'
+
+services:
+  app:
+    image: chatapp/chatappbe:v1
+    volumes:
+      - ./:/app
+    env_file: .env
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PORT}
+      - DATABASE=${DATABASE}
+      - END_POINT=${END_POINT}
+      - END_POINT_HOME=${END_POINT_HOME}
+      - END_POINT_SERVER=${END_POINT_SERVER}
+      - END_POINT_PATH=${END_POINT_PATH}
+      - REDIS_URL=${REDIS_URL}
+
+      - AWS_ACCESS=${AWS_ACCESS}
+      - AWS_SECRET=${AWS_SECRET}
+      - AWS_DOMAIN=${AWS_DOMAIN}
+      - AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
+      - AWS_REGION=${AWS_REGION}
+
+      - FB_ID=${FB_ID}
+      - FB_KEY=${FB_KEY}
+
+      - GG_ID=${GG_ID}
+      - GG_KEY=${GG_KEY}
+
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - redis
+
+  mongo:
+    image: mongo:6.0.3
+    container_name: chatapp_mongo
+    volumes:
+      - .docker/data/mongo:/data
+
+  redis:
+    image: redis:7.2-rc
+    container_name: chatapp_redis
+    volumes:
+      - .docker/data/redis:/data

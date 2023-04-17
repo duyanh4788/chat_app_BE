@@ -12,6 +12,7 @@ public/images
 .pnp.js
 .env
 .log
+.docker
 # misc
 .DS_Store
 npm-debug.log*
