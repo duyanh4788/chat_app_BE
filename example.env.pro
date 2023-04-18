@@ -9,6 +9,8 @@ END_POINT_SERVER=https://anhthuanhtu.com/api/v1
 END_POINT_PATH=https://anhthuanhtu.com/public/images/
 REDIS_URL=redis://localhost:6379
 
+NODE_VERSION=16.15.1
+
 AWS_ACCESS=
 AWS_SECRET=
 AWS_DOMAIN=
