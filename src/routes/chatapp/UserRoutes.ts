@@ -77,8 +77,8 @@ export class UsersRoutes {
     app.get(BASE_ROUTE + Routes.GET_USER_BY_ID, this.verifyTokenMiddleware.authenTicate, this.usersController.getUserById);
     app.post(BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE, this.verifyTokenMiddleware.authenTicate, this.usersController.changeStatusOnline);
     app.post(BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE, this.verifyTokenMiddleware.authenTicate, this.usersController.changeStatusOffline);
-    app.put(BASE_ROUTE + Routes.UPDATE_INFOR, this.verifyTokenMiddleware.authenTicate, this.usersController.updateInfo);
-    app.get(BASE_ROUTE + Routes.GET_AUTH_PAIR, this.verifyTokenMiddleware.authenTicate, this.usersController.getAuthPair);
-    app.post(BASE_ROUTE + Routes.PAIR_AUTH, this.verifyTokenMiddleware.authenTicate, this.usersController.pairAuth);
+    app.put(BASE_ROUTE + Routes.UPDATE_INFOR, this.verifyTokenMiddleware.authenTicate, this.authMiddleware.checkTypeAccountChatAppById, this.usersController.updateInfo);
+    app.get(BASE_ROUTE + Routes.GET_AUTH_PAIR, this.verifyTokenMiddleware.authenTicate, this.authMiddleware.checkTypeAccountChatAppById, this.usersController.getAuthPair);
+    app.post(BASE_ROUTE + Routes.PAIR_AUTH, this.verifyTokenMiddleware.authenTicate, this.authMiddleware.checkTypeAccountChatAppById, this.usersController.pairAuth);
   }
 }

@@ -2,11 +2,14 @@ import { Request, Response, NextFunction } from 'express';
 import { validateValue } from '../../utils/validate';
 import { IUserDriversRepository } from '../../Repository/IUserDriversRepository';
 import { SendRespone } from '../../services/success/success';
+import { UserSchemaProps } from '../../common/common.interface';
+import { UserTypeCreate } from '../../common/common.enum';
 
 export class AuthUserMiddleware {
   constructor(private userDriversRepository: IUserDriversRepository) {
     this.validateSignUp = this.validateSignUp.bind(this);
     this.checkAccountExits = this.checkAccountExits.bind(this);
+    this.checkTypeAccountChatAppById = this.checkTypeAccountChatAppById.bind(this);
   }
 
   public async validateSignUp(req: Request, res: Response, next: NextFunction) {
@@ -57,6 +60,23 @@ export class AuthUserMiddleware {
       next();
     } else {
       return new SendRespone({ status: 'error', code: 404, message: 'account have exist.' }).send(
+        res
+      );
+    }
+  }
+
+  public async checkTypeAccountChatAppById(req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      return new SendRespone({ status: 'error', code: 404, message: 'account not found.' }).send(
+        res
+      );
+    }
+    const user: UserSchemaProps = req.user;
+    const data = await this.userDriversRepository.findById(user._id as string);
+    if (data.userTypeCreate === UserTypeCreate.CHATAPP) {
+      next();
+    } else {
+      return new SendRespone({ status: 'error', code: 404, message: 'your has do not register password with chatapp, please forgot password and set password.' }).send(
         res
       );
     }
