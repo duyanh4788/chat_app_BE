@@ -9,7 +9,7 @@ import { StatusCreate, Type2FA, UserTypeCreate } from '../common/common.enum';
 
 export class UserDriversController implements IUserDriversRepository {
   private Users = mongoose.model(TitleModel.USERS, UsersSchema);
-  private selectUser = ['account', 'fullName', 'email', 'avatar', 'isOnline', 'statusCreate', 'twofa', 'type2FA'];
+  private selectUser = ['account', 'fullName', 'email', 'avatar', 'isOnline', 'userTypeCreate', 'statusCreate', 'twofa', 'type2FA'];
 
   async findById(id: string): Promise<UserSchemaProps> {
     const user = await this.Users.findById(id).select(this.selectUser).lean(0).cache({ key: id });

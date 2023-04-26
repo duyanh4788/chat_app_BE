@@ -35,7 +35,6 @@ export const UsersSchema = new Schema<UserSchemaProps>(
     },
     userTypeCreate: {
       type: Schema.Types.Mixed,
-      default: ''
     },
     userTypeCreateId: {
       type: String,
@@ -43,7 +42,6 @@ export const UsersSchema = new Schema<UserSchemaProps>(
     },
     statusCreate: {
       type: Schema.Types.Mixed,
-      default: ''
     },
     twofa: {
       type: Boolean,
