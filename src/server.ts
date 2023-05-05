@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import path from 'path';
 import App from './app/App';
-import express, { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import * as http from 'http';
 import { WebSocket } from './socket_io/WebSocket';
 import { RemoveImagesFromAWSJob } from './job/RemoveImagesFromAWSJob';
@@ -11,10 +11,6 @@ import { RemoveImagesLocalJob } from './job/RemoveImagesLocalJob';
 import { Server } from 'socket.io';
 
 export const isDevelopment = process.env.NODE_ENV === 'development' ? true : false;
-
-// ********************* Init Static File Images *********************//
-global._pathFile = path.join(__dirname, '../public/images');
-App.use('/public/images', express.static(_pathFile));
 
 // ********************* BaseJob *********************//
 new RemoveImagesFromAWSJob().runJob();

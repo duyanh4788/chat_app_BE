@@ -8,6 +8,7 @@ import logger from 'morgan';
 import { SECRETKEY } from '../common/common.constants';
 import MongoStore from 'connect-mongo';
 import { DataBase } from '../dbs/DataBase';
+import path from 'path';
 
 const sessionOptions: SessionOptions = {
   secret: SECRETKEY,
@@ -31,6 +32,7 @@ class App {
     this.configCors();
     this.configJson();
     this.mongooSetup();
+    this.initStaticFile();
     this.App.use('/api/v1', this.ApiRouter);
     this.mainRoutes.routes(this.ApiRouter);
   }
@@ -57,6 +59,11 @@ class App {
     this.App.use(express.urlencoded({ limit: '50mb', extended: false }));
     this.App.use(cookieParser());
     this.App.use(logger('dev'));
+  }
+
+  public initStaticFile() {
+    global._pathFile = path.join(__dirname, '../../public');
+    this.App.use('/public/images', express.static(_pathFile));
   }
 }
 
