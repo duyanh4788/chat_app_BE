@@ -37,7 +37,8 @@ describe('upload', () => {
   });
 
   describe('POST/upload-aws3', () => {
-    const testImagePath: any = `${_pathFile}/img-test/test001.jpg`; // ** copy file img test001.jpg in floder img-test
+    const testImagePath: any = `${_pathFileImgTest}/test001.jpg`; // ** copy file img test001.jpg in floder img-test
+    console.log(testImagePath);
     it.only('Success', async () => {
       const { body } = await supertest(App)
         .post('/api/v1/images/upload-aws3')
@@ -46,6 +47,7 @@ describe('upload', () => {
         .attach('file', testImagePath)
         .expect(SUCCESS);
       idImage = body?.data;
+      console.log(idImage);
     });
 
     it.only('Error', async () => {

@@ -8,7 +8,7 @@ export class UploadFilesUseCase {
 
   public removeImageBucketAWS(idImage: string): void {
     const split = idImage.split('/public/images/')[1];
-    const filePath = `${_pathFile}/images/${split}`;
+    const filePath = `${_pathFile}/${split}`;
     try {
       fs.accessSync(filePath);
       fs.unlinkSync(filePath);

@@ -79,7 +79,8 @@ class App {
       console.log(`${imagesTest} already exists!`);
     }
 
-    global._pathFile = path.join(__dirname, '../../public');
+    global._pathFile = path.join(__dirname, '../../public/images');
+    global._pathFileImgTest = path.join(__dirname, '../../public/img-test');
     this.App.use('/public/images', express.static(_pathFile));
   }
 }

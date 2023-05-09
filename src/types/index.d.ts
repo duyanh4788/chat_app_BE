@@ -8,6 +8,7 @@ declare global {
   }
 
   var _pathFile: string;
+  var _pathFileImgTest: string;
 }
 
 declare module 'mongoose' {

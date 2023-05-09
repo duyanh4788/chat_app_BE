@@ -37,7 +37,7 @@ export class MulterMiddleware {
 
       if (!isDevelopment) {
         const fileName = `${Date.now()}.${req.file.mimetype.split('/')[1]}`;
-        const filePath = this.filepath(`${_pathFile}/images/${fileName}`);
+        const filePath = this.filepath(`${_pathFile}/${fileName}`);
         await sharp(req.file.buffer)
           .resize({
             width: 800,
