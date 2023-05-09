@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction, Router } from 'express';
+import express, { Router } from 'express';
 import seesion, { SessionOptions } from 'express-session';
 import cors from 'cors';
 import { MainRoutes } from '../routes';
@@ -9,6 +9,7 @@ import { SECRETKEY } from '../common/common.constants';
 import MongoStore from 'connect-mongo';
 import { DataBase } from '../dbs/DataBase';
 import path from 'path';
+import fs from 'fs';
 
 const sessionOptions: SessionOptions = {
   secret: SECRETKEY,
@@ -62,6 +63,22 @@ class App {
   }
 
   public initStaticFile() {
+    const images = '../../public/images';
+    const imagesTest = '../../public/img-test';
+
+    if (!fs.existsSync(images)) {
+      fs.mkdirSync(images, { recursive: true });
+      console.log(`${images} created successfully!`);
+    } else {
+      console.log(`${images} already exists!`);
+    }
+    if (!fs.existsSync(imagesTest)) {
+      fs.mkdirSync(imagesTest, { recursive: true });
+      console.log(`${imagesTest} created successfully!`);
+    } else {
+      console.log(`${imagesTest} already exists!`);
+    }
+
     global._pathFile = path.join(__dirname, '../../public');
     this.App.use('/public/images', express.static(_pathFile));
   }
