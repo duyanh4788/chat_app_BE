@@ -8,16 +8,12 @@ export class UploadFilesUseCase {
 
   public removeImageBucketAWS(idImage: string): void {
     const split = idImage.split('/public/images/')[1];
-    fs.access(`${_pathFile}/${split}`, (err) => {
-      if (err) {
-        throw new RestError('images not valid.', 404);
-      }
-    });
-    fs.unlink(`${_pathFile}/${split}`, (err) => {
-      if (err) {
-        throw new RestError('images not valid.', 404);
-      }
-    });
-    return;
+    const filePath = `${_pathFile}/images/${split}`;
+    try {
+      fs.accessSync(filePath);
+      fs.unlinkSync(filePath);
+    } catch (err) {
+      throw new RestError('images not valid.', 404);
+    }
   }
 }

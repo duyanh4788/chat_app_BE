@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { validateValue } from '../../utils/validate';
+import { TypeOfValue, isCheckedTypeValues } from '../../utils/validate';
 import { IUserDriversRepository } from '../../Repository/IUserDriversRepository';
 import { SendRespone } from '../../services/success/success';
 import { UserSchemaProps } from '../../common/common.interface';
@@ -15,10 +15,10 @@ export class AuthUserMiddleware {
   public async validateSignUp(req: Request, res: Response, next: NextFunction) {
     const { account, passWord, fullName, email } = req.body;
     if (
-      !validateValue(account) &&
-      !validateValue(passWord) &&
-      !validateValue(fullName) &&
-      !validateValue(email)
+      !isCheckedTypeValues(account, TypeOfValue.STRING) ||
+      !isCheckedTypeValues(passWord, TypeOfValue.STRING) ||
+      !isCheckedTypeValues(fullName, TypeOfValue.STRING) ||
+      !isCheckedTypeValues(email, TypeOfValue.STRING)
     ) {
       return new SendRespone({
         status: 'error',
@@ -46,9 +46,7 @@ export class AuthUserMiddleware {
     }
     const em = await this.userDriversRepository.findByEmail(email);
     if (em) {
-      return new SendRespone({ status: 'error', code: 404, message: 'email have exist.' }).send(
-        res
-      );
+      return new SendRespone({ status: 'error', code: 404, message: 'email have exist.' }).send(res);
     }
     next();
   }
@@ -59,26 +57,24 @@ export class AuthUserMiddleware {
     if (!data) {
       next();
     } else {
-      return new SendRespone({ status: 'error', code: 404, message: 'account have exist.' }).send(
-        res
-      );
+      return new SendRespone({ status: 'error', code: 404, message: 'account have exist.' }).send(res);
     }
   }
 
   public async checkTypeAccountChatAppById(req: Request, res: Response, next: NextFunction) {
     if (!req.user) {
-      return new SendRespone({ status: 'error', code: 404, message: 'account not found.' }).send(
-        res
-      );
+      return new SendRespone({ status: 'error', code: 404, message: 'account not found.' }).send(res);
     }
     const user: UserSchemaProps = req.user;
     const data = await this.userDriversRepository.findById(user._id as string);
     if (data.userTypeCreate === UserTypeCreate.CHATAPP) {
       next();
     } else {
-      return new SendRespone({ status: 'error', code: 404, message: 'your has do not register password with chatapp, please forgot password and set password.' }).send(
-        res
-      );
+      return new SendRespone({
+        status: 'error',
+        code: 404,
+        message: 'your has do not register password with chatapp, please forgot password and set password.'
+      }).send(res);
     }
   }
 
@@ -88,9 +84,7 @@ export class AuthUserMiddleware {
     if (phone && phone.match(pattern)) {
       next();
     } else {
-      return new SendRespone({ status: 'error', code: 404, message: 'please input number.' }).send(
-        res
-      );
+      return new SendRespone({ status: 'error', code: 404, message: 'please input number.' }).send(res);
     }
   }
 }

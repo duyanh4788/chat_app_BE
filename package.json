@@ -5,7 +5,8 @@
   "main": "src/server.ts",
   "license": "MIT",
   "scripts": {
-    "test": "jest",
+    "test": "jest --runInBand",
+    "test:watch": "jest --runInBand --watchAll",
     "build": "tsc",
     "env-dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "dev": "node -r ./node_modules/.bin/ts-node-dev --respawn --transpile-only src/server.ts",

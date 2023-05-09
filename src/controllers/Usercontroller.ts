@@ -3,7 +3,6 @@ import { RestError } from '../services/error/error';
 import { UserUseCase } from '../usecase/UserUseCase';
 import { AuthenticatorUseCase } from '../usecase/AuthenticatorUseCase';
 import { checkTimerAuthenticator } from '../utils/timer';
-import { validateObjectReqBody } from '../utils/validate';
 import * as mongoDB from 'mongodb';
 import { nodeMailerServices } from '../services/nodemailer/MailServices';
 import { SendRespone } from '../services/success/success';
@@ -282,7 +281,6 @@ export class UsersController {
     const session = client.startSession();
     session.startTransaction();
     try {
-      validateObjectReqBody(req);
       const { authCode, newPassWord } = req.body;
       if (!authCode || !newPassWord) throw new RestError('request not avalible.', 404);
       const user = await this.checkUserByEmail(req);
