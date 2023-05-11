@@ -9,7 +9,7 @@ import { StatusCreate, Type2FA, UserTypeCreate } from '../common/common.enum';
 
 export class UserDriversController implements IUserDriversRepository {
   private Users = mongoose.model(TitleModel.USERS, UsersSchema);
-  private selectUser = ['account', 'fullName', 'email', 'avatar', 'isOnline', 'userTypeCreate', 'statusCreate', 'twofa', 'type2FA'];
+  private selectUser = ['account', 'fullName', 'email', 'avatar', 'isOnline', 'userTypeCode', 'userTypeCreate', 'statusCreate', 'twofa', 'type2FA'];
 
   async findById(id: string): Promise<UserSchemaProps> {
     const user = await this.Users.findById(id).select(this.selectUser).lean(0).cache({ key: id });
@@ -120,6 +120,13 @@ export class UserDriversController implements IUserDriversRepository {
     });
     await redisController.clearHashRedis(userId);
     return;
+  }
+
+  async searchUsers(query: string): Promise<UserSchemaProps[]> {
+    const listUsers = await this.Users.find({
+      $or: [{ name: { $regex: query, $options: 'i' } }, { email: { $regex: query, $options: 'i' } }]
+    });
+    return listUsers.map((item: UserSchemaProps) => this.transFromData(item));
   }
 
   private transFromData(data: any) {

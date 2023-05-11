@@ -34,7 +34,8 @@ enum Routes {
   RESEND_ORDER_RESET_PASSWORD = '/resend-order-reset-password',
   RESET_PASSWORD = '/reset-password',
   GET_AUTH_PAIR = '/get-auth-pair',
-  PAIR_AUTH = '/pair-auth'
+  PAIR_AUTH = '/pair-auth',
+  SEARCH = '/search/:query'
 }
 
 export class UsersRoutes {
@@ -77,8 +78,24 @@ export class UsersRoutes {
     app.get(BASE_ROUTE + Routes.GET_USER_BY_ID, this.verifyTokenMiddleware.authenTicate, this.usersController.getUserById);
     app.post(BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE, this.verifyTokenMiddleware.authenTicate, this.usersController.changeStatusOnline);
     app.post(BASE_ROUTE + Routes.CHANGE_STATUS_ONLINE, this.verifyTokenMiddleware.authenTicate, this.usersController.changeStatusOffline);
-    app.put(BASE_ROUTE + Routes.UPDATE_INFOR, this.verifyTokenMiddleware.authenTicate, this.authMiddleware.checkTypeAccountChatAppById, this.usersController.updateInfo);
-    app.get(BASE_ROUTE + Routes.GET_AUTH_PAIR, this.verifyTokenMiddleware.authenTicate, this.authMiddleware.checkTypeAccountChatAppById, this.usersController.getAuthPair);
-    app.post(BASE_ROUTE + Routes.PAIR_AUTH, this.verifyTokenMiddleware.authenTicate, this.authMiddleware.checkTypeAccountChatAppById, this.usersController.pairAuth);
+    app.put(
+      BASE_ROUTE + Routes.UPDATE_INFOR,
+      this.verifyTokenMiddleware.authenTicate,
+      this.authMiddleware.checkTypeAccountChatAppById,
+      this.usersController.updateInfo
+    );
+    app.get(
+      BASE_ROUTE + Routes.GET_AUTH_PAIR,
+      this.verifyTokenMiddleware.authenTicate,
+      this.authMiddleware.checkTypeAccountChatAppById,
+      this.usersController.getAuthPair
+    );
+    app.post(
+      BASE_ROUTE + Routes.PAIR_AUTH,
+      this.verifyTokenMiddleware.authenTicate,
+      this.authMiddleware.checkTypeAccountChatAppById,
+      this.usersController.pairAuth
+    );
+    app.get(BASE_ROUTE + Routes.SEARCH, this.verifyTokenMiddleware.authenTicate, this.usersController.searchUsers);
   }
 }

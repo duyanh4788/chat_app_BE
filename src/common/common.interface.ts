@@ -41,6 +41,12 @@ export interface UserSchemaProps {
   userTypeCreateId?: String;
 }
 
+export interface FriendsSchemaProps {
+  _id?: String;
+  userId?: String;
+  isFriend?: Boolean;
+}
+
 export interface ResponseListMessages {
   listMessages: MessagesSchemaProps[];
   totalPage: number;

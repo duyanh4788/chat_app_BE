@@ -2,6 +2,7 @@ export const TitleModel = {
   LIST_MESSAGES: 'ListMessages',
   MESSAGES: 'Messages',
   USERS: 'Users',
+  FRIENDS: 'Friends',
   ROOM: 'Room',
   CONVERTSTATIONS: 'Convertstations',
   AUTHENTICATOR: 'Authenticators',

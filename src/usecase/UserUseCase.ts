@@ -105,6 +105,10 @@ export class UserUseCase {
     return await this.userDriversController.updateStatusCreate(userId, statusCreate);
   }
 
+  async searchUsers(query: string): Promise<UserSchemaProps[]> {
+    return await this.userDriversController.searchUsers(query);
+  }
+
   private configHashPass(user: UserSchemaProps) {
     const header = {
       _id: user._id,

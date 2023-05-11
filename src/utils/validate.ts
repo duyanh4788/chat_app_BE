@@ -7,6 +7,7 @@ export enum TypeOfValue {
 }
 
 export const isCheckedTypeValues = (value: any, types: TypeOfValue, noneChecked: boolean = true): boolean => {
+  if (!value) return false;
   const typeOf = Object.prototype.toString.call(value).slice(8, -1);
   switch (types) {
     case TypeOfValue.STRING:

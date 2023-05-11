@@ -8,6 +8,7 @@ import { nodeMailerServices } from '../services/nodemailer/MailServices';
 import { SendRespone } from '../services/success/success';
 import { StatusCreate, Type2FA } from '../common/common.enum';
 import { UserRequest, UserSchemaProps } from '../common/common.interface';
+import { TypeOfValue, isCheckedTypeValues } from '../utils/validate';
 
 export class UsersController {
   constructor(
@@ -35,6 +36,7 @@ export class UsersController {
     this.resetPassWord = this.resetPassWord.bind(this);
     this.getAuthPair = this.getAuthPair.bind(this);
     this.pairAuth = this.pairAuth.bind(this);
+    this.searchUsers = this.searchUsers.bind(this);
   }
 
   public async getListUser(req: Request, res: Response) {
@@ -321,6 +323,19 @@ export class UsersController {
       const { token } = req.body;
       await this.authenticatorUseCase.pairAuth(user._id as string, token);
       return new SendRespone({ message: 'update otp authpair successfully.' }).send(res);
+    } catch (error) {
+      return RestError.manageServerError(res, error, false);
+    }
+  }
+
+  public async searchUsers(req: Request, res: Response) {
+    try {
+      const { query } = req.params;
+      if (!isCheckedTypeValues(query, TypeOfValue.STRING) || query.length > 20) {
+        throw new RestError('please input text available', 404);
+      }
+      const users = await this.userUseCase.searchUsers(query);
+      return new SendRespone({ data: users, message: '' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
