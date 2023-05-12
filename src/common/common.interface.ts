@@ -35,6 +35,7 @@ export interface UserSchemaProps {
   isOnline?: Boolean;
   statusCreate?: StatusCreate;
   twofa?: boolean;
+  isFriend?: Boolean;
   type2FA?: Type2FA;
   userTypeCode?: String;
   userTypeCreate?: UserTypeCreate;
@@ -44,6 +45,7 @@ export interface UserSchemaProps {
 export interface FriendsSchemaProps {
   _id?: String;
   userId?: String;
+  friendId?: String;
   isFriend?: Boolean;
 }
 

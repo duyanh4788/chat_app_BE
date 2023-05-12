@@ -123,10 +123,46 @@ export class UserDriversController implements IUserDriversRepository {
   }
 
   async searchUsers(query: string): Promise<UserSchemaProps[]> {
-    const listUsers = await this.Users.find({
-      $or: [{ name: { $regex: query, $options: 'i' } }, { email: { $regex: query, $options: 'i' } }]
-    });
-    return listUsers.map((item: UserSchemaProps) => this.transFromData(item));
+    // const listUsers = await this.Users.find({
+    //   $or: [{ name: { $regex: query, $options: 'i' } }, { email: { $regex: query, $options: 'i' } }]
+    // });
+    // return listUsers.map((item: UserSchemaProps) => this.transFromData(item));
+
+    const listUsers = await this.Users.aggregate([
+      {
+        $match: {
+          $or: [{ name: { $regex: query, $options: 'i' } }, { email: { $regex: query, $options: 'i' } }]
+        }
+      },
+      {
+        $lookup: {
+          from: 'friends',
+          let: { userId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [{ $eq: ['$userId', '$$userId'] }]
+                }
+              }
+            }
+          ],
+          as: 'friends'
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          account: 1,
+          fullName: 1,
+          email: 1,
+          avatar: 1,
+          friends: { $cond: [{ $ne: ['$friends', []] }, true, false] }
+        }
+      }
+    ]);
+
+    return listUsers.filter((item) => !item.friends);
   }
 
   private transFromData(data: any) {

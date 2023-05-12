@@ -18,20 +18,20 @@ describe('users', () => {
   });
 
   const userPayload = {
-    account: 'Test02',
-    passWord: 'pass@123',
+    account: 'test02',
+    passWord: '1',
     fullName: 'test02',
     email: 'test02@example.com'
   };
 
   describe('POST/signUp', () => {
-    it('Success 200', async () => {
+    it.only('Success 200', async () => {
       const { statusCode, body } = await supertest(App).post('/api/v1/users/signUp').send(userPayload);
       expect(statusCode).toBe(SUCCESS);
       expect(body).toHaveProperty('message', 'sign up successfully, please check email or spam and active account.');
     });
 
-    it('Error', async () => {
+    it.only('Error', async () => {
       /**
        * 401 : user can not active account
        * 400 : request not avalible

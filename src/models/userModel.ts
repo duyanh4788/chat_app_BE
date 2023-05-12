@@ -34,14 +34,14 @@ export const UsersSchema = new Schema<UserSchemaProps>(
       default: 'USER'
     },
     userTypeCreate: {
-      type: Schema.Types.Mixed,
+      type: Schema.Types.Mixed
     },
     userTypeCreateId: {
       type: String,
       default: ''
     },
     statusCreate: {
-      type: Schema.Types.Mixed,
+      type: Schema.Types.Mixed
     },
     twofa: {
       type: Boolean,
