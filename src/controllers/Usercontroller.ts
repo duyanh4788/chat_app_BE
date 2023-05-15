@@ -334,8 +334,10 @@ export class UsersController {
       if (!isCheckedTypeValues(query, TypeOfValue.STRING) || query.length > 20) {
         throw new RestError('please input text available', 404);
       }
+      const { _id }: any = req.user;
       const users = await this.userUseCase.searchUsers(query);
-      return new SendRespone({ data: users, message: '' }).send(res);
+      const filter = users.filter((item) => item._id?.toString() !== _id);
+      return new SendRespone({ data: filter, message: '' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }

@@ -8,14 +8,12 @@ export const FriendsSchema = new Schema<FriendsSchemaProps>(
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'Users',
-      required: true,
-      unique: true
+      required: true
     },
     friendId: {
       type: Schema.Types.ObjectId,
       ref: 'Users',
-      required: true,
-      unique: true
+      required: true
     },
     isFriend: {
       type: Boolean,

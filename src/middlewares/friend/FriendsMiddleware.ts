@@ -18,5 +18,18 @@ export class FriendsMiddleware {
     }
     next();
   }
+
+  public checkId(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.body;
+    if (!isCheckedTypeValues(id, TypeOfValue.STRING)) {
+      return new SendRespone({
+        status: 'error',
+        code: 404,
+        message: 'id not available.'
+      }).send(res);
+    }
+    next();
+  }
+
   public async getFriendById(req: Request, res: Response, next: NextFunction) {}
 }

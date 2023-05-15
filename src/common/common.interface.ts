@@ -27,6 +27,7 @@ export interface DataMessages {
 
 export interface UserSchemaProps {
   _id?: String;
+  userId?: String;
   account?: String;
   passWord?: String;
   fullName?: String;
@@ -44,7 +45,8 @@ export interface UserSchemaProps {
 
 export interface FriendsSchemaProps {
   _id?: String;
-  userId?: String;
+  userId: string;
+  user?: UserSchemaProps;
   friendId?: String;
   isFriend?: Boolean;
 }

@@ -157,12 +157,18 @@ export class UserDriversController implements IUserDriversRepository {
           fullName: 1,
           email: 1,
           avatar: 1,
-          friends: { $cond: [{ $ne: ['$friends', []] }, true, false] }
+          isFriend: {
+            $cond: {
+              if: { $gt: [{ $size: '$friends' }, 0] },
+              then: { $arrayElemAt: ['$friends.isFriend', 0] },
+              else: undefined
+            }
+          }
         }
       }
     ]);
 
-    return listUsers.filter((item) => !item.friends);
+    return listUsers;
   }
 
   private transFromData(data: any) {

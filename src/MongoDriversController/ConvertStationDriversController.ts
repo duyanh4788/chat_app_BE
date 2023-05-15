@@ -21,6 +21,13 @@ export class ConvertStationDriversController implements IConvertStationDriversRe
     return this.transFromData(newConverStation);
   }
 
+  async findConverStationById(conversationId: string): Promise<any> {
+    const convertStation = await await this.ConvertStation.findOne({
+      _id: conversationId
+    });
+    return this.transFromData(convertStation);
+  }
+
   private transFromData(data: any) {
     if (!data) return;
     return data._doc;

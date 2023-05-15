@@ -10,7 +10,9 @@ const BASE_ROUTE = '/friends';
 
 enum Routes {
   ADD_FRIEND = '/add-friends',
-  GET_LIST_FRIENDS = '/get-list-friends'
+  GET_LIST_FRIENDS = '/get-list-friends',
+  ACCEPT_FRIENDS = '/accept-friends',
+  DECLINE_FRIENDS = '/decline-friends'
 }
 
 export class FriendsRoutes {
@@ -29,5 +31,17 @@ export class FriendsRoutes {
       this.friendsController.addFriends
     );
     app.get(BASE_ROUTE + Routes.GET_LIST_FRIENDS, this.verifyTokenMiddleware.authenTicate, this.friendsController.getListFriends);
+    app.post(
+      BASE_ROUTE + Routes.ACCEPT_FRIENDS,
+      this.verifyTokenMiddleware.authenTicate,
+      this.friendsMiddleware.checkId,
+      this.friendsController.acceptFriends
+    );
+    app.post(
+      BASE_ROUTE + Routes.DECLINE_FRIENDS,
+      this.verifyTokenMiddleware.authenTicate,
+      this.friendsMiddleware.checkId,
+      this.friendsController.declineFriends
+    );
   }
 }

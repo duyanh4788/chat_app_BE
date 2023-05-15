@@ -4,6 +4,9 @@ import { VerifyTokenMiddleware } from '../../middlewares/auth/VerifyTokenMiddlew
 import { MessagesMiddleware } from '../../middlewares/messages/MessageMiddleware';
 import { MessagesDriversController } from '../../MongoDriversController/MessagesDriversController';
 import { MessagesUseCase } from '../../usecase/MessagesUseCase';
+import { UserDriversController } from '../../MongoDriversController/UserDriversController';
+import { FriendsDriversController } from '../../MongoDriversController/FriendsDriversController';
+import { ConvertStationDriversController } from '../../MongoDriversController/ConvertStationDriversController';
 
 const BASE_ROUTE = '/messages';
 
@@ -16,9 +19,16 @@ enum Routes {
 export class MessagesRoutes {
   private verifyTokenMiddleware: VerifyTokenMiddleware = new VerifyTokenMiddleware();
   private messagesDriversController: MessagesDriversController = new MessagesDriversController();
+  private userDriversController: UserDriversController = new UserDriversController();
+  private convertStationDriversController: ConvertStationDriversController = new ConvertStationDriversController();
+  private friendsDriversController: FriendsDriversController = new FriendsDriversController();
   private messagesUseCase: MessagesUseCase = new MessagesUseCase(this.messagesDriversController);
   private messagesControler: MessageControler = new MessageControler(this.messagesUseCase);
-  private messagesMiddleware: MessagesMiddleware = new MessagesMiddleware();
+  private messagesMiddleware: MessagesMiddleware = new MessagesMiddleware(
+    this.userDriversController,
+    this.convertStationDriversController,
+    this.friendsDriversController
+  );
 
   public routes(app: Router): void {
     app.post(
