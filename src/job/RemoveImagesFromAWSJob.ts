@@ -11,13 +11,15 @@ export class RemoveImagesFromAWSJob extends BaseJob {
   }
 
   async job(): Promise<any> {
-    const t0 = performance.now();
-    try {
-      await this.aWS3Services.getListImagesAWS();
-    } catch (error) {
-      logger.error('RemoveImagesFromAWSJob error', { error: error });
+    if (process.env.STATUS_REMOVE_AWS !== 'OFF') {
+      const t0 = performance.now();
+      try {
+        await this.aWS3Services.getListImagesAWS();
+      } catch (error) {
+        logger.error('RemoveImagesFromAWSJob error', { error: error });
+      }
+      const t1 = performance.now();
+      logger.info(`RemoveImagesFromAWSJob: Ending RemoveImagesFromAWSJob`, { time: t1 - t0 });
     }
-    const t1 = performance.now();
-    logger.info(`RemoveImagesFromAWSJob: Ending RemoveImagesFromAWSJob`, { time: t1 - t0 });
   }
 }
