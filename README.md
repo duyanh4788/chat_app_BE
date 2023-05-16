@@ -1,5 +1,9 @@
 # chat_app_BE
 
+Account Test :
+test01/1
+test02/1
+
 Quick Install
 
 Make sure that you have Node.js v8.15.1 and npm v5 or above installed. Clone this repo using git clone --depth=1 <GIT_URL> <YOUR_PROJECT_NAME>
