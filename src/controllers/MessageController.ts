@@ -2,11 +2,13 @@ import { Request, Response } from 'express';
 import { RestError } from '../services/error/error';
 import { SendRespone } from '../services/success/success';
 import { MessagesUseCase } from '../usecase/MessagesUseCase';
+import { isDevelopment } from '../server';
 
 export class MessageControler {
   constructor(private messagesUseCase: MessagesUseCase) {
     this.postNewMessages = this.postNewMessages.bind(this);
     this.getListMessages = this.getListMessages.bind(this);
+    this.getAllListMessages = this.getAllListMessages.bind(this);
   }
 
   public async postNewMessages(req: Request, res: Response) {
@@ -23,8 +25,20 @@ export class MessageControler {
     try {
       const { conversationId, skip } = req.body;
       const listMessages = await this.messagesUseCase.getListMessages(conversationId, skip);
-      if (!listMessages)
-        return new SendRespone({ data: { listMessages: [], totalPage: 0, skip: 0 } }).send(res);
+      if (!listMessages) return new SendRespone({ data: { listMessages: [], totalPage: 0, skip: 0 } }).send(res);
+      return new SendRespone({ data: listMessages }).send(res);
+    } catch (error) {
+      return RestError.manageServerError(res, error, false);
+    }
+  }
+
+  public async getAllListMessages(req: Request, res: Response) {
+    try {
+      if (!isDevelopment) {
+        return new SendRespone({ message: 'api for developer' }).send(res);
+      }
+      const listMessages = await this.messagesUseCase.getAllListMessages();
+      if (!listMessages) return new SendRespone({ data: listMessages }).send(res);
       return new SendRespone({ data: listMessages }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);

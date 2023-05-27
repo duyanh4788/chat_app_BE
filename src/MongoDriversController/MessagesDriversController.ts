@@ -27,6 +27,11 @@ export class MessagesDriversController implements IMessagesDriversRepository {
     };
   }
 
+  async getAllListMessages(): Promise<MessagesSchemaProps[]> {
+    const listMessages = await this.Messages.find();
+    return listMessages.map((item) => this.transFromData(item));
+  }
+
   async createNewMessages(body: MessagesSchemaProps): Promise<MessagesSchemaProps> {
     const newMessage = new this.Messages(body);
     await newMessage.save();

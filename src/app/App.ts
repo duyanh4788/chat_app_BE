@@ -10,6 +10,7 @@ import MongoStore from 'connect-mongo';
 import { DataBase } from '../dbs/DataBase';
 import path from 'path';
 import fs from 'fs';
+import { RequestLimitMiddleware } from '../middlewares/requestlimit/RequestLimitMiddleware';
 
 const sessionOptions: SessionOptions = {
   secret: SECRETKEY,
@@ -26,6 +27,7 @@ class App {
   public App: express.Application;
   public ApiRouter: Router;
   private mainRoutes: MainRoutes = new MainRoutes();
+  private requestLimitMiddleware: RequestLimitMiddleware = new RequestLimitMiddleware();
 
   constructor() {
     this.ApiRouter = Router();
@@ -34,6 +36,7 @@ class App {
     this.configJson();
     this.mongooSetup();
     this.initStaticFile();
+    this.validateRequestLimits();
     this.App.use('/api/v1', this.ApiRouter);
     this.mainRoutes.routes(this.ApiRouter);
   }
@@ -82,6 +85,11 @@ class App {
     global._pathFile = path.join(__dirname, '../../public/images');
     global._pathFileImgTest = path.join(__dirname, '../../public/img-test');
     this.App.use('/public/images', express.static(_pathFile));
+  }
+
+  public validateRequestLimits() {
+    this.App.use(this.requestLimitMiddleware.validateRequestLimit);
+    setInterval(this.requestLimitMiddleware.processQueue, 1000);
   }
 }
 

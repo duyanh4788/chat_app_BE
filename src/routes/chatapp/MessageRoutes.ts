@@ -9,7 +9,8 @@ const BASE_ROUTE = '/messages';
 
 enum Routes {
   GET_LIST_MESSAGES = '/getListMessages',
-  NEW_MESSAGE = '/newMessage'
+  NEW_MESSAGE = '/newMessage',
+  GET_ALL_LIST_MESSAGES = '/get-all'
 }
 
 export class MessagesRoutes {
@@ -32,5 +33,6 @@ export class MessagesRoutes {
       this.messagesMiddleware.checkUserId,
       this.messagesControler.postNewMessages
     );
+    app.get(BASE_ROUTE + Routes.GET_ALL_LIST_MESSAGES, this.messagesControler.getAllListMessages);
   }
 }

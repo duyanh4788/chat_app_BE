@@ -13,4 +13,9 @@ export class MessagesUseCase {
     const listMessages = await this.messagesDriversRepository.getListMessages(conversationId, skip);
     return listMessages;
   }
+
+  async getAllListMessages() {
+    const listMessages = await this.messagesDriversRepository.getAllListMessages();
+    return listMessages;
+  }
 }
