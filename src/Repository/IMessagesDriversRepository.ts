@@ -6,4 +6,8 @@ export interface IMessagesDriversRepository {
   createNewMessages(body: MessagesSchemaProps): Promise<MessagesSchemaProps>;
 
   getAllListMessages(): Promise<MessagesSchemaProps[]>;
+
+  getMessagesById(): Promise<MessagesSchemaProps>;
+
+  updateMessagesById(num: number): Promise<void>;
 }

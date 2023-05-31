@@ -19,6 +19,10 @@ export const MessagesSchema = new Schema<MessagesSchemaProps>(
     text: {
       type: String,
       require: true
+    },
+    total: {
+      type: Number,
+      require: true
     }
   },
   { timestamps: true, versionKey: false }

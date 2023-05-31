@@ -37,9 +37,8 @@ export class MessageControler {
       if (!isDevelopment) {
         return new SendRespone({ message: 'api for developer' }).send(res);
       }
-      const listMessages = await this.messagesUseCase.getAllListMessages();
-      if (!listMessages) return new SendRespone({ data: listMessages }).send(res);
-      return new SendRespone({ data: listMessages }).send(res);
+      await this.messagesUseCase.getAllListMessages();
+      return new SendRespone({ message: 'update successfully' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }

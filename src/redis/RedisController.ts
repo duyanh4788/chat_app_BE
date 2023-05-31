@@ -8,9 +8,8 @@ interface RedisCache {
 }
 
 interface RedisModel {
-  keyModel: string;
   keyValue: string;
-  value?: Record<string, any>;
+  value?: any;
   timer?: number;
 }
 
@@ -22,10 +21,10 @@ class RedisController {
   constructor() {
     this.client = redis.createClient({ url: this.REDIS_URL });
     util.promisify(this.client.get).bind(this.client);
-    this.connectRedist();
+    this.connectRedis();
   }
 
-  async connectRedist() {
+  async connectRedis() {
     await this.client.connect();
   }
 
@@ -33,15 +32,20 @@ class RedisController {
     await this.client.quit();
   }
 
-  async getRedis({ keyModel, keyValue }: RedisModel) {
-    const keys = `${keyModel}:${keyValue}`;
-    const result = await this.client.get(keys);
+  async getRedis(keyValue: string) {
+    const result = await this.client.get(keyValue);
     return JSON.parse(result as any);
   }
 
-  async setRedis({ keyModel, keyValue, value }: RedisModel) {
-    const keys = `${keyModel}:${keyValue}`;
-    return await this.client.set(keys, JSON.stringify(value));
+  async setRedis({ keyValue, value }: RedisModel) {
+    await this.client.set(keyValue, JSON.stringify(value));
+    const result = await this.client.get(keyValue);
+    return JSON.parse(result as any);
+  }
+
+  async setIncreaseRedis(keyValue: any, value: any) {
+    await this.client.incrBy(keyValue, value);
+    return;
   }
 
   async getHasRedis({ hasKey, key }: RedisCache) {

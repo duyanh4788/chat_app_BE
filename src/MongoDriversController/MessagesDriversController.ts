@@ -32,6 +32,16 @@ export class MessagesDriversController implements IMessagesDriversRepository {
     return listMessages.map((item) => this.transFromData(item));
   }
 
+  async getMessagesById(): Promise<MessagesSchemaProps> {
+    const message = await this.Messages.findById('647206e925f962bf4fec4716');
+    return this.transFromData(message);
+  }
+
+  async updateMessagesById(num: number): Promise<void> {
+    await this.Messages.findByIdAndUpdate('647206e925f962bf4fec4716', { $inc: { total: num } });
+    return;
+  }
+
   async createNewMessages(body: MessagesSchemaProps): Promise<MessagesSchemaProps> {
     const newMessage = new this.Messages(body);
     await newMessage.save();
