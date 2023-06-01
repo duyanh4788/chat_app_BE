@@ -76,7 +76,7 @@ export class AWS3Services {
           params
         }).done();
 
-        const { Key } = result;
+        const { Key }: any = result;
         uploadResults.push(this.DOMAIN + Key);
       }
 

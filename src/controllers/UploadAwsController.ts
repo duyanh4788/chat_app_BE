@@ -14,10 +14,16 @@ export class UploadAwsController {
   public async uploadAWS(req: Request, res: Response) {
     try {
       if (!isDevelopment) {
-        if (!req.file.path) {
+        if (!req.files.length) {
           return new SendRespone({ status: 'error', code: 404, message: 'upload failed.' }).send(res);
         }
-        const url = process.env.END_POINT_PATH + req.file.path;
+        const fileList = req.files as Express.Multer.File[];
+        let url: string[] = [];
+        await Promise.all(
+          fileList.map(async (item) => {
+            url.push(process.env.END_POINT_PATH + item.path);
+          })
+        );
         return new SendRespone({ data: url, message: 'upload successfullly.' }).send(res);
       }
       const s3 = this.aws3.configAWS();
