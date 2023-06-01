@@ -21,7 +21,7 @@ export class UploadAwsController {
         return new SendRespone({ data: url, message: 'upload successfullly.' }).send(res);
       }
       const s3 = this.aws3.configAWS();
-      const upload = await this.aws3.uploadToAWSS3(s3, req.file as Express.Multer.File);
+      const upload = await this.aws3.uploadToAWSS3(s3, req.files as Express.Multer.File[]);
       return new SendRespone({ data: upload.data, message: 'upload successfullly.' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);

@@ -59,24 +59,30 @@ export class AWS3Services {
     }
   }
 
-  async uploadToAWSS3(s3: S3, fileData: Express.Multer.File): Promise<any> {
-    const params = {
-      Bucket: this.BUCKET,
-      Key: `img/${Date.now()}.${fileData.mimetype.split('/')[1]}`,
-      Body: fileData.buffer,
-      ContentType: fileData.mimetype
-    };
-    fileData.originalname;
-
+  async uploadToAWSS3(s3: S3, fileData: Express.Multer.File[]): Promise<any> {
     try {
-      const result = await new Upload({
-        client: s3,
-        params
-      }).done();
-      const { Key }: any = result;
-      return { success: true, data: this.DOMAIN + Key };
+      const uploadResults = [];
+
+      for (const file of fileData) {
+        const params = {
+          Bucket: this.BUCKET,
+          Key: `img/${Date.now()}.${file.mimetype.split('/')[1]}`,
+          Body: file.buffer,
+          ContentType: file.mimetype
+        };
+
+        const result = await new Upload({
+          client: s3,
+          params
+        }).done();
+
+        const { Key } = result;
+        uploadResults.push(this.DOMAIN + Key);
+      }
+
+      return { success: true, data: uploadResults };
     } catch (error) {
-      throw new RestError('upload failed', 400);
+      throw new RestError('Upload failed', 400);
     }
   }
 

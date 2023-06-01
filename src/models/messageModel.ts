@@ -17,7 +17,7 @@ export const MessagesSchema = new Schema<MessagesSchemaProps>(
       require: true
     },
     text: {
-      type: String,
+      type: Schema.Types.Mixed,
       require: true
     }
   },

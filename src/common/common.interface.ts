@@ -51,7 +51,7 @@ export interface MessagesSchemaProps {
   conversationId: String;
   senderId: String;
   reciverId: String;
-  text: String;
+  text: any;
 }
 
 export interface AuthenticatorSchemaProps {
