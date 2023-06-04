@@ -3,22 +3,22 @@ import { redisController } from '../../redis/RedisController';
 import { SendRespone } from '../../services/success/success';
 
 export class RequestLimitMiddleware {
-  private MAX_REQUEST: number = process.env.MAX_REQUEST as unknown as number;
-  private LIMIT_REQUEST: number = process.env.LIMIT_REQUEST as unknown as number;
-  private LIMIT_TIMER: number = process.env.LIMIT_TIMER as unknown as number;
+  private MAX_REQUEST: number = parseInt(process.env.MAX_REQUEST || '0');
+  private LIMIT_REQUEST: number = parseInt(process.env.LIMIT_REQUEST || '0');
+  private LIMIT_TIMER: number = parseInt(process.env.LIMIT_TIMER || '0');
   private REQ_QUEUE: any[] = [];
 
   public validateRequestLimits = async (req: Request, res: Response, next: NextFunction) => {
     const ip: any = req.headers['x-forwarded-for']?.toString() || req.socket.remoteAddress?.toString();
-    let getIp = await redisController.getRedis(ip);
-    if (getIp === this.LIMIT_REQUEST) {
-      return new SendRespone({ code: 401, message: 'request limit rate, please try again after some minutes!' }).send(res);
-    }
+    let getIp = await redisController.checkExitsKey(ip);
     if (!getIp) {
-      getIp = await redisController.setRedis({ keyValue: ip, value: 1 });
+      getIp = await redisController.setNXRedis({ keyValue: ip, value: 0 });
       await redisController.setExpire(ip, this.LIMIT_TIMER);
     }
-    await redisController.setIncreaseRedis(ip, 1);
+    getIp = await redisController.setIncreaseRedis(ip, 1);
+    if (getIp > this.LIMIT_REQUEST) {
+      return new SendRespone({ code: 401, message: 'request limit rate, please try again after some minutes!' }).send(res);
+    }
     next();
   };
 

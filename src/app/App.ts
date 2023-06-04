@@ -36,8 +36,8 @@ class App {
     this.configJson();
     this.mongooSetup();
     this.initStaticFile();
-    this.validateRequestLimits();
-    this.App.use('/api/v1', this.ApiRouter);
+    this.interValQueue();
+    this.App.use('/api/v1', this.requestLimitMiddleware.validateRequestLimits, this.requestLimitMiddleware.queueRequestLimits, this.ApiRouter);
     this.mainRoutes.routes(this.ApiRouter);
   }
 
@@ -105,9 +105,7 @@ class App {
     this.App.use('/data_publish/videos', express.static(_pathFileVideo));
   }
 
-  public validateRequestLimits() {
-    this.App.use(this.requestLimitMiddleware.validateRequestLimits);
-    this.App.use(this.requestLimitMiddleware.queueRequestLimits);
+  public interValQueue() {
     setInterval(this.requestLimitMiddleware.processQueue, 1000);
   }
 }

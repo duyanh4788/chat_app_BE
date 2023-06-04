@@ -14,8 +14,8 @@ const userSockets = new Map();
 export class WebSocket {
   private messagesDriversController: MessagesDriversController = new MessagesDriversController();
   private userDriversController: UserDriversController = new UserDriversController();
-  private LIMIT_SENDMESSAGES: number = process.env.LIMIT_SENDMESSAGES as unknown as number;
-  private LIMIT_TIMER: number = process.env.LIMIT_TIMER as unknown as number;
+  private LIMIT_SENDMESSAGES: number = parseInt(process.env.LIMIT_REQUEST || '0');
+  private LIMIT_TIMER: number = parseInt(process.env.LIMIT_TIMER || '0');
 
   constructor() {
     this.messagesDriversController.createNewMessages = this.messagesDriversController?.createNewMessages.bind(this);
@@ -112,14 +112,14 @@ export class WebSocket {
 
   private async validateMessagetLimits(userId: string) {
     let getUserId = await redisController.getRedis(userId);
-    if (getUserId === this.LIMIT_SENDMESSAGES) {
-      return false;
-    }
     if (!getUserId) {
-      getUserId = await redisController.setRedis({ keyValue: userId, value: 1 });
+      getUserId = await redisController.setNXRedis({ keyValue: userId, value: 1 });
       await redisController.setExpire(userId, this.LIMIT_TIMER);
     }
-    await redisController.setIncreaseRedis(userId, 1);
+    getUserId = await redisController.setIncreaseRedis(userId, 1);
+    if (getUserId > this.LIMIT_SENDMESSAGES) {
+      return false;
+    }
     return true;
   }
 }

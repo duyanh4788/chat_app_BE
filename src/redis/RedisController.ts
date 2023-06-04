@@ -43,14 +43,25 @@ class RedisController {
     return JSON.parse(result as any);
   }
 
+  async setNXRedis({ keyValue, value }: RedisModel) {
+    await this.client.setNX(keyValue, JSON.stringify(value));
+    const result = await this.client.get(keyValue);
+    return JSON.parse(result as any);
+  }
+
   async setExpire(keyValue: string, timer: number) {
     await this.client.expire(keyValue, timer);
     return;
   }
 
+  async checkExitsKey(keyValue: string) {
+    const result = await this.client.exists(keyValue);
+    return JSON.parse(result as any);
+  }
+
   async setIncreaseRedis(keyValue: any, value: any) {
-    await this.client.incrBy(keyValue, value);
-    // return;
+    const result = await this.client.incrBy(keyValue, value);
+    return JSON.parse(result as any);
   }
 
   async getHasRedis({ hasKey, key }: RedisCache) {
