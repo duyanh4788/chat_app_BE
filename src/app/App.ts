@@ -47,6 +47,7 @@ class App {
   }
 
   public configCors(): void {
+    this.App.enable('trust proxy');
     this.App.use(seesion(sessionOptions));
     this.App.use(
       cors({
