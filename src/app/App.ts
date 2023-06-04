@@ -106,7 +106,8 @@ class App {
   }
 
   public validateRequestLimits() {
-    this.App.use(this.requestLimitMiddleware.validateRequestLimit);
+    this.App.use(this.requestLimitMiddleware.validateRequestLimits);
+    this.App.use(this.requestLimitMiddleware.queueRequestLimits);
     setInterval(this.requestLimitMiddleware.processQueue, 1000);
   }
 }

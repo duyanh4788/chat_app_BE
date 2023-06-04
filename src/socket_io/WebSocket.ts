@@ -8,6 +8,7 @@ import { UserDriversController } from '../MongoDriversController/UserDriversCont
 import { changeStatusIsNewMsg, changeStatusLogin, renderMessages } from '../utils/createMessages';
 import { createUser, getUserById, removeUserList } from '../utils/createUsers';
 import { DataMessages, InfoUser } from '../common/common.interface';
+import { redisController } from '../redis/RedisController';
 
 const userSockets = new Map();
 export class WebSocket {
@@ -46,6 +47,9 @@ export class WebSocket {
       /** Connect **/
       socket.on(SOCKET_COMMIT.JOIN_ROOM, (infoUser: InfoUser) => {
         const listUser = createUser(socket, infoUser);
+        if (!listUser) {
+          socket.to(infoUser._id).emit(SOCKET_COMMIT.DISCONNECTED, { reason: 'conected failded' });
+        }
         if (listUser && listUser.length) {
           const isUser = listUser.find(({ _id }) => _id === infoUser._id) as InfoUser;
           const currentUserSocketId = userSockets.get(infoUser._id);
@@ -59,9 +63,19 @@ export class WebSocket {
         }
       });
       /** send messages **/
-      socket.on(SOCKET_COMMIT.SEND_MESSAGE, (infoUser: InfoUser, dataMessages: DataMessages, callBackAcknow: Function) => {
+      socket.on(SOCKET_COMMIT.SEND_MESSAGE, async (infoUser: InfoUser, dataMessages: DataMessages, callBackAcknow: Function) => {
         const userBySocketId = getUserById(infoUser._id);
-        if (userBySocketId) {
+        if (!userBySocketId) {
+          socket.to(userBySocketId).emit(SOCKET_COMMIT.DISCONNECTED, { reason: 'Another tab connected' });
+        }
+        const isLimit = await this.validateMessagetLimits(userBySocketId._id);
+        if (!isLimit) {
+          return socket.emit(SOCKET_COMMIT.SEND_MESSAGE_NOTIFY, {
+            messages: 'you has limit send messages, please try again after a few minutes',
+            code: 400
+          });
+        }
+        if (isLimit && userBySocketId) {
           const filter = new Filter();
           filter.addWords(...TEXT_BAD);
           if (filter.isProfane(dataMessages.text)) {
@@ -79,6 +93,9 @@ export class WebSocket {
       });
       /** disconnect **/
       socket.on(SOCKET_COMMIT.DISCONNECTED, (infoUser: InfoUser) => {
+        if (!infoUser) {
+          socket.disconnect();
+        }
         if (infoUser && infoUser._id) {
           const userBySocketId = getUserById(infoUser._id);
           if (userBySocketId) {
@@ -89,5 +106,18 @@ export class WebSocket {
         }
       });
     });
+  }
+
+  private async validateMessagetLimits(userId: string) {
+    let getUserId = await redisController.getRedis(userId);
+    if (getUserId === 50) {
+      return false;
+    }
+    if (!getUserId) {
+      getUserId = await redisController.setRedis({ keyValue: userId, value: 1 });
+      await redisController.setExpire(userId, 60);
+    }
+    await redisController.setIncreaseRedis(userId, 1);
+    return true;
   }
 }
