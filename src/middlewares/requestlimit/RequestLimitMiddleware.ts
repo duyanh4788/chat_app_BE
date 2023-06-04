@@ -5,7 +5,7 @@ export class RequestLimitMiddleware {
   private REQ_QUEUE: any[] = [];
 
   public validateRequestLimit = (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.ip);
+    console.log(req.socket.remoteAddress);
     if (this.MAX_REQUEST > 0) {
       --this.MAX_REQUEST;
       next();
