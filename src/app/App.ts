@@ -58,11 +58,11 @@ class App {
   }
 
   public configJson(): void {
+    this.App.use(cookieParser());
     this.App.use(bodyParser.json());
     this.App.use(bodyParser.urlencoded({ extended: false }));
     this.App.use(express.json({ limit: '50mb' }));
     this.App.use(express.urlencoded({ limit: '50mb', extended: false }));
-    this.App.use(cookieParser());
     this.App.use(logger('dev'));
   }
 

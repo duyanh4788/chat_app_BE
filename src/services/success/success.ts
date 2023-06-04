@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { isDevelopment } from '../../server';
 
 export enum TypeResponse {
   SUCCESS = 'success',
@@ -28,13 +29,7 @@ class SuccessResponse {
   public message: string;
   public option: any;
 
-  constructor({
-    status = TypeResponse.SUCCESS as string,
-    code = StatusCode.SUCCESS,
-    data = null,
-    message = '',
-    option = null
-  }) {
+  constructor({ status = TypeResponse.SUCCESS as string, code = StatusCode.SUCCESS, data = null, message = '', option = null }) {
     this.status = status;
     this.code = code || 200;
     this.data = data || null;
@@ -48,6 +43,10 @@ class SuccessResponse {
 
   redirect(res: Response) {
     return res.redirect(this.data);
+  }
+
+  setCookie(res: Response) {
+    res.cookie('userId', this.option, { maxAge: 86400000, sameSite: 'lax', httpOnly: true, secure: isDevelopment });
   }
 }
 

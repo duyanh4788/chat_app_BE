@@ -146,6 +146,7 @@ export class UsersController {
           }).send(res);
         }
       }
+      new SendRespone({ option: userSignIn._id?.toString() }).setCookie(res);
       return new SendRespone({ data: userSignIn, message: 'login successfuly' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
@@ -158,6 +159,7 @@ export class UsersController {
       if (!authCode || authCode.length !== 6 || typeof authCode !== 'string') throw new RestError('code invalid.', 404);
       const userId = await this.authenticatorUseCase.findAuthCodeAndRemove(authCode as string);
       const userInfo = await this.userUseCase.userSignInWithToken(userId);
+      new SendRespone({ option: userInfo._id }).setCookie(res);
       return new SendRespone({ code: 200, data: userInfo, message: 'login successfully.' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
@@ -170,6 +172,7 @@ export class UsersController {
       if (!otp || otp.length !== 6 || typeof otp !== 'string' || !userId) throw new RestError('otp invalid.', 404);
       await this.authenticatorUseCase.pairAuth(userId, otp);
       const userInfo = await this.userUseCase.userSignInWithToken(userId);
+      new SendRespone({ option: userInfo._id }).setCookie(res);
       return new SendRespone({ code: 200, data: userInfo, message: 'login successfully.' }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);

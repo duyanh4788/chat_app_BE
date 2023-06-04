@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { redisController } from '../../redis/RedisController';
 import { SendRespone } from '../../services/success/success';
+import { isDevelopment } from '../../server';
 
 export class RequestLimitMiddleware {
   private MAX_REQUEST: number = parseInt(process.env.MAX_REQUEST || '0');
@@ -9,16 +10,18 @@ export class RequestLimitMiddleware {
   private REQ_QUEUE: any[] = [];
 
   public validateRequestLimits = async (req: Request, res: Response, next: NextFunction) => {
-    const ip = String(req.headers['x-forwarded-for'] || req.connection.remoteAddress || '')
-      .split(',')[0]
-      .trim();
-    console.log(ip);
-    let getIp = await redisController.checkExitsKey(ip);
-    if (!getIp) {
-      getIp = await redisController.setNXRedis({ keyValue: ip, value: 0 });
-      await redisController.setExpire(ip, this.LIMIT_TIMER);
+    if (!req.cookies.userId) {
+      return new SendRespone({ code: 401, message: 'request not available!' }).send(res);
     }
-    getIp = await redisController.setIncreaseRedis(ip, 1);
+    const ip: any = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    const splitIp = isDevelopment ? ip : `${ip.split(':')[0]}_${req.cookies.userId}`;
+    console.log(splitIp);
+    let getIp = await redisController.checkExitsKey(splitIp);
+    if (!getIp) {
+      getIp = await redisController.setNXRedis({ keyValue: splitIp, value: 0 });
+      await redisController.setExpire(splitIp, this.LIMIT_TIMER);
+    }
+    getIp = await redisController.setIncreaseRedis(splitIp, 1);
     if (getIp > this.LIMIT_REQUEST) {
       return new SendRespone({ code: 401, message: 'request limit rate, please try again after some minutes!' }).send(res);
     }
