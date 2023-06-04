@@ -77,7 +77,7 @@ export class MulterMiddleware {
       if (file.mimetype === 'video/mp4') {
         ffmpeg.setFfmpegPath(ffmpegPath.path);
         const tempFilePath = `${Date.now()}.mp4`;
-        fs.writeFileSync(filePath, file.buffer);
+        fs.writeFileSync(tempFilePath, file.buffer);
         await new Promise<void>((resolve, reject) => {
           ffmpeg(tempFilePath)
             .size('640x480')
