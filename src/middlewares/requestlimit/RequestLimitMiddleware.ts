@@ -9,8 +9,10 @@ export class RequestLimitMiddleware {
   private REQ_QUEUE: any[] = [];
 
   public validateRequestLimits = async (req: Request, res: Response, next: NextFunction) => {
-    const ip: any = req.headers['x-forwarded-for']?.toString() || req.socket.remoteAddress?.toString();
-    console.log(ip.split(':'));
+    const ip = String(req.headers['x-forwarded-for'] || req.connection.remoteAddress || '')
+      .split(',')[0]
+      .trim();
+    console.log(ip);
     let getIp = await redisController.checkExitsKey(ip);
     if (!getIp) {
       getIp = await redisController.setNXRedis({ keyValue: ip, value: 0 });
