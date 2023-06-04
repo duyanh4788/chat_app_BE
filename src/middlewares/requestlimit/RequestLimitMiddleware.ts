@@ -10,6 +10,7 @@ export class RequestLimitMiddleware {
 
   public validateRequestLimits = async (req: Request, res: Response, next: NextFunction) => {
     const ip: any = req.headers['x-forwarded-for']?.toString() || req.socket.remoteAddress?.toString();
+    console.log(ip.split(':'));
     let getIp = await redisController.checkExitsKey(ip);
     if (!getIp) {
       getIp = await redisController.setNXRedis({ keyValue: ip, value: 0 });
