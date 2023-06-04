@@ -10,9 +10,6 @@ export class RequestLimitMiddleware {
   private REQ_QUEUE: any[] = [];
 
   public validateRequestLimits = async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.cookies.userId) {
-      return new SendRespone({ code: 401, message: 'request not available!' }).send(res);
-    }
     const ip: any = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const splitIp = isDevelopment ? ip : `${ip.split(':')[0]}_${req.cookies.userId}`;
     console.log(splitIp);
