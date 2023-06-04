@@ -20,7 +20,7 @@ export class RequestLimitMiddleware {
     }
     getIp = await redisController.setIncreaseRedis(splitIp, 1);
     if (getIp > this.LIMIT_REQUEST) {
-      return new SendRespone({ code: 401, message: 'request limit rate, please try again after some minutes!' }).send(res);
+      return new SendRespone({ code: 402, message: 'request limit rate, please try again after some minutes!' }).send(res);
     }
     next();
   };
