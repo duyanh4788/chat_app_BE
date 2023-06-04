@@ -21,6 +21,6 @@ export class RestError extends Error {
         success
       });
     }
-    return res.status(500).json({ status: 'error', message: 'Internal error' });
+    return res.status(500).json({ code: 500, status: 'error', message: 'Internal error' });
   }
 }
