@@ -4,17 +4,19 @@ import { SendRespone } from '../../services/success/success';
 
 export class RequestLimitMiddleware {
   private MAX_REQUEST: number = process.env.MAX_REQUEST as unknown as number;
+  private LIMIT_REQUEST: number = process.env.LIMIT_REQUEST as unknown as number;
+  private LIMIT_TIMER: number = process.env.LIMIT_TIMER as unknown as number;
   private REQ_QUEUE: any[] = [];
 
   public validateRequestLimits = async (req: Request, res: Response, next: NextFunction) => {
     const ip: any = req.headers['x-forwarded-for']?.toString() || req.socket.remoteAddress?.toString();
     let getIp = await redisController.getRedis(ip);
-    if (getIp === 20) {
+    if (getIp === this.LIMIT_REQUEST) {
       return new SendRespone({ code: 401, message: 'request limit rate, please try again after some minutes!' }).send(res);
     }
     if (!getIp) {
       getIp = await redisController.setRedis({ keyValue: ip, value: 1 });
-      await redisController.setExpire(ip, 60);
+      await redisController.setExpire(ip, this.LIMIT_TIMER);
     }
     await redisController.setIncreaseRedis(ip, 1);
     next();
