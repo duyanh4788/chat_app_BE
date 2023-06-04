@@ -12,7 +12,7 @@
     "dev": "node -r ./node_modules/.bin/ts-node-dev --respawn --transpile-only src/server.ts",
     "start": "node dist/server.js",
     "watch-ts": "tsc -w",
-    "prod": "npm run build && npm run start",
+    "prod": "git fetch && git reset --hard origin/main && npm run build && rm -rf ../chat_app_FE/api/ && cp -r dist/ ../chat_app_FE/api && pm2 kill && pm2 start pm2.config.js",
     "eject": "nodejs-scripts eject",
     "lint": "eslint .",
     "lint:fix": "eslint --fix",
