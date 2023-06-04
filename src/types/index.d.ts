@@ -7,7 +7,8 @@ declare global {
     }
   }
 
-  var _pathFile: string;
+  var _pathFileImages: string;
+  var _pathFileVideo: string;
   var _pathFileImgTest: string;
 }
 

@@ -2,11 +2,14 @@ import multer, { FileFilterCallback } from 'multer';
 import { Request, Response, NextFunction } from 'express';
 import sharp from 'sharp';
 import path from 'path';
+import fs from 'fs';
 import { SendRespone } from '../../services/success/success';
 import { isDevelopment } from '../../server';
+import ffmpegPath from '@ffmpeg-installer/ffmpeg';
+import ffmpeg from 'fluent-ffmpeg';
 export class MulterMiddleware {
-  private fileFilter = (req: Request, file: Express.Multer.File, callback: FileFilterCallback) => {
-    const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+  private fileImagesFilter = (req: Request, file: Express.Multer.File, callback: FileFilterCallback) => {
+    const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'video/mp4'];
     if (allowedMimeTypes.includes(file.mimetype)) {
       callback(null, true);
     } else {
@@ -14,14 +17,14 @@ export class MulterMiddleware {
     }
   };
 
-  private multerMiddleware = multer({
+  private multerImagesMiddleware = multer({
     storage: multer.memoryStorage(),
-    fileFilter: this.fileFilter,
+    fileFilter: this.fileImagesFilter,
     limits: { fileSize: 10 * 1024 * 1024 }
   }).array('file', 5);
 
   public uploadMulter = (req: Request, res: Response, next: NextFunction) => {
-    this.multerMiddleware(req, res, async (err: any) => {
+    this.multerImagesMiddleware(req, res, async (err: any) => {
       if ((!req.file && !req.files) || (req.files && !Array.isArray(req.files))) {
         return new SendRespone({
           status: 'error',
@@ -49,45 +52,71 @@ export class MulterMiddleware {
         return new SendRespone({ status: 'error', code: 500, message: 'Internal error!' }).send(res);
       }
       if (req.file) {
-        this.configFile(req.file);
+        this.configFileImages(req.file, next);
       }
 
       if (!req.file) {
         for (let i = 0; i < req.files.length; i++) {
           const file = req.files[i];
-          await this.configFile(file);
+          await this.configFileImages(file, next);
         }
       }
       next();
     });
   };
 
-  private async configFile(file: Express.Multer.File) {
-    if (!isDevelopment) {
+  private async configFileImages(file: Express.Multer.File, next: NextFunction) {
+    if (isDevelopment) {
       const fileName = `${Date.now()}.${file.mimetype.split('/')[1]}`;
-      const filePath = this.filepath(`${_pathFile}/${fileName}`);
-      await sharp(file.buffer)
-        .resize({
-          width: 800,
-          height: 800,
-          fit: sharp.fit.inside,
-          withoutEnlargement: true
-        })
-        .toFile(filePath);
-      file.path = fileName;
+      const filePath = this.filepath(`${file.mimetype === 'video/mp4' ? _pathFileVideo : _pathFileImages}/${fileName}`);
+      if (file.mimetype === 'video/mp4') {
+        ffmpeg.setFfmpegPath(ffmpegPath.path);
+        try {
+          const tempFilePath = `${Date.now()}.mp4`;
+          fs.writeFileSync(tempFilePath, file.buffer);
+          await new Promise<void>((resolve, reject) => {
+            ffmpeg(tempFilePath)
+              .size('640x480')
+              .on('end', () => {
+                fs.unlinkSync(tempFilePath);
+                resolve();
+              })
+              .on('error', (err) => {
+                fs.unlinkSync(tempFilePath);
+                reject(err);
+              })
+              .saveToFile(filePath);
+          });
+          file.path = fileName;
+        } catch (err) {
+          next('can not upload video');
+        }
+      } else {
+        await sharp(file.buffer)
+          .resize({
+            width: 800,
+            height: 800,
+            fit: sharp.fit.inside,
+            withoutEnlargement: true
+          })
+          .toFile(filePath);
+        file.path = fileName;
+      }
     } else {
-      const resize = await sharp(file.buffer)
-        .resize({
-          width: 800,
-          height: 800,
-          fit: sharp.fit.inside,
-          withoutEnlargement: true
-        })
-        .toBuffer();
-
-      file.buffer = resize;
+      if (file.mimetype === 'video/mp4') {
+        const resize = await sharp(file.buffer)
+          .resize({
+            width: 800,
+            height: 800,
+            fit: sharp.fit.inside,
+            withoutEnlargement: true
+          })
+          .toBuffer();
+        file.buffer = resize;
+      }
     }
   }
+
   private filepath(fileName: string) {
     return path.resolve(fileName);
   }

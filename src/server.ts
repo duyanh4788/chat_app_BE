@@ -7,14 +7,14 @@ import * as http from 'http';
 import { WebSocket } from './socket_io/WebSocket';
 import { RemoveImagesFromAWSJob } from './job/RemoveImagesFromAWSJob';
 import { Connections } from './monitor/Connecttions';
-import { RemoveImagesLocalJob } from './job/RemoveImagesLocalJob';
+import { RemoveFileLocalJob } from './job/RemoveImagesLocalJob';
 import { Server } from 'socket.io';
 
 export const isDevelopment = process.env.NODE_ENV === 'development' ? true : false;
 
 // ********************* BaseJob *********************//
 new RemoveImagesFromAWSJob().runJob();
-new RemoveImagesLocalJob().runJob();
+new RemoveFileLocalJob().runJob();
 
 // ********************* monitor *********************//
 new Connections().readMonitorServer();

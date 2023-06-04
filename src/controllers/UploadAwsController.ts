@@ -13,7 +13,7 @@ export class UploadAwsController {
 
   public async uploadAWS(req: Request, res: Response) {
     try {
-      if (!isDevelopment) {
+      if (isDevelopment) {
         if (!req.files.length) {
           return new SendRespone({ status: 'error', code: 404, message: 'upload failed.' }).send(res);
         }
@@ -21,7 +21,12 @@ export class UploadAwsController {
         let url: string[] = [];
         await Promise.all(
           fileList.map(async (item) => {
-            url.push(process.env.END_POINT_PATH + item.path);
+            if (item.path.includes('.mp4')) {
+              url.push(process.env.END_POINT_VIDEOS_PATH + item.path);
+            }
+            if (!item.path.includes('.mp4')) {
+              url.push(process.env.END_POINT_IMAGES_PATH + item.path);
+            }
           })
         );
         return new SendRespone({ data: url, message: 'upload successfullly.' }).send(res);
@@ -38,8 +43,8 @@ export class UploadAwsController {
     try {
       const { idImage } = req.body;
       if (!idImage) throw new RestError('images not valid.', 404);
-      if (!isDevelopment) {
-        this.uploadFilesUseCase.removeImageBucketAWS(idImage);
+      if (isDevelopment) {
+        this.uploadFilesUseCase.removeFileLocal(idImage);
         return new SendRespone({ message: 'remove successfullly.' }).send(res);
       }
       const s3 = this.aws3.configAWS();

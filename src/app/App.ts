@@ -66,14 +66,29 @@ class App {
   }
 
   public initStaticFile() {
-    const images = '../../public/images';
-    const imagesTest = '../../public/img-test';
+    const publics = path.join(__dirname, '../../data_publish');
+    const images = path.join(__dirname, '../../data_publish/images');
+    const videos = path.join(__dirname, '../../data_publish/videos');
+    const imagesTest = path.join(__dirname, '../../data_publish/img-test');
+
+    if (!fs.existsSync(publics)) {
+      fs.mkdirSync(publics, { recursive: true });
+      console.log(`${publics} created successfully!`);
+    } else {
+      console.log(`${publics} already exists!`);
+    }
 
     if (!fs.existsSync(images)) {
       fs.mkdirSync(images, { recursive: true });
       console.log(`${images} created successfully!`);
     } else {
       console.log(`${images} already exists!`);
+    }
+    if (!fs.existsSync(videos)) {
+      fs.mkdirSync(videos, { recursive: true });
+      console.log(`${videos} created successfully!`);
+    } else {
+      console.log(`${videos} already exists!`);
     }
     if (!fs.existsSync(imagesTest)) {
       fs.mkdirSync(imagesTest, { recursive: true });
@@ -82,9 +97,11 @@ class App {
       console.log(`${imagesTest} already exists!`);
     }
 
-    global._pathFile = path.join(__dirname, '../../public/images');
-    global._pathFileImgTest = path.join(__dirname, '../../public/img-test');
-    this.App.use('/public/images', express.static(_pathFile));
+    global._pathFileImages = path.join(__dirname, '../../data_publish/images');
+    global._pathFileVideo = path.join(__dirname, '../../data_publish/videos');
+    global._pathFileImgTest = path.join(__dirname, '../../data_publish/img-test');
+    this.App.use('/data_publish/images', express.static(_pathFileImages));
+    this.App.use('/data_publish/videos', express.static(_pathFileVideo));
   }
 
   public validateRequestLimits() {
