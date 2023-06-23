@@ -62,7 +62,7 @@ export class NodeMailerServices implements INodeMailerServices {
                 <body>
                     <div style='Margin: 0 auto;min-width: 320px;max-width: 500px;'>
                         <div style='background-color:#55abce; color: white; text-align: center; padding:10px 0;'>
-                            <p style='line-height: 140%; text-align: center;font-size: 20px;font-weight: bolder'>Verify Your ChatApp Account</p>
+                            <p style='line-height: 140%; text-align: center;font-size: 20px;font-weight: bolder'>Welcome to ChatApp By duyanh4788</p>
                         </div>
                 
                         <div style='overflow-wrap: break-word; background-color:#ffffff; line-height: 140%; padding: 30px;'>
