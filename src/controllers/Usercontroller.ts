@@ -288,7 +288,7 @@ export class UsersController {
       if (!authCode || !newPassWord) throw new RestError('request not avalible.', 404);
       const user = await this.checkUserByEmail(req);
       await this.authenticatorUseCase.findAuthCodeAndRemove(authCode);
-      await this.userUseCase.updatePassWord(user._id as string, newPassWord);
+      await this.userUseCase.updatePassWord(user, newPassWord);
       await session.commitTransaction();
       session.endSession();
       return new SendRespone({ message: 'upadte password successfully.' }).send(res);

@@ -85,10 +85,10 @@ export class UserUseCase {
     return await this.userDriversController.updateTwoFAByApp(userId);
   }
 
-  async updatePassWord(userId: string, newPassWord: string): Promise<void> {
+  async updatePassWord(user: UserSchemaProps, newPassWord: string): Promise<void> {
     const salt = bcrypt.genSaltSync(10);
     const hashPassWord = bcrypt.hashSync(newPassWord, salt);
-    return await this.userDriversController.updatePassWord(userId, hashPassWord);
+    return await this.userDriversController.updatePassWord(user, hashPassWord);
   }
 
   async profileFacebook(body: UserSchemaProps) {

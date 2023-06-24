@@ -114,11 +114,13 @@ export class UserDriversController implements IUserDriversRepository {
     return;
   }
 
-  async updatePassWord(userId: string, newPassWord: string): Promise<void> {
-    await this.Users.findByIdAndUpdate(userId, {
+  async updatePassWord(user: UserSchemaProps, newPassWord: string): Promise<void> {
+    await this.Users.findByIdAndUpdate(user._id, {
       passWord: newPassWord
     });
-    await redisController.clearHashRedis(userId);
+    await redisController.clearHashRedis(String(user._id));
+    await redisController.clearHashRedis(user?.account as string);
+    await redisController.clearHashRedis(user?.email as string);
     return;
   }
 

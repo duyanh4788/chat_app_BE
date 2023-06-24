@@ -71,7 +71,7 @@ export class MulterMiddleware {
   };
 
   private async configFileImages(file: Express.Multer.File, res: Response) {
-    if (!isDevelopment) {
+    if (true) {
       const fileName = `${Date.now()}.${file.mimetype.split('/')[1]}`;
       const filePath = this.filepath(`${file.mimetype === 'video/mp4' ? _pathFileVideo : _pathFileImages}/${fileName}`);
       if (file.mimetype === 'video/mp4') {

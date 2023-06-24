@@ -13,7 +13,7 @@ export class UploadAwsController {
 
   public async uploadAWS(req: Request, res: Response) {
     try {
-      if (!isDevelopment) {
+      if (true) {
         if (!req.files.length) {
           return new SendRespone({ status: 'error', code: 404, message: 'upload failed.' }).send(res);
         }
@@ -43,7 +43,7 @@ export class UploadAwsController {
     try {
       const { idImage } = req.body;
       if (!idImage) throw new RestError('images not valid.', 404);
-      if (!isDevelopment) {
+      if (true) {
         this.uploadFilesUseCase.removeFileLocal(idImage);
         return new SendRespone({ message: 'remove successfullly.' }).send(res);
       }
