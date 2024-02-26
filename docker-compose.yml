@@ -4,6 +4,8 @@ services:
   mongo:
     image: mongo:6.0.3
     container_name: chatapp_mongo
+    ports:
+      - '27020:27017'
     volumes:
       - .docker/data/mongo:/data
     restart: always
@@ -11,16 +13,18 @@ services:
   redis:
     image: redis:7.2-rc
     container_name: chatapp_redis
+    ports:
+      - '6381:6379'
     volumes:
       - .docker/data/redis:/data
     restart: always
 
-  app:
-    image: chatapp/chatappbe:v1
-    build: .
-    ports:
-      - '5002:5002'
-    env_file: .env
-    depends_on:
-      - mongo
-      - redis
+  # app:
+  #   image: chatapp/chatappbe:v1
+  #   build: .
+  #   ports:
+  #     - '5002:5002'
+  #   env_file: .env
+  #   depends_on:
+  #     - mongo
+  #     - redis
