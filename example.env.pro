@@ -2,7 +2,6 @@ NODE_ENV=production
 PORT=50005
 DATABASE=mongodb://localhost:27017/chatApp
 
-END_POINT=https://anhthuanhtu.com/chatApp
 END_POINT_HOME=https://anhthuanhtu.com
 END_POINT_SERVER=https://anhthuanhtu.com/api/v1
 END_POINT_IMAGES_PATH=https://anhthuanhtu.com:50004/data_publish/images/

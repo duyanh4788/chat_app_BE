@@ -13,7 +13,7 @@
     "start": "node dist/server.js",
     "watch-ts": "tsc -w",
     "prod": "git fetch && git reset --hard origin/main && npm run deploy",
-    "deploy": "rm -rf dist && rm -rf ../chat_app_FE/api/ && tsc && cp -r dist/ ../chat_app_FE/api && cp webconfig/BE/web.config ../chat_app_FE/api/ && cp webconfig/SOCKET/web.config dist/ && pm2 kill && pm2 start pm2.config.js",
+    "deploy": "rm -rf dist && npm run build && pm2 stop chat_app_be && pm2 start ecosystem.config.js",
     "eject": "nodejs-scripts eject",
     "lint": "eslint .",
     "lint:fix": "eslint --fix",
