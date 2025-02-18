@@ -11,13 +11,14 @@ import { DataBase } from '../dbs/DataBase';
 import path from 'path';
 import fs from 'fs';
 import { RequestLimitMiddleware } from '../middlewares/requestlimit/RequestLimitMiddleware';
+import { config } from '../config';
 
 const sessionOptions: SessionOptions = {
   secret: SECRETKEY,
   resave: true,
   saveUninitialized: true,
   store: MongoStore.create({
-    mongoUrl: process.env.DATABASE,
+    mongoUrl: config.DATABASE,
     ttl: 14 * 24 * 60 * 60,
     autoRemove: 'native'
   })
@@ -51,7 +52,7 @@ class App {
     this.App.use(seesion(sessionOptions));
     this.App.use(
       cors({
-        origin: process.env.END_POINT_HOME,
+        origin: config.END_POINT_HOME,
         credentials: true
       })
     );

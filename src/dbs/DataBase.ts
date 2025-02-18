@@ -2,9 +2,10 @@ import mongoose from 'mongoose';
 import { isDevelopment } from '../server';
 import { logger } from '../services/loggerservice/Logger';
 import { redisController } from '../redis/RedisController';
+import { config } from '../config';
 
 export class DataBase {
-  private readonly MONGOOSE_URL: string = process.env.DATABASE as string;
+  private readonly MONGOOSE_URL: string = config.DATABASE as string;
   static instance: any;
   constructor() {
     this.QueryExec();

@@ -3,11 +3,12 @@ import { Strategy as GoogleStrategy, Profile } from 'passport-google-oauth20';
 import { IUserDriversRepository } from '../../Repository/IUserDriversRepository';
 import { UserSchemaProps } from '../../common/common.interface';
 import { StatusCreate, UserTypeCreate } from '../../common/common.enum';
+import { config } from '../../config';
 
 export class GoogleServices {
-  private readonly GG_ID: string | any = process.env.GG_ID;
-  private readonly GG_KEY: string | any = process.env.GG_KEY;
-  private readonly END_POINT_SERVER: string | any = process.env.END_POINT_SERVER;
+  private readonly GG_ID: string | any = config.GG_ID;
+  private readonly GG_KEY: string | any = config.GG_KEY;
+  private readonly END_POINT_SERVER: string | any = config.END_POINT_SERVER;
 
   constructor(private userDriverRepository: IUserDriversRepository) {
     this.initializeLoginGoogle();
@@ -61,7 +62,7 @@ export class GoogleServices {
   public handleCallback() {
     return passport.authenticate('google', {
       successRedirect: this.END_POINT_SERVER + '/users/profile-gg',
-      failureRedirect: process.env.END_POINT_HOME
+      failureRedirect: config.END_POINT_HOME
     });
   }
 }

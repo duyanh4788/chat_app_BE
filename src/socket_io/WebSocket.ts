@@ -9,13 +9,14 @@ import { changeStatusIsNewMsg, changeStatusLogin, renderMessages } from '../util
 import { createUser, getUserById, removeUserList } from '../utils/createUsers';
 import { DataMessages, InfoUser } from '../common/common.interface';
 import { redisController } from '../redis/RedisController';
+import { config } from '../config';
 
 const userSockets = new Map();
 export class WebSocket {
   private messagesDriversController: MessagesDriversController = new MessagesDriversController();
   private userDriversController: UserDriversController = new UserDriversController();
-  private LIMIT_SENDMESSAGES: number = parseInt(process.env.LIMIT_REQUEST || '0');
-  private LIMIT_TIMER: number = parseInt(process.env.LIMIT_TIMER || '0');
+  private LIMIT_SENDMESSAGES: number = parseInt(config.LIMIT_REQUEST || '0');
+  private LIMIT_TIMER: number = parseInt(config.LIMIT_TIMER || '0');
 
   constructor() {
     this.messagesDriversController.createNewMessages = this.messagesDriversController?.createNewMessages.bind(this);

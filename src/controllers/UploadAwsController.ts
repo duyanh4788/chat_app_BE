@@ -5,6 +5,7 @@ import { SendRespone } from '../services/success/success';
 import { isDevelopment } from '../server';
 import fs from 'fs';
 import { UploadFilesUseCase } from '../usecase/UploadFilesUseCase';
+import { config } from '../config';
 export class UploadAwsController {
   constructor(private aws3: AWS3Services, private uploadFilesUseCase: UploadFilesUseCase) {
     this.uploadAWS = this.uploadAWS.bind(this);
@@ -22,10 +23,10 @@ export class UploadAwsController {
         await Promise.all(
           fileList.map(async (item) => {
             if (item.path.includes('.mp4')) {
-              url.push(process.env.END_POINT_VIDEOS_PATH + item.path);
+              url.push(config.END_POINT_VIDEOS_PATH + item.path);
             }
             if (!item.path.includes('.mp4')) {
-              url.push(process.env.END_POINT_IMAGES_PATH + item.path);
+              url.push(config.END_POINT_IMAGES_PATH + item.path);
             }
           })
         );

@@ -1,22 +1,13 @@
-FROM node:16
+FROM node:20 AS react_build_base
 
-WORKDIR /app/
+WORKDIR /app
 
-COPY package*.json /
-
-RUN npm install prettier -g
+COPY package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY . ./
 
 RUN npm run build
 
-EXPOSE 3000
-
-# Development
-CMD ["node", "dist/server.js"]
-
-# Production
-# RUN npm install -g pm2
-# CMD ["pm2-runtime", "ecosystem.config.js", "--env", "production"]
+CMD ["node", "./dist/server.js"]

@@ -1,3 +1,4 @@
+import { config } from '../config';
 import { AWS3Services } from '../services/aws/AwsServices';
 import { logger } from '../services/loggerservice/Logger';
 import { BaseJob } from './BaseJob';
@@ -11,7 +12,7 @@ export class RemoveImagesFromAWSJob extends BaseJob {
   }
 
   async job(): Promise<any> {
-    if (process.env.STATUS_REMOVE_AWS !== 'OFF') {
+    if (config.STATUS_REMOVE_AWS !== 'OFF') {
       const t0 = performance.now();
       try {
         await this.aWS3Services.getListImagesAWS();

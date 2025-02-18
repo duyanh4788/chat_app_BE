@@ -2,10 +2,11 @@ import nodemailer from 'nodemailer';
 import { INodeMailerServices } from '../../Repository/INodeMailerServices';
 import { isDevelopment } from '../../server';
 import { UserSchemaProps } from '../../common/common.interface';
+import { config } from '../../config';
 
 export class NodeMailerServices implements INodeMailerServices {
   private nodemailerTransport!: nodemailer.Transporter;
-  private readonly BASE_URL: string | undefined = process.env.END_POINT_HOME;
+  private readonly BASE_URL: string | undefined = config.END_POINT_HOME;
 
   constructor() {
     this.startNodeMailer();

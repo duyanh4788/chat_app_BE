@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import path from 'path';
 import App from './app/App';
 import { Request, Response } from 'express';
 import * as http from 'http';
@@ -9,8 +8,9 @@ import { RemoveImagesFromAWSJob } from './job/RemoveImagesFromAWSJob';
 import { Connections } from './monitor/Connecttions';
 import { RemoveFileLocalJob } from './job/RemoveImagesLocalJob';
 import { Server } from 'socket.io';
+import { config } from './config';
 
-export const isDevelopment = process.env.NODE_ENV === 'development' ? true : false;
+export const isDevelopment = config.NODE_ENV === 'development' ? true : false;
 
 // ********************* BaseJob *********************//
 new RemoveImagesFromAWSJob().runJob();
@@ -20,12 +20,12 @@ new RemoveFileLocalJob().runJob();
 new Connections().readMonitorServer();
 
 // ********************* Config Server *********************//
-const PORT: string | number = process.env.PORT || 50005;
+const PORT: string | number = config.PORT || 50005;
 const httpServer: http.Server = http.createServer(App);
 
 const configIo = new Server(httpServer, {
   cors: {
-    origin: process.env.END_POINT_HOME,
+    origin: config.END_POINT_HOME,
     credentials: true
   }
 });

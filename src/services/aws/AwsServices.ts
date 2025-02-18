@@ -1,6 +1,7 @@
 import { Upload } from '@aws-sdk/lib-storage';
 import { CreateBucketCommandInput, S3 } from '@aws-sdk/client-s3';
 import { RestError } from '../error/error';
+import { config } from '../../config';
 
 export class AWS3Services {
   private readonly BUCKET: string;
@@ -10,11 +11,11 @@ export class AWS3Services {
   private readonly DOMAIN: string;
 
   constructor() {
-    this.BUCKET = process.env.AWS_BUCKET_NAME as string;
-    this.ACCESS_KEY = process.env.AWS_ACCESS as string;
-    this.SECRET_KEY = process.env.AWS_SECRET as string;
-    this.REGION = process.env.AWS_REGION as string;
-    this.DOMAIN = process.env.AWS_DOMAIN as string;
+    this.BUCKET = config.AWS_BUCKET_NAME as string;
+    this.ACCESS_KEY = config.AWS_ACCESS as string;
+    this.SECRET_KEY = config.AWS_SECRET as string;
+    this.REGION = config.AWS_REGION as string;
+    this.DOMAIN = config.AWS_DOMAIN as string;
   }
 
   public configAWS(): S3 {

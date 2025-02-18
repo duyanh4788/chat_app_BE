@@ -4,11 +4,12 @@ import { IUserDriversRepository } from '../../Repository/IUserDriversRepository'
 import { removeAccentsVN } from '../../utils/accents';
 import { UserSchemaProps } from '../../common/common.interface';
 import { StatusCreate, UserTypeCreate } from '../../common/common.enum';
+import { config } from '../../config';
 
 export class FaceBookService {
-  private readonly FB_ID: string | any = process.env.FB_ID;
-  private readonly FB_KEY: string | any = process.env.FB_KEY;
-  private readonly END_POINT_SERVER: string | any = process.env.END_POINT_SERVER;
+  private readonly FB_ID: string | any = config.FB_ID;
+  private readonly FB_KEY: string | any = config.FB_KEY;
+  private readonly END_POINT_SERVER: string | any = config.END_POINT_SERVER;
 
   constructor(private userDriverRepository: IUserDriversRepository) {
     this.initializeLoginFacebook();
@@ -64,7 +65,7 @@ export class FaceBookService {
   public handleCallback() {
     return passport.authenticate('facebook', {
       successRedirect: this.END_POINT_SERVER + '/users/profile-fb',
-      failureRedirect: process.env.END_POINT_HOME
+      failureRedirect: config.END_POINT_HOME
     });
   }
 }

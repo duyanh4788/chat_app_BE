@@ -8,6 +8,7 @@ import { nodeMailerServices } from '../services/nodemailer/MailServices';
 import { SendRespone } from '../services/success/success';
 import { StatusCreate, Type2FA } from '../common/common.enum';
 import { UserRequest, UserSchemaProps } from '../common/common.interface';
+import { config } from '../config';
 
 export class UsersController {
   constructor(
@@ -100,7 +101,7 @@ export class UsersController {
   public async userSignUpWithFB(req: Request, res: Response) {
     try {
       return new SendRespone({
-        data: `${this.URL_FB}?client_id=${process.env.FB_ID}&redirect_uri=${process.env.END_POINT_SERVER}/users/callback-fb`
+        data: `${this.URL_FB}?client_id=${config.FB_ID}&redirect_uri=${config.END_POINT_SERVER}/users/callback-fb`
       }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
@@ -110,7 +111,7 @@ export class UsersController {
   public async userSignUpWithGG(req: Request, res: Response) {
     try {
       return new SendRespone({
-        data: `${this.URL_GG}&redirect_uri=${process.env.END_POINT_SERVER}/users/callback-gg&scope=profile email&client_id=${process.env.GG_ID}`
+        data: `${this.URL_GG}&redirect_uri=${config.END_POINT_SERVER}/users/callback-gg&scope=profile email&client_id=${config.GG_ID}`
       }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
@@ -212,34 +213,34 @@ export class UsersController {
   public async profileFacebook(req: Request, res: Response) {
     try {
       if (!req.user) {
-        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res);
+        return new SendRespone({ data: config.END_POINT_HOME }).redirect(res);
       }
       const create = await this.userUseCase.profileFacebook(req.user);
       if (!create) {
-        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res);
+        return new SendRespone({ data: config.END_POINT_HOME }).redirect(res);
       }
       return new SendRespone({
-        data: `${process.env.END_POINT_HOME}/?token=${create.toKen}?_id=${create._id}`
+        data: `${config.END_POINT_HOME}/?token=${create.toKen}?_id=${create._id}`
       }).redirect(res);
     } catch (error) {
-      return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res);
+      return new SendRespone({ data: config.END_POINT_HOME }).redirect(res);
     }
   }
 
   public async profileGoogle(req: Request, res: Response) {
     try {
       if (!req.user) {
-        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res);
+        return new SendRespone({ data: config.END_POINT_HOME }).redirect(res);
       }
       const create = await this.userUseCase.profileGoogle(req.user);
       if (!create) {
-        return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res);
+        return new SendRespone({ data: config.END_POINT_HOME }).redirect(res);
       }
       return new SendRespone({
-        data: `${process.env.END_POINT_HOME}/?token=${create.toKen}?_id=${create._id}`
+        data: `${config.END_POINT_HOME}/?token=${create.toKen}?_id=${create._id}`
       }).redirect(res);
     } catch (error) {
-      return new SendRespone({ data: process.env.END_POINT_HOME }).redirect(res);
+      return new SendRespone({ data: config.END_POINT_HOME }).redirect(res);
     }
   }
 
@@ -280,7 +281,7 @@ export class UsersController {
   }
 
   public async resetPassWord(req: Request, res: Response) {
-    const client = new mongoDB.MongoClient(process.env.DATABASE as string);
+    const client = new mongoDB.MongoClient(config.DATABASE as string);
     const session = client.startSession();
     session.startTransaction();
     try {

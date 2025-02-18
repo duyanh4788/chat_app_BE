@@ -1,3 +1,4 @@
+import { config } from '../config';
 import { logger } from '../services/loggerservice/Logger';
 import { BaseJob } from './BaseJob';
 import fs from 'fs';
@@ -10,7 +11,7 @@ export class RemoveFileLocalJob extends BaseJob {
   }
 
   async job(): Promise<any> {
-    if (process.env.STATUS_REMOVE_LOCAL !== 'OFF') {
+    if (config.STATUS_REMOVE_LOCAL !== 'OFF') {
       const t0 = performance.now();
       const listFileImagesPath = `${_pathFileImages}`;
       const listFileVideoPath = `${_pathFileVideo}`;

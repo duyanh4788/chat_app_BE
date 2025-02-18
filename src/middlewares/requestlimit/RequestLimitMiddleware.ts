@@ -2,11 +2,12 @@ import { NextFunction, Request, Response } from 'express';
 import { redisController } from '../../redis/RedisController';
 import { SendRespone } from '../../services/success/success';
 import { isDevelopment } from '../../server';
+import { config } from '../../config';
 
 export class RequestLimitMiddleware {
-  private MAX_REQUEST: number = parseInt(process.env.MAX_REQUEST || '0');
-  private LIMIT_REQUEST: number = parseInt(process.env.LIMIT_REQUEST || '0');
-  private LIMIT_TIMER: number = parseInt(process.env.LIMIT_TIMER || '0');
+  private MAX_REQUEST: number = parseInt(config.MAX_REQUEST || '0');
+  private LIMIT_REQUEST: number = parseInt(config.LIMIT_REQUEST || '0');
+  private LIMIT_TIMER: number = parseInt(config.LIMIT_TIMER || '0');
   private REQ_QUEUE: any[] = [];
 
   public validateRequestLimits = async (req: Request, res: Response, next: NextFunction) => {
@@ -56,6 +57,6 @@ export class RequestLimitMiddleware {
   };
 
   private resetMaxRequest() {
-    this.MAX_REQUEST = process.env.MAX_REQUEST as unknown as number;
+    this.MAX_REQUEST = config.MAX_REQUEST as unknown as number;
   }
 }

@@ -1,5 +1,6 @@
 import * as redis from 'redis';
 import * as util from 'util';
+import { config } from '../config';
 
 interface RedisCache {
   hasKey: string;
@@ -14,7 +15,7 @@ interface RedisModel {
 }
 
 class RedisController {
-  private REDIS_URL: string = process.env.REDIS_URL as string;
+  private REDIS_URL: string = config.REDIS_URL as string;
   private TIMER: number = 3600;
   private client: redis.RedisClientType;
 
