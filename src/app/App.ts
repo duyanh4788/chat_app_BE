@@ -5,7 +5,7 @@ import { MainRoutes } from '../routes';
 import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
-import { SECRETKEY } from '../common/common.constants';
+import { PATH_IMG, PATH_PUBLISH, PATH_VIDEO, SECRETKEY } from '../common/common.constants';
 import MongoStore from 'connect-mongo';
 import { DataBase } from '../dbs/DataBase';
 import path from 'path';
@@ -23,13 +23,12 @@ const sessionOptions: SessionOptions = {
     autoRemove: 'native'
   })
 };
-
 class App {
   public App: express.Application;
   public ApiRouter: Router;
   private mainRoutes: MainRoutes = new MainRoutes();
   private requestLimitMiddleware: RequestLimitMiddleware = new RequestLimitMiddleware();
-
+  private paramDic: string = config.PARAM_SEVER as string;
   constructor() {
     this.ApiRouter = Router();
     this.App = express();
@@ -38,7 +37,7 @@ class App {
     this.mongooSetup();
     this.initStaticFile();
     this.interValQueue();
-    this.App.use('/api/v1', this.requestLimitMiddleware.validateRequestLimits, this.requestLimitMiddleware.queueRequestLimits, this.ApiRouter);
+    this.App.use(this.paramDic, this.requestLimitMiddleware.validateRequestLimits, this.requestLimitMiddleware.queueRequestLimits, this.ApiRouter);
     this.mainRoutes.routes(this.ApiRouter);
   }
 
@@ -52,7 +51,7 @@ class App {
     this.App.use(seesion(sessionOptions));
     this.App.use(
       cors({
-        origin: config.END_POINT_HOME,
+        origin: '*',
         credentials: true
       })
     );
@@ -68,10 +67,9 @@ class App {
   }
 
   public initStaticFile() {
-    const publics = path.join(__dirname, '../../data_publish');
-    const images = path.join(__dirname, '../../data_publish/images');
-    const videos = path.join(__dirname, '../../data_publish/videos');
-    const imagesTest = path.join(__dirname, '../../data_publish/img-test');
+    const publics = path.join(__dirname, `../../${PATH_PUBLISH}`);
+    const images = path.join(__dirname, `../../${PATH_IMG}`);
+    const videos = path.join(__dirname, `../../${PATH_VIDEO}`);
 
     if (!fs.existsSync(publics)) {
       fs.mkdirSync(publics, { recursive: true });
@@ -92,18 +90,15 @@ class App {
     } else {
       console.log(`${videos} already exists!`);
     }
-    if (!fs.existsSync(imagesTest)) {
-      fs.mkdirSync(imagesTest, { recursive: true });
-      console.log(`${imagesTest} created successfully!`);
-    } else {
-      console.log(`${imagesTest} already exists!`);
-    }
 
-    global._pathFileImages = path.join(__dirname, '../../data_publish/images');
-    global._pathFileVideo = path.join(__dirname, '../../data_publish/videos');
-    global._pathFileImgTest = path.join(__dirname, '../../data_publish/img-test');
-    this.App.use('/data_publish/images', express.static(_pathFileImages));
-    this.App.use('/data_publish/videos', express.static(_pathFileVideo));
+    global._pathFileImages = images;
+    global._pathFileVideo = videos;
+
+    const publicImg = config.NODE_ENV === 'production' ? `${config.PARAM_STATIC}/${PATH_IMG}` : `/${PATH_IMG}`;
+    const publicVideo = config.NODE_ENV === 'production' ? `${config.PARAM_STATIC}/${PATH_VIDEO}` : `/${PATH_VIDEO}`;
+
+    this.App.use(publicImg, express.static(_pathFileImages));
+    this.App.use(publicVideo, express.static(_pathFileVideo));
   }
 
   public interValQueue() {

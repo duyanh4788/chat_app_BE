@@ -34,3 +34,7 @@ export enum ModelRedis {
   CONVERTSTATIONS = 'converstations',
   AUTHENTICATORS = 'authenticators'
 }
+
+export const PATH_PUBLISH = 'data_publish';
+export const PATH_IMG = 'data_publish/images';
+export const PATH_VIDEO = 'data_publish/videos';

@@ -20,25 +20,30 @@ new RemoveFileLocalJob().runJob();
 new Connections().readMonitorServer();
 
 // ********************* Config Server *********************//
-const PORT: string | number = config.PORT || 50005;
 const httpServer: http.Server = http.createServer(App);
-
-const configIo = new Server(httpServer, {
-  cors: {
-    origin: config.END_POINT_HOME,
-    credentials: true
-  }
-});
-
-const socket = new WebSocket();
-socket.socketIO(configIo);
-
 if (isDevelopment) {
   App.get('/', (req: Request, res: Response) => {
     res.send('Server is Running ...');
   });
 }
-
-httpServer.listen(PORT, () => {
-  console.log(`Running API on port : ${PORT}`);
+httpServer.listen(config.PORT, () => {
+  console.log(`Running API on port : ${config.PORT}`);
 });
+
+// ********************* Config Socket *********************//
+const socketServer: http.Server = http.createServer(); // Server riêng cho WebSocket
+const io = new Server(socketServer, {
+  cors: {
+    origin: config.END_POINT_HOME || '*',
+    credentials: true
+  },
+  path: config.PARAM_SOCKET
+});
+const socket = new WebSocket();
+socket.socketIO(io);
+socketServer.listen(config.SOCKET_PORT, () => {
+  console.log(`🔌 WebSocket Server running on port: ${config.SOCKET_PORT}`);
+});
+
+
+

@@ -1,7 +1,12 @@
 export const config = {
     NODE_ENV: process.env.NODE_ENV,
-    PORT: process.env.PORT,
+    PORT: Number(process.env.PORT),
+    SOCKET_PORT: process.env.SOCKET_PORT,
+    PARAM_SEVER: process.env.PARAM_SEVER,
+    PARAM_SOCKET: process.env.PARAM_SOCKET,
+    PARAM_STATIC: process.env.PARAM_STATIC,
     END_POINT_HOME: process.env.END_POINT_HOME,
+    URL_SOCKET: process.env.URL_SOCKET,
     DATABASE: process.env.DATABASE,
     END_POINT_VIDEOS_PATH: process.env.END_POINT_VIDEOS_PATH,
     END_POINT_IMAGES_PATH: process.env.END_POINT_IMAGES_PATH,

@@ -35,3 +35,4 @@ lerna-debug.log
 /.changelog
 .npm/
 *.zipnode_modules
+src/data_publish
