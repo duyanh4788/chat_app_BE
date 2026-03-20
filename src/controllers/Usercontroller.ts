@@ -15,7 +15,7 @@ export class UsersController {
     private userUseCase: UserUseCase,
     private authenticatorUseCase: AuthenticatorUseCase,
     private readonly URL_FB: string = 'https://www.facebook.com/v16.0/dialog/oauth',
-    private readonly URL_GG: string = 'https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?response_type=code'
+    private readonly URL_GG: string = 'https://accounts.google.com/o/oauth2/v2/auth'
   ) {
     this.getListUser = this.getListUser.bind(this);
     this.getUserById = this.getUserById.bind(this);
@@ -110,9 +110,14 @@ export class UsersController {
 
   public async userSignUpWithGG(req: Request, res: Response) {
     try {
-      return new SendRespone({
-        data: `${this.URL_GG}&redirect_uri=${config.END_POINT_SERVER}/users/callback-gg&scope=profile email&client_id=${config.GG_ID}`
-      }).send(res);
+      const url = `${this.URL_GG}` +
+        `?response_type=code` +
+        `&client_id=${config.GG_ID}` +
+        `&redirect_uri=${config.END_POINT_SERVER}/users/callback-gg` +
+        `&scope=${encodeURIComponent('profile email')}` +
+        `&access_type=offline` +
+        `&prompt=consent`;
+      return new SendRespone({ data: url }).send(res);
     } catch (error) {
       return RestError.manageServerError(res, error, false);
     }
